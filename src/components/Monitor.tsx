@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Table, Label, Sidebar, Menu, Icon, IconGroup, Segment, Button, Dropdown } from 'semantic-ui-react'
 import { Link } from 'react-router'
-import HWChart, { DataSource, DataSeries, BarChart, TimeSeriesData, TimeSeriesStyle } from "@heatworks/heatworks-chart-library-web"
 import * as d3 from 'd3'
 import { Client, connect, Granted } from "mqtt"
 import MonitorChart from "./MonitorChart"
