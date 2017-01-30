@@ -25,15 +25,15 @@ export default class Index extends React.Component<{
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={3}>
-                    <Grid.Column mobile={16}>
+                    <Grid.Column width={null} mobile={16}>
                         <Header subheader><Icon name="cubes" circular /><Header.Content>Collect Data <Header sub>DAC</Header></Header.Content></Header>
                         <p>A test is a collection of related data within a time range. During a test you can monitor current values and after the test you can export the data for further analysis.</p>
                     </Grid.Column>
-                    <Grid.Column mobile={16}>
+                    <Grid.Column width={null} mobile={16}>
                         <Header subheader><Icon name="flask" circular /><Header.Content>Run tests <Header sub>Tests</Header></Header.Content></Header>
                         <p>Often when you get a test setup properly you'll want to rerun it multiple times. Duplicating a test makes setting up a similar test quick and easy.</p>
                     </Grid.Column>
-                    <Grid.Column mobile={16}>
+                    <Grid.Column width={null} mobile={16}>
                         <Header subheader><Icon name="bar chart" circular /><Header.Content>View Results <Header sub>Views</Header></Header.Content></Header>
                         <p>Another strategy for reusing tests is to create template tests with your channels and tags ready to go.</p>
                     </Grid.Column>

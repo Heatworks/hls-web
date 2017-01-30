@@ -4,6 +4,3 @@ build/
 build-server/
 
 semantic/dist/
-
-# This should be allowed in the actual project.
-semantic/
