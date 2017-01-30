@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Client, connect, Granted } from "mqtt"
-//import HWChart, { DataSource, DataSeries, BarChart, TimeSeriesData, TimeSeriesStyle } from "@heatworks/heatworks-chart-library-web"
+import HWChart, { DataSource, DataSeries, BarChart, TimeSeriesData, TimeSeriesStyle } from "@heatworks/heatworks-chart-library-web"
 import * as d3 from 'd3'
 var moment = require('moment');
 import TimeIntervalSelector from "./TimeIntervalSelector"
@@ -306,9 +306,9 @@ export default class MonitorChart extends React.Component<{
                         </Grid.Column>
                     </Grid>
                 </Segment>
-                {/* <Segment>
+                <Segment>
                     <BarChart data={this.state.data} chartType="Line" height={300}  domain={{y: this.state.yRange, x: this.state.range }} changeRange={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>
-                </Segment> */}
+                </Segment>
                 <Segment>
                     <Button.Group size="mini" labeled>
                         <Button size="mini" onClick={() => { this.previousRange() }} labelPosition='left' icon='left chevron' content='Back' />
