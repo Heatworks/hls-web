@@ -5,6 +5,7 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var StatsPlugin = require('stats-webpack-plugin');
+const BabiliPlugin = require("babili-webpack-plugin");
 
 module.exports = {
     // The entry file. All your app roots fromn here.
@@ -37,12 +38,8 @@ module.exports = {
         // file as they dont have to wait for the JS to load.
         new ExtractTextPlugin('[name]-[hash].min.css'),
         // handles uglifying js
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false,
-                screw_ie8: true
-            }
-        }),
+        //new BabiliPlugin({}, {}),
+        
         // creates a stats.json
         new StatsPlugin('webpack.stats.json', {
             source: false,
@@ -59,6 +56,10 @@ module.exports = {
         configFile: '.eslintrc',
         failOnWarning: false,
         failOnError: true
+    },
+     optipng: {
+        optimizationLevel: 7,
+        interlaced: false
     },
     resolve: {
         extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
@@ -83,7 +84,7 @@ module.exports = {
             test: /\.(jpe?g|png|gif|svg)$/i,
             loaders: [
                 'file?hash=sha512&digest=hex&name=[hash].[ext]',
-                'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                'image-webpack?bypassOnDebug'
             ]
         }, {
             test: /\.scss$/,
