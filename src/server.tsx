@@ -51,12 +51,13 @@ if (env !== 'production') {
     }).listen(dev_port)
     
 } else {
-    app.use('/', express.static('build/'))
-    app.get("/*", function(req, res) {
-        console.log('Reached main index...');
-		res.setHeader("Content-Type", "text/html");
-		fs.createReadStream(path.join(__dirname, "..", "build", "index.html")).pipe(res);
-	});
+    app.use(express.static(path.join(__dirname, '..', 'build')))
+    var router = express.Router()
+    router.get("/*", function(req, res) {
+        res.setHeader("Content-Type", "text/html");
+        fs.createReadStream(path.join(__dirname, "..", "build", "index.html")).pipe(res);
+    });
+    app.use(router);
 }
 
 // start the server
