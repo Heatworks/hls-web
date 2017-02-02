@@ -51,10 +51,7 @@ if (env !== 'production') {
     }).listen(dev_port)
     
 } else {
-    app.get("/:version.js", function(req, res) {
-		res.setHeader("Content-Type", "application/javascript");
-		fs.createReadStream(path.join(__dirname, "..", "build", `${req.params.version}.js`)).pipe(res);
-	});
+    app.use('/', express.static('build/'))
     app.get("/*", function(req, res) {
 		res.setHeader("Content-Type", "text/html");
 		fs.createReadStream(path.join(__dirname, "..", "build", "index.html")).pipe(res);
