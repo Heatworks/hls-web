@@ -4,7 +4,8 @@
   "description": "Heatworks Lab Service Website.",
   "main": "build/server.js",
   "scripts": {
-    "postinstall": "npm run build-server && npm run build-production",
+    "postinstall": "npm run build-server && npm run build-production && npm run build-semantic-ui",
+    "build-semantic-ui": "cd semantic; gulp build",
     "start": "nf start",
     "test": "mocha",
     "build-server": "tsc --project tsconfig.server.json",
