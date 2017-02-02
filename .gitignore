@@ -1,6 +1,6 @@
 .env
 node_modules
-build/
-build-server/
+/build/
+/build-server/
 
 semantic/dist/
