@@ -71,7 +71,7 @@ export default class View extends React.Component<{
                     {
                         columns: [
                             {
-                                width: 4,
+                                width: 6,
                                 component: "/organizations/hls/views/components/power/switch",
                                 props: {
                                     title: "Power",
@@ -84,23 +84,29 @@ export default class View extends React.Component<{
                                 }
                             },
                             {
-                                width: 8,
-                                component: "/organizations/hls/views/components/test",
+                                width: 10,
+                                component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
                                 props: {
                                     title: "Second Component"
                                 },
                                 channels: {
-
-                                }
-                            },
-                            {
-                                width: 4,
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "Third Component"
-                                },
-                                channels: {
-
+                                    q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
+                                    q2: "/organizations/heatworks/devices/test-station-a/thermocouple/1",
+                                    q3: "/organizations/heatworks/devices/test-station-a/thermocouple/2",
+                                    q4: "/organizations/heatworks/devices/test-station-a/thermocouple/3",
+                                    q5: "/organizations/heatworks/devices/test-station-a/thermocouple/4",
+                                    q6: "/organizations/heatworks/devices/test-station-a/thermocouple/5",
+                                    q7: "/organizations/heatworks/devices/test-station-a/thermocouple/6",
+                                    q8: "/organizations/heatworks/devices/test-station-a/thermocouple/7",
+                                    q9: "/organizations/heatworks/devices/test-station-a/thermocouple/8",
+                                    q10: "/organizations/heatworks/devices/test-station-a/thermocouple/9",
+                                    q11: "/organizations/heatworks/devices/test-station-a/thermocouple/10",
+                                    q12: "/organizations/heatworks/devices/test-station-a/thermocouple/11",
+                                    q13: "/organizations/heatworks/devices/test-station-a/thermocouple/12",
+                                    q14: "/organizations/heatworks/devices/test-station-a/thermocouple/13",
+                                    q15: "/organizations/heatworks/devices/test-station-a/thermocouple/14",
+                                    q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
+                                    q17: "/organizations/heatworks/devices/test-station-a/thermocouple/16"
                                 }
                             }
                         ]
@@ -211,7 +217,8 @@ export default class View extends React.Component<{
         return new Promise((resolve, reject) => {
             resolve({
                 name: channel,
-                unit: 'Boolean'
+                unit: channel.startsWith("/organizations/heatworks/devices/test-station-a/power/") ? 'Boolean' : 'Float',
+                value: null
             })
         })
     }
@@ -331,11 +338,17 @@ export default class View extends React.Component<{
     renderColumnComponent(column: ColumnComponent) {
         if (column.component == "/organizations/hls/views/components/power/switch") {
             return (
-                <PowerSwitch title={column.props} channels={column.channels} values={{
+                <PowerSwitch {...column.props} channels={column.channels} values={{
                     control: this.state.channels[column.channels.control].value,
                     value: this.state.channels[column.channels.value].value,
                     amps: 20
                 }} publish={this.publish.bind(this)} />
+            )
+        } else if (column.component == "/organizations/heatworks/views/components/model-2/pcb/thermocouples") {
+            return (
+                <OverlayPCB {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} />
             )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
@@ -482,6 +495,72 @@ class PowerSwitch extends React.Component<{
                 }} >{this.props.values.amps}A</span>
                 <br/>
                 
+            </Segment>
+        )
+    }
+}
+
+class OverlayPCB extends React.Component<{
+    title: string
+    channels: {
+        q1: string,
+        q2: string,
+        q3: string,
+        q4: string,
+        q5: string,
+        q6: string,
+        q7: string,
+        q8: string,
+        q9: string,
+        q10: string,
+        q11: string,
+        q12: string,
+        q13: string,
+        q14: string,
+        q15: string,
+        q16: string,
+        q17: string
+    }
+    values: {
+        q1: any,
+        q2: any,
+        q3: any,
+        q4: any,
+        q5: any,
+        q6: any,
+        q7: any,
+        q8: any,
+        q9: any,
+        q10: any,
+        q11: any,
+        q12: any,
+        q13: any,
+        q14: any,
+        q15: any,
+        q16: any,
+        q17: any
+    }
+    publish: (topic, value) => any
+},{}> {
+    colorForValue(value) {
+        if (value > 40) {
+            return "red"
+        } else if (value > 32) {
+            return "orange"
+        } else { 
+            return "green"
+        }
+    }
+    render() {
+        return (
+            <Segment>
+                <Image src={require('../../images/board_bg.png')} fluid />
+                <div style={{position: 'absolute', right: '58%', top: '68%', textAlign: 'center' }}><Label content={this.props.values.q1} floating size="medium" color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
+                <div style={{position: 'absolute', right: '69%', top: '60%', textAlign: 'center' }}><Label content={this.props.values.q2} floating size="medium" color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
+                <div style={{position: 'absolute', right: '58%', top: '55%', textAlign: 'center' }}><Label content={this.props.values.q3} floating size="medium" color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>
+                <div style={{position: 'absolute', right: '68%', top: '50%', textAlign: 'center' }}><Label content={this.props.values.q4} floating size="medium" color={this.colorForValue(this.props.values.q4)} detail={"Q4"}/></div>
+                <div style={{position: 'absolute', right: '67%', top: '28%', textAlign: 'center' }}><Label content={this.props.values.q5} floating size="medium" color={this.colorForValue(this.props.values.q5)} detail={"Q5"}/></div>
+                <div style={{position: 'absolute', right: '67%', top: '40%', textAlign: 'center' }}><Label content={this.props.values.q6} floating size="medium" color={this.colorForValue(this.props.values.q6)} detail={"Q6"}/></div>
             </Segment>
         )
     }
