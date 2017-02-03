@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Menu, Segment, Header, Dropdown, Image} from 'semantic-ui-react'
+import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router'
 
 export default class SignIn extends React.Component<{
@@ -55,7 +55,11 @@ export default class SignIn extends React.Component<{
                         {
                             (this.props.iam.loaded && this.props.iam.organization !== undefined) ? (
                                 <Dropdown.Menu>
-                                    <Dropdown.Item>Settings</Dropdown.Item>
+                                    <Dropdown.Item as={Link} {...{to: '/settings'}}><Icon name="settings" size="large"  /> Settings</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => {
+                                        window.location.href = window.location.href + "?accessToken=" + this.props.iam.data.accessToken
+                                    }}><Icon name="tv" size="large" /> Standalone Page</Dropdown.Item>
+                                    <Dropdown.Divider />   
                                     <Dropdown.Item as={Link} {...{to: '/signOut'}}>Sign Out</Dropdown.Item>
                                 </Dropdown.Menu>
                             ) : ( <Dropdown.Item as={Link} {...{to: '/signOut'}}>Sign Out</Dropdown.Item>)

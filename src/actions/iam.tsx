@@ -169,8 +169,17 @@ function persistData (data) {
 	window.localStorage.setItem(DATA_KEY, val);
 };
 
+const queryString = require('query-string');
 function retrieveData () {
 	var val = window.localStorage.getItem(DATA_KEY);
+	if (val == null) {
+		var params = queryString.parse(window.location.search)
+		if ('accessToken' in params) {
+			var data = { accessToken: params.accessToken };
+			persistData(data);
+			return data
+		}
+	}
 	return JSON.parse(val);
 }
 
