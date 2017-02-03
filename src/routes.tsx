@@ -20,6 +20,7 @@ import ViewsIndex from './components/views/ViewsIndex'
 import Device from './components/dac/connected/Device'
 import View from './components/views/connected/View'
 import Index from './components/static/Index'
+import Settings from './components/settings/Index'
 
 export default (
     <Route path="/" component={App}>
@@ -27,6 +28,7 @@ export default (
         <Route path="signIn" component={SignIn} />
         <Route path="signIn_redirect" component={SignInSuccess} />
         <Route path="signOut" component={SignOut} />
+        <Route path="settings" component={Settings} />
         <Route path=":organizationName/" onEnter={authentication}>
             <IndexRoute component={Index} />
             <Route component={App} />
