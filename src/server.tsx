@@ -17,6 +17,11 @@ const path = require('path')
 
 const app = express();
 
+express.static.mime.define({
+ 'application/x-font-woff': ['woff'],
+ 'application/font-woff': ['woff']
+}); 
+
 require('./api/routes')(app);
 app.use('/semantic/dist', express.static('semantic/dist'))
 
