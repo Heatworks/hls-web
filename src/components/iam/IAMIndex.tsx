@@ -31,7 +31,7 @@ export default class IAMIndex extends React.Component<{
                     </Grid>
                     <Divider />
                 <Menu secondary>
-                    <Menu.Item name='users' active={(this.props.params.iamPage == 'users')} as={Link} {...{to: `/${this.props.params.organizationName}/iam/users`}} />
+                    <Menu.Item name='users' active={(this.props.params.iamPage == 'users' || this.props.params.iamPage == undefined)} as={Link} {...{to: `/${this.props.params.organizationName}/iam/users`}} />
                     <Menu.Item name='accessTokens' active={(this.props.params.iamPage == 'accessTokens')} as={Link} {...{to: `/${this.props.params.organizationName}/iam/accessTokens`}}/>
                     <Menu.Menu position='right'>
                     <Menu.Item>
@@ -39,7 +39,7 @@ export default class IAMIndex extends React.Component<{
                     </Menu.Item>
                     </Menu.Menu>
                 </Menu>
-                {this.props.params.iamPage == "users" ? <UsersTable params={this.props.params} /> : null}
+                {this.props.params.iamPage == "users" || this.props.params.iamPage == undefined ? <UsersTable params={this.props.params} /> : null}
                 {this.props.params.iamPage == "accessTokens" ? <AccessTokensTable params={this.props.params} /> : null}
        </Segment>);
     }
