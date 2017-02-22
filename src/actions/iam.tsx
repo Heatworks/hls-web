@@ -66,7 +66,7 @@ export function signIn() {
 	return (dispatch) => {
 		dispatch(signInLoading())
 		let name = "_blank";
-		let popup = openPopup("hls", `https://hls.oauth.heatworks.tech/login?redirect_url=${window.location.origin}/signIn_redirect`, "hls_oauth");
+		let popup = openPopup("hls", `https://hls-oauth.heatworks.tech/login?redirect_url=${window.location.origin}/signIn_redirect`, "hls_oauth");
 		listenForCredentials("token", popup, "hls").then((params) => {
 			console.log(params);
 			dispatch(signInSuccess(params))

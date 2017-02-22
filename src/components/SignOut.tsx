@@ -18,7 +18,8 @@ export default class SignOut extends React.Component<{
         this.props.actions.signOut()
     }
     render() {
-        return (<div><h3>Sign In</h3><p>
+        return (<div>
+            <header>Sign In</header><p>
         {(this.props.iam.data == null) ? <Segment>Signed Out!</Segment> : <Segment>Signing out...</Segment> }</p></div>)
     }
 }
