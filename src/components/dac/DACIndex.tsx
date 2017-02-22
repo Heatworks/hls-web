@@ -14,7 +14,7 @@ export default class DACIndex extends React.Component<{
     render() {
         return (<Segment basic vertical>
                  <Helmet title={`HLS - ${this.props.params.organizationName} - DAC`} />
-                <Header>DAC (Data Acquisition and Control)</Header>
+                <Header>Data Acquisition and Control (DAC)</Header>
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>

@@ -15,7 +15,7 @@ export default class IAMIndex extends React.Component<{
     render() {
         return (<Segment basic vertical>
                  <Helmet title={`HLS - ${this.props.params.organizationName} - IAM`} />
-                <Header>IAM (Identity Access Management)</Header>
+                <Header>Identity Access Management (IAM)</Header>
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>
