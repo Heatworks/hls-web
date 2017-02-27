@@ -13,7 +13,8 @@ export default class MonitorChart extends React.Component<{
         organization: string,
         device:string,
         channel:string,
-        topic?:string
+        topic?:string,
+        unit?:string
         }>
     styles?: Array<TimeSeriesStyle>,
     basic?:boolean,
@@ -48,7 +49,8 @@ export default class MonitorChart extends React.Component<{
 
             */
             this.props.channels.forEach((element) => {
-                this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
+                // Don't subscribe to error channel.
+                //this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
                 element.topic = `/organizations/${element.organization}/devices/${element.device}/${element.channel}`;
                 this.props.client.subscribe(element.topic)
             })
@@ -113,7 +115,8 @@ export default class MonitorChart extends React.Component<{
     }
     componentWillReceiveProps(nextProps) {
         nextProps.channels.forEach((element) => {
-            this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
+            // Don't subscribe to error channel. It could be exploding with reports.
+            //this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
             element.topic = `/organizations/${element.organization}/devices/${element.device}/${element.channel}`;
             this.props.client.subscribe(element.topic, (response, error) => {
                 console.log('Subscribe: '+error+' : '+element.topic);

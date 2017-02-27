@@ -200,13 +200,13 @@ export default class Device extends React.Component<{
             {Object.keys(this.props.device.data.channels).map((name, index) => {
                 var channelProps = this.props.device.data.channels[name];
                 return (<Table.Row key={index} disabled={this.props.device.loading} {...{onClick:() => {
-                    browserHistory.push(`/${this.props.params.organizationName}/dac/data/${this.props.params.splat}/${name}/`)
+                    // browserHistory.push(`/${this.props.params.organizationName}/dac/data/${this.props.params.splat}/${name}/`)
                 }}}>
                 <Table.Cell>{name}</Table.Cell>
                 <Table.Cell>{channelProps.unit}</Table.Cell>
                 <Table.Cell>{channelProps.rate}</Table.Cell>
                 <Table.Cell>{channelProps.control ? 'Yes' : 'No'}</Table.Cell>
-                <Table.Cell><MonitorButton organization={this.props.params.organizationName} device={this.props.params.splat} channel={name} />{this.state.editing ? <Button icon="remove" size="small"/> : null }</Table.Cell>
+                <Table.Cell><MonitorButton organization={this.props.params.organizationName} device={this.props.params.splat} channel={name} unit={channelProps.unit} rate={channelProps.rate} />{this.state.editing ? <Button icon="remove" size="small"/> : null }</Table.Cell>
                 </Table.Row>)
             })}
             {this.state.editing ? <Table.Row disabled={this.props.device.loading} {...{onClick:() => {

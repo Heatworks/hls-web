@@ -417,7 +417,7 @@ export default class Test extends React.Component<{
             </Button.Group>
         </Segment>
        
-        <Table singleLine selectable attached='bottom' >
+        <Table singleLine selectable attached='bottom' fixed>
             <Table.Header>
                 <Table.Row disabled={this.props.test.loading}>
                 <Table.HeaderCell>Device</Table.HeaderCell>

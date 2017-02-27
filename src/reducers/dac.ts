@@ -11,6 +11,8 @@ const DEVICE_SAVE_FAIL = 'hls/dac/device/SAVE_FAIL'
 
 export { DEVICES_LOAD, DEVICES_LOAD_SUCCESS, DEVICES_LOAD_FAIL, DEVICE_LOAD, DEVICE_LOAD_SUCCESS, DEVICE_LOAD_FAIL, DEVICE_SAVE, DEVICE_SAVE_FAIL, DEVICE_SAVE_SUCCESS}
 
+import { setUnitForDeviceAndChannel } from '../actions/units'
+
 const initialState = {
     devices: {
         loaded: false,
@@ -32,6 +34,11 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 			state.devices.loading = true
 			return state
 		case DEVICES_LOAD_SUCCESS:
+			action.payload.forEach((device, index) => {
+				Object.keys(device.channels).forEach((channel) => {
+					setUnitForDeviceAndChannel(device.name, channel, device.channels[channel].unit);
+				})
+			})
 			return {
                 ...state,
                 devices: {
