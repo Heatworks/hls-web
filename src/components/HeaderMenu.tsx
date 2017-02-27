@@ -38,7 +38,7 @@ export default class SignIn extends React.Component<{
                         <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/dac/`}} active={this.inService('dac')}>DAC</Menu.Item>
                         <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/tests/`}} active={this.inService('tests')}>Tests</Menu.Item>
                         <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/views/`}} active={this.inService('views')}>Views</Menu.Item>
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/monitoring`}}>Monitoring</Menu.Item>
+                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/monitor/`}} active={this.inService('monitor')}>Monitor</Menu.Item>
                     </div> : null
                 }
                 <Menu.Menu position='right'>
