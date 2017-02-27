@@ -19,6 +19,7 @@ import DACIndex from './components/dac/DACIndex'
 import ViewsIndex from './components/views/ViewsIndex'
 import Device from './components/dac/connected/Device'
 import View from './components/views/connected/View'
+import MonitorIndex from './components/monitor/MonitorIndex'
 import Index from './components/static/Index'
 import Settings from './components/settings/Index'
 
@@ -49,6 +50,10 @@ export default (
             <Route path="views/">
                 <IndexRoute component={ViewsIndex} />
                 <Route path="**/" component={View} />
+            </Route>
+            <Route path="monitor/">
+                <IndexRoute component={MonitorIndex} />
+                <Route path=":monitorPage(/:monitorId)" component={MonitorIndex} />
             </Route>
         </Route> 
     </Route>
