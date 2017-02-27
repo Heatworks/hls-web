@@ -20,7 +20,7 @@ export default class MonitorButton extends React.Component<{
 }, {}> {
     constructor(props) {
         super(props)
-        if (props.unit) {
+        if (props.unit == null) {
             this.props.monitorActions.loadUnits(this.props.accessToken)
         }
     }
