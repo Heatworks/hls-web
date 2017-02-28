@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button } from 'semantic-ui-react'
-import { getTemperatureUnit, UnitLabels } from '../actions/units'
+import { getTemperatureUnit, UnitLabels, valueWithUnit } from '../actions/units'
 
 export default class MonitorButton extends React.Component<{
     monitorActions: {
@@ -40,21 +40,5 @@ export default class MonitorButton extends React.Component<{
                 }
             }} size="small" icon={isMonitoring ? "unhide" : "hide"} {...props} label={(isMonitoring) ? label : null}></Button>
         )
-    }
-}
-
-function valueWithUnit(value, unit) {
-    if (unit == "Celcius") {
-        return valueForTemperature(value);
-    } else {
-        return value + " (" + unit + ")";
-    }
-}
-
-function valueForTemperature(value) {
-    if (getTemperatureUnit() == "F") {
-        return ((value * 9/5) + 32) + UnitLabels.Fahrenheit
-    } else {
-        return value + UnitLabels.Celcius
     }
 }
