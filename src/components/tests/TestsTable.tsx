@@ -49,7 +49,7 @@ export default class TestsTable extends React.Component<{
     render() {
         const direction = (this.state.direction == 1 ? "ascending" : "descending")
         return (
-        <Table selectable fixed sortable>
+        <Table selectable fixed sortable singleLine>
             <Table.Header>
                 <Table.Row disabled={this.props.tests.loading}>
                 <Table.HeaderCell sorted={(this.state.sortTag == "name") ? direction : null } onClick={() => {
