@@ -311,7 +311,7 @@ export default class Test extends React.Component<{
                     })
                 }} /> : this.state.test.description}<br/>
                 <b>Range</b> {this.state.test.range.map((time) => {
-                    return (<span>{moment(time * 1000).format('YY/M/D H:mm:ss')} &nbsp;&nbsp;</span>)
+                    return (<span><br/>{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} &nbsp;&nbsp;</span>)
                 })}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>
@@ -435,7 +435,7 @@ export default class Test extends React.Component<{
                 <Table.Cell {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/${channel}`)
                 }}}>{channel}</Table.Cell>
-                <Table.Cell textAlign="right"><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
+                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
                     this.removeChannel(row);
                 }}/> : null }</Table.Cell>
                 </Table.Row>)

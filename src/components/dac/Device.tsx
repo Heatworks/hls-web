@@ -186,14 +186,14 @@ export default class Device extends React.Component<{
             </p>
         </Segment>
        
-        <Table singleLine selectable attached='bottom' >
+        <Table singleLine selectable attached='bottom' fixed>
             <Table.Header>
                 <Table.Row disabled={this.props.device.loading}>
                     <Table.HeaderCell>Channel</Table.HeaderCell>
                     <Table.HeaderCell>Unit</Table.HeaderCell>
                     <Table.HeaderCell>Rate</Table.HeaderCell>
                     <Table.HeaderCell>Control</Table.HeaderCell>
-                    <Table.HeaderCell>Monitor</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -206,7 +206,7 @@ export default class Device extends React.Component<{
                 <Table.Cell>{channelProps.unit}</Table.Cell>
                 <Table.Cell>{channelProps.rate}</Table.Cell>
                 <Table.Cell>{channelProps.control ? 'Yes' : 'No'}</Table.Cell>
-                <Table.Cell><MonitorButton organization={this.props.params.organizationName} device={this.props.params.splat} channel={name} unit={channelProps.unit} rate={channelProps.rate} />{this.state.editing ? <Button icon="remove" size="small"/> : null }</Table.Cell>
+                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={this.props.params.splat} channel={name} unit={channelProps.unit} rate={channelProps.rate} />{this.state.editing ? <Button icon="remove" size="small"/> : null }</Table.Cell>
                 </Table.Row>)
             })}
             {this.state.editing ? <Table.Row disabled={this.props.device.loading} {...{onClick:() => {
