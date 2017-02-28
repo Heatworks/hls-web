@@ -422,7 +422,7 @@ export default class Test extends React.Component<{
                 <Table.Row disabled={this.props.test.loading}>
                 <Table.HeaderCell>Device</Table.HeaderCell>
                 <Table.HeaderCell>Channel</Table.HeaderCell>
-                <Table.HeaderCell>Monitor</Table.HeaderCell>
+                <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -435,7 +435,7 @@ export default class Test extends React.Component<{
                 <Table.Cell {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/${channel}`)
                 }}}>{channel}</Table.Cell>
-                <Table.Cell><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
+                <Table.Cell textAlign="right"><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
                     this.removeChannel(row);
                 }}/> : null }</Table.Cell>
                 </Table.Row>)
