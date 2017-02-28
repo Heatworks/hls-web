@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Table, Label, Button, Segment, Header } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
+var moment = require('moment')
 
 import { iconForStatus } from './helpers'
 
@@ -52,10 +53,10 @@ export default class TestsTable extends React.Component<{
         <Table selectable fixed sortable singleLine>
             <Table.Header>
                 <Table.Row disabled={this.props.tests.loading}>
-                <Table.HeaderCell sorted={(this.state.sortTag == "name") ? direction : null } onClick={() => {
+                <Table.HeaderCell sorted={(this.state.sortTag == "status") ? direction : null } onClick={() => {
                     this.setState({
-                        sortTag: 'name',
-                        direction: (this.state.sortTag == "name" ? (this.state.direction*-1) : this.state.direction)
+                        sortTag: 'status',
+                        direction: (this.state.sortTag == "status" ? (this.state.direction*-1) : this.state.direction)
                     })
                     }}>Name</Table.HeaderCell>
                 <Table.HeaderCell>Description</Table.HeaderCell>
@@ -66,12 +67,7 @@ export default class TestsTable extends React.Component<{
                         direction: (this.state.sortTag == "CREATED_DATE" ? (this.state.direction*-1) : this.state.direction)
                     })
                     }}>Created Date</Table.HeaderCell>
-                <Table.HeaderCell sorted={(this.state.sortTag == "status") ? direction : null } onClick={() => {
-                    this.setState({
-                        sortTag: 'status',
-                        direction: (this.state.sortTag == "status" ? (this.state.direction*-1) : this.state.direction)
-                    })
-                    }}>Status</Table.HeaderCell>
+
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -79,6 +75,10 @@ export default class TestsTable extends React.Component<{
                 this.props.tests.data.sort((a, b) => {
                     if (this.state.sortTag == "name") {
                         return a.name > b.name ? -this.state.direction : this.state.direction
+                    }
+                    if (this.state.sortTag == "status") {
+                        const statusOrder = ["failed", "passed","passing","failing"]
+                        return (statusOrder.indexOf(a.tags['status']) > statusOrder.indexOf(b.tags['status'])) ?  -this.state.direction : this.state.direction
                     }
                     var tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction
                     return tagSort
@@ -91,11 +91,10 @@ export default class TestsTable extends React.Component<{
                             browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
                         }
                         }}}>
-                        <Table.Cell singleLine={true} width={4}>{row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)} {iconForStatus(row.tags.status)}</Table.Cell>
+                        <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.status)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}</Table.Cell>
                         <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                         <Table.Cell width={2}>{row.channels.length}</Table.Cell>
-                        <Table.Cell>{row.tags['CREATED_DATE']}</Table.Cell>
-                        <Table.Cell>{row.tags['status']}</Table.Cell>
+                        <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
                     </Table.Row>)
                 })
             }
