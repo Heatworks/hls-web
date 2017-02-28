@@ -23,7 +23,7 @@ export default class Test extends React.Component<{
         data: {
             name: string,
             description: string,
-            channels: Array<String>,
+            channels: any,
             tags: any,
             markers: Array<any>,
             range: Array<number>
@@ -420,15 +420,20 @@ export default class Test extends React.Component<{
         <Table singleLine selectable attached='bottom' fixed>
             <Table.Header>
                 <Table.Row disabled={this.props.test.loading}>
-                <Table.HeaderCell>Device</Table.HeaderCell>
-                <Table.HeaderCell>Channel</Table.HeaderCell>
-                <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
+                    <Table.HeaderCell>Key</Table.HeaderCell>
+                    <Table.HeaderCell>Device</Table.HeaderCell>
+                    <Table.HeaderCell>Channel</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-            {this.state.test.channels.map((row, index) => {
+            {Object.keys(this.state.test.channels).map((channelKey, index) => {
+                const row = this.state.test.channels[channelKey]
                 var [ device, channel ] = getDeviceAndChannel(row)
                 return (<Table.Row key={index} disabled={this.props.test.loading}>
+                    {this.state.editing ? <Table.Cell><Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
+                    
+                }}/></Table.Cell> : <Table.Cell>{channelKey}</Table.Cell> }
                 <Table.Cell  {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/`)
                 }}}>{device}</Table.Cell>
