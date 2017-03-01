@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Header } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Header, Icon, Input } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 var moment = require('moment')
 
@@ -26,22 +26,29 @@ export default class TestsTable extends React.Component<{
         organizationName: string
     },
     onClick?: (test: any) => any,
+    onDataLoad?: (data: any) => any,
     prefix: string
 },{
     currentPrefix?: string,
     sortTag?:string,
-    direction?: number
+    direction?: number,
+    tagsInTable?: Array<string>
 }> {
     constructor(props) {
         super(props)
         this.state = {
             currentPrefix: this.props.prefix,
             sortTag: "CREATED_DATE",
-            direction: 1
+            direction: 1,
+            tagsInTable: []
         }
         this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+
+        this.props.onDataLoad(this.props.tests.data)
     }
     componentWillReceiveProps(nextProps) {
+        this.props.onDataLoad(this.props.tests.data)
+
         if (nextProps.prefix !== this.state.currentPrefix) {
             this.state.currentPrefix = nextProps.prefix;
             this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
@@ -61,12 +68,22 @@ export default class TestsTable extends React.Component<{
                     }}>Name</Table.HeaderCell>
                 <Table.HeaderCell>Description</Table.HeaderCell>
                 <Table.HeaderCell sorted={(this.state.sortTag == "CREATED_DATE") ? direction : null } onClick={() => {
-                    this.setState({
-                        sortTag: 'CREATED_DATE',
-                        direction: (this.state.sortTag == "CREATED_DATE" ? (this.state.direction*-1) : this.state.direction)
-                    })
-                    }}>Created Date</Table.HeaderCell>
-
+                            this.setState({
+                                sortTag: "CREATED_DATE",
+                                direction: (this.state.sortTag == "CREATED_DATE" ? (this.state.direction*-1) : this.state.direction)
+                            })
+                            }}>Created Date</Table.HeaderCell>
+                            {this.state.tagsInTable.map((tag) => {
+                    return (
+                        <Table.HeaderCell sorted={(this.state.sortTag == tag) ? direction : null } onClick={() => {
+                            this.setState({
+                                sortTag: tag,
+                                direction: (this.state.sortTag == tag ? (this.state.direction*-1) : this.state.direction)
+                            })
+                            }}>{tag}</Table.HeaderCell>
+                    )
+                })}
+                {}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -94,6 +111,9 @@ export default class TestsTable extends React.Component<{
                         <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:MM:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
                         <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                         <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
+                         {this.state.tagsInTable.map((tag) => {
+                            return (<Table.Cell>{row.tags[tag]}</Table.Cell>)
+                         })}
                     </Table.Row>)
                 })
             }

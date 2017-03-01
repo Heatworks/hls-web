@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Header, Grid, Icon, Image } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Header, Grid, Icon, Image, Menu,Input } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import Helmet from 'react-helmet'
 import TestsTable from './connected/TestsTable'
@@ -9,13 +9,21 @@ export default class Tests extends React.Component<{
         organizationName: string
     }
 },{
-    duplicating: boolean
+    duplicating?: boolean,
+    search?:string
 }> {
     constructor(props) {
         super(props)
         this.state = {
-            duplicating: false
+            duplicating: false,
+            search: ""
         }
+        this.dataReceived = this.dataReceived.bind(this)
+    }
+    tempData = null
+    dataReceived(data) {
+        console.log(data)
+        this.tempData = data
     }
     render() {
         return (<Segment basic vertical>
@@ -59,7 +67,22 @@ export default class Tests extends React.Component<{
                     </Grid.Column>
                      </Grid.Row>
                     </Grid>
-                <TestsTable params={this.props.params} onClick={(row) => {
+                <Menu secondary>
+                    <Menu.Item name='users' as={Link} {...{to: `/${this.props.params.organizationName}/iam/users`}} />
+                    <Menu.Menu position='right'>
+                        <Menu.Item name="export" content="Export" icon="download" onClick={() => {
+                                saveJSON(this.tempData, 'tests-list.json')
+                            }} />
+                    <Menu.Item>
+                        <Input icon='search' placeholder='Search tests...' onChange={(e) => {
+                            this.setState({
+                                search: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/'))
+                            })
+                        }}/>
+                    </Menu.Item>
+                    </Menu.Menu>
+                </Menu>
+                <TestsTable params={this.props.params} prefix={this.state.search} onClick={(row) => {
                     if (this.state.duplicating) {
                         browserHistory.push({
                             pathname: `/${this.props.params.organizationName}/tests/create`,
@@ -70,7 +93,32 @@ export default class Tests extends React.Component<{
                     } else {
                         browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
                     }
-                }} />
+                }} onDataLoad={this.dataReceived}/>
        </Segment>);
     }
+}
+
+function saveJSON(data, filename){
+
+    if(!data) {
+        console.error('No data')
+        return;
+    }
+
+    if(!filename) filename = 'console.json'
+
+    if(typeof data === "object"){
+        data = JSON.stringify(data, undefined, 4)
+    }
+
+    var blob = new Blob([data], {type: 'text/json'}),
+        e    = document.createEvent('MouseEvents'),
+        a    = document.createElement('a')
+        a.setAttribute('target', '_blank')
+
+    a.download = filename
+    a.href = window.URL.createObjectURL(blob)
+    a.dataset.downloadurl =  ['text/json', a.download, a.href].join(':')
+    e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    a.dispatchEvent(e)
 }
