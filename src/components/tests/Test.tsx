@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Table, Label, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
-import DateTime from 'react-datetime'
+import * as DateTime from 'react-datetime'
 var moment = require('moment')
 import * as Promsie from 'bluebird'
 
