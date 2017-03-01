@@ -10,7 +10,55 @@ import 'whatwg-fetch'
 const defaultStyles = [
     {
         curve: d3.curveLinear,
-        color: "#4682b4"
+        color: "#0074D9"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#FF4136"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#3D9970"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#111111"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#DDDDDD"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#FFDC00"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#001f3f"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#85144b"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#B10DC9"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#AAAAAA"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#01FF70"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#F012BE"
+    },
+    {
+        curve: d3.curveLinear,
+        color: "#7FDBFF"
     },
     {
         curve: d3.curveLinear,
@@ -18,19 +66,11 @@ const defaultStyles = [
     },
     {
         curve: d3.curveLinear,
-        color: "#61b446"
+        color: "#FF851B"
     },
     {
         curve: d3.curveLinear,
-        color: "#c0a75d"
-    },
-    {
-        curve: d3.curveLinear,
-        color: "#85407D"
-    },
-    {
-        curve: d3.curveLinear,
-        color: "#4B4B86"
+        color: "#39CCCC"
     }
     
 ]
