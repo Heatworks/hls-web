@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader } from 'semantic-ui-react'
-import { SemanticWIDTHS } from 'semantic-ui-react/dist/commonjs'
+import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
 import { Client, connect, Granted } from "mqtt"
 import Helmet from 'react-helmet'
@@ -71,24 +71,13 @@ export default class View extends React.Component<{
                 grid: [ 
                     {
                         columns: [
+
                             {
-                                width: 6,
-                                component: "/organizations/hls/views/components/power/switch",
-                                props: {
-                                    title: "Power",
-                                    icon: "lightning"
-                                },
-                                channels: {
-                                    control: "/organizations/heatworks/devices/test-station-a/power/control",
-                                    value: "/organizations/heatworks/devices/test-station-a/power/value",
-                                    amps: "/organizations/heatworks/devices/test-station-a/power/amps"
-                                }
-                            },
-                            {
-                                width: 10,
+                                width: 16,
                                 component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
                                 props: {
-                                    title: "Second Component"
+                                    title: "Second Component",
+                                    size: "huge"
                                 },
                                 channels: {
                                     q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
@@ -107,6 +96,19 @@ export default class View extends React.Component<{
                                     q15: "/organizations/heatworks/devices/test-station-a/thermocouple/14",
                                     q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
                                     q17: "/organizations/heatworks/devices/test-station-a/thermocouple/8"
+                                }
+                            },
+                            {
+                                width: 6,
+                                component: "/organizations/hls/views/components/power/switch",
+                                props: {
+                                    title: "Power",
+                                    icon: "lightning"
+                                },
+                                channels: {
+                                    control: "/organizations/heatworks/devices/test-station-a/power/control",
+                                    value: "/organizations/heatworks/devices/test-station-a/power/value",
+                                    amps: "/organizations/heatworks/devices/test-station-a/power/amps"
                                 }
                             }
                         ]
@@ -538,12 +540,13 @@ class OverlayPCB extends React.Component<{
         q16: any,
         q17: any
     }
+    size: SemanticSIZES
     publish: (topic, value) => any
 },{}> {
     colorForValue(value) {
-        if (value > 40) {
+        if (value > 80) {
             return "red"
-        } else if (value > 32) {
+        } else if (value > 55) {
             return "orange"
         } else { 
             return "green"
@@ -553,23 +556,23 @@ class OverlayPCB extends React.Component<{
         return (
             <Segment>
                 <Image src={require('../../images/board_bg.png')} fluid />
-                <div style={{position: 'absolute', right: '59%', top: '66%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q1, getUnitForTopic(this.props.channels.q1))} floating size="medium" color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
-                <div style={{position: 'absolute', right: '69%', top: '60%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q2, getUnitForTopic(this.props.channels.q2))} floating size="medium" color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '55%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q3, getUnitForTopic(this.props.channels.q3))} floating size="medium" color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>
-                <div style={{position: 'absolute', right: '68%', top: '50%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q4, getUnitForTopic(this.props.channels.q4))} floating size="medium" color={this.colorForValue(this.props.values.q4)} detail={"Q4"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q5, getUnitForTopic(this.props.channels.q5))} floating size="medium" color={this.colorForValue(this.props.values.q5)} detail={"Q5"}/></div>
-                <div style={{position: 'absolute', right: '68%', top: '40%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q6, getUnitForTopic(this.props.channels.q6))} floating size="medium" color={this.colorForValue(this.props.values.q6)} detail={"Q6"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q7, getUnitForTopic(this.props.channels.q7))} floating size="medium" color={this.colorForValue(this.props.values.q7)} detail={"Q7"}/></div>
-                <div style={{position: 'absolute', right: '67%', top: '28%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q8, getUnitForTopic(this.props.channels.q8))} floating size="medium" color={this.colorForValue(this.props.values.q8)} detail={"Q8"}/></div>
+                <div style={{position: 'absolute', right: '59%', top: '66%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q1, getUnitForTopic(this.props.channels.q1))} floating size={this.props.size} color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
+                <div style={{position: 'absolute', right: '69%', top: '60%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q2, getUnitForTopic(this.props.channels.q2))} floating size={this.props.size} color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
+                <div style={{position: 'absolute', right: '59%', top: '55%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q3, getUnitForTopic(this.props.channels.q3))} floating size={this.props.size} color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>
+                <div style={{position: 'absolute', right: '68%', top: '50%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q4, getUnitForTopic(this.props.channels.q4))} floating size={this.props.size} color={this.colorForValue(this.props.values.q4)} detail={"Q4"}/></div>
+                <div style={{position: 'absolute', right: '59%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q5, getUnitForTopic(this.props.channels.q5))} floating size={this.props.size} color={this.colorForValue(this.props.values.q5)} detail={"Q5"}/></div>
+                <div style={{position: 'absolute', right: '68%', top: '40%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q6, getUnitForTopic(this.props.channels.q6))} floating size={this.props.size} color={this.colorForValue(this.props.values.q6)} detail={"Q6"}/></div>
+                <div style={{position: 'absolute', right: '59%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q7, getUnitForTopic(this.props.channels.q7))} floating size={this.props.size} color={this.colorForValue(this.props.values.q7)} detail={"Q7"}/></div>
+                <div style={{position: 'absolute', right: '67%', top: '28%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q8, getUnitForTopic(this.props.channels.q8))} floating size={this.props.size} color={this.colorForValue(this.props.values.q8)} detail={"Q8"}/></div>
 
-                <div style={{position: 'absolute', right: '49%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q10, getUnitForTopic(this.props.channels.q10))} floating size="medium" color={this.colorForValue(this.props.values.q10)} detail={"Q10"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '38%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q11, getUnitForTopic(this.props.channels.q11))} floating size="medium" color={this.colorForValue(this.props.values.q11)} detail={"Q11"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q12, getUnitForTopic(this.props.channels.q12))} floating size="medium" color={this.colorForValue(this.props.values.q12)} detail={"Q12"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '48%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q13, getUnitForTopic(this.props.channels.q13))} floating size="medium" color={this.colorForValue(this.props.values.q13)} detail={"Q13"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '51%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q14, getUnitForTopic(this.props.channels.q14))} floating size="medium" color={this.colorForValue(this.props.values.q14)} detail={"Q14"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '57%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q15, getUnitForTopic(this.props.channels.q15))} floating size="medium" color={this.colorForValue(this.props.values.q15)} detail={"Q15"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '61%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q16, getUnitForTopic(this.props.channels.q16))} floating size="medium" color={this.colorForValue(this.props.values.q16)} detail={"Q16"}/></div>
-                <div style={{position: 'absolute', right: '40%', top: '67%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q17, getUnitForTopic(this.props.channels.q17))} floating size="medium" color={this.colorForValue(this.props.values.q17)} detail={"Q17"}/></div>
+                <div style={{position: 'absolute', right: '49%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q10, getUnitForTopic(this.props.channels.q10))} floating size={this.props.size} color={this.colorForValue(this.props.values.q10)} detail={"Q10"}/></div>
+                <div style={{position: 'absolute', right: '38%', top: '38%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q11, getUnitForTopic(this.props.channels.q11))} floating size={this.props.size} color={this.colorForValue(this.props.values.q11)} detail={"Q11"}/></div>
+                <div style={{position: 'absolute', right: '49%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q12, getUnitForTopic(this.props.channels.q12))} floating size={this.props.size} color={this.colorForValue(this.props.values.q12)} detail={"Q12"}/></div>
+                <div style={{position: 'absolute', right: '38%', top: '48%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q13, getUnitForTopic(this.props.channels.q13))} floating size={this.props.size} color={this.colorForValue(this.props.values.q13)} detail={"Q13"}/></div>
+                <div style={{position: 'absolute', right: '49%', top: '51%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q14, getUnitForTopic(this.props.channels.q14))} floating size={this.props.size} color={this.colorForValue(this.props.values.q14)} detail={"Q14"}/></div>
+                <div style={{position: 'absolute', right: '38%', top: '57%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q15, getUnitForTopic(this.props.channels.q15))} floating size={this.props.size} color={this.colorForValue(this.props.values.q15)} detail={"Q15"}/></div>
+                <div style={{position: 'absolute', right: '49%', top: '61%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q16, getUnitForTopic(this.props.channels.q16))} floating size={this.props.size} color={this.colorForValue(this.props.values.q16)} detail={"Q16"}/></div>
+                <div style={{position: 'absolute', right: '40%', top: '67%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q17, getUnitForTopic(this.props.channels.q17))} floating size={this.props.size} color={this.colorForValue(this.props.values.q17)} detail={"Q17"}/></div>
 
             </Segment>
         )
