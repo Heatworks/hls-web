@@ -60,7 +60,6 @@ export default class TestsTable extends React.Component<{
                     })
                     }}>Name</Table.HeaderCell>
                 <Table.HeaderCell>Description</Table.HeaderCell>
-                <Table.HeaderCell>Channels</Table.HeaderCell>
                 <Table.HeaderCell sorted={(this.state.sortTag == "CREATED_DATE") ? direction : null } onClick={() => {
                     this.setState({
                         sortTag: 'CREATED_DATE',
@@ -91,9 +90,9 @@ export default class TestsTable extends React.Component<{
                             browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
                         }
                         }}}>
-                        <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.status)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}</Table.Cell>
+                        <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.status)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
+                        <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:MM:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
                         <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
-                        <Table.Cell width={2}>{row.channels.length}</Table.Cell>
                         <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
                     </Table.Row>)
                 })
