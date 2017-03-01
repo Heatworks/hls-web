@@ -2,8 +2,11 @@ import * as React from 'react'
 import { Table, Label, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
+import DateTime from 'react-datetime'
 var moment = require('moment')
 import * as Promsie from 'bluebird'
+
+require("../../resources/react-datetime.css")
 
 import { iconForStatus } from './helpers'
 
@@ -310,8 +313,18 @@ export default class Test extends React.Component<{
                         }
                     })
                 }} /> : this.state.test.description}<br/>
-                <b>Range</b> {this.state.test.range.map((time) => {
-                    return (<span><br/>{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} &nbsp;&nbsp;</span>)
+                <b>Range</b> {this.state.test.range.map((time, index) => {
+                    return (this.state.editing ? <DateTime value={moment(time*1000)}  onChange={(value) => {
+                            var range = this.state.test.range.slice()
+                            range[index] = moment(value).unix();
+                            this.setState({
+                                ...this.state,
+                                test: {
+                                    ...this.state.test,
+                                    range
+                                }
+                            })
+                        }} /> : <span><br/>{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} &nbsp;&nbsp;</span> )
                 })}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>

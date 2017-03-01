@@ -555,7 +555,7 @@ class OverlayPCB extends React.Component<{
     render() {
         return (
             <Segment>
-                <Image src={require('../../images/board_bg.png')} fluid />
+                <Image src={require('../../resources/board_bg.png')} fluid />
                 <div style={{position: 'absolute', right: '59%', top: '66%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q1, getUnitForTopic(this.props.channels.q1))} floating size={this.props.size} color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
                 <div style={{position: 'absolute', right: '69%', top: '60%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q2, getUnitForTopic(this.props.channels.q2))} floating size={this.props.size} color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
                 <div style={{position: 'absolute', right: '59%', top: '55%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q3, getUnitForTopic(this.props.channels.q3))} floating size={this.props.size} color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>

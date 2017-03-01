@@ -60,6 +60,9 @@ module.exports = {
                     'file?hash=sha512&digest=hex&name=[hash].[ext]',
                     'image-webpack?bypassOnDebug'
                 ]
+            }, { 
+                test: /\.css$/, 
+                loader: 'style-loader!css-loader'
             },
             {
                 test: /\.scss$/,

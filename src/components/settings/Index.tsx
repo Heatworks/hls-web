@@ -15,7 +15,7 @@ export default class Index extends React.Component<{
                     <Grid.Column tablet={6} widescreen={7} computer={7} mobile={2}>
                     </Grid.Column>
                     <Grid.Column tablet={4} widescreen={2} computer={2} mobile={12} textAlign="center">
-                        <Image src={require('../../images/icon.png')} fluid avatar size="huge"/>
+                        <Image src={require('../../resources/icon.png')} fluid avatar size="huge"/>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>

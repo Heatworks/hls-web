@@ -86,6 +86,9 @@ module.exports = {
                 'file?hash=sha512&digest=hex&name=[hash].[ext]',
                 'image-webpack?bypassOnDebug'
             ]
+        }, { 
+            test: /\.css$/, 
+            loader: 'style-loader!css-loader'
         }, {
             test: /\.scss$/,
             // we extract the styles into their own .css file instead of having

@@ -20,7 +20,7 @@ export default class App extends React.Component<{
                         { name: 'apple-mobile-web-app-status-bar-style', content: 'default'}
                     ]}
                     link={[
-                        { rel: "apple-touch-icon", href: require("../images/icon.png") },
+                        { rel: "apple-touch-icon", href: require("../resources/icon.png") },
                     ]}
                  />
                 <Segment basic>
