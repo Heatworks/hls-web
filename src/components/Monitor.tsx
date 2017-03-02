@@ -91,7 +91,8 @@ export default class Monitor extends React.Component<{
        newMonitoredValue: (topic, value) => any
    }
    client: Client,
-   organizationName: String
+   organizationName: String,
+   accessToken: string
 },{}> {
     changeRange() {
         
@@ -116,7 +117,7 @@ export default class Monitor extends React.Component<{
                                         this.props.monitorActions.stop(channel.organization, channel.device, channel.channel)
                                     }}><Dot color={defaultStyles[index].color} />{`${channel.device}/${channel.channel}`}</Button>)
                                 })}
-                    {(this.props.monitor.channels.length > 0) ? <MonitorChart client={this.props.client} channels={this.props.monitor.channels} basic={true} styles={defaultStyles} receivedMessage={(topic, value) => {
+                    {(this.props.monitor.channels.length > 0) ? <MonitorChart client={this.props.client} accessToken={this.props.accessToken} channels={this.props.monitor.channels} basic={true} styles={defaultStyles} receivedMessage={(topic, value) => {
                         this.props.monitorActions.newMonitoredValue(topic, value);
                     }}></MonitorChart> : <div>Select a channel to monitor.</div>}
                 </Sidebar> 
