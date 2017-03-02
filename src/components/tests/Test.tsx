@@ -26,7 +26,7 @@ export default class Test extends React.Component<{
         data: {
             name: string,
             description: string,
-            channels: Array<String>,
+            channels: any,
             tags: any,
             markers: Array<any>,
             range: Array<number>
@@ -47,7 +47,7 @@ export default class Test extends React.Component<{
     test?: {
         name: string,
         description: string,
-        channels: Array<String>,
+        channels: any,
         tags: any,
         markers: Array<any>,
         range: Array<number>,
@@ -121,11 +121,11 @@ export default class Test extends React.Component<{
     }
     addChannel(channel) {
         return new Promise((resolve, reject) => {
-            if (this.state.test.channels.indexOf(channel) >= 0) {
+            if (Object.keys(this.state.test.channels).indexOf(channel) >= 0) {
                 resolve();
             }
-            var channels = this.state.test.channels.splice(0);
-            channels.push(channel);
+            var channels = Object.assign({},this.state.test.channels)
+            channels[channel] = ""
             this.setState({
                 test: {
                     ...this.state.test,
@@ -138,12 +138,12 @@ export default class Test extends React.Component<{
     }
     removeChannel(channel) {
         return new Promise((resolve, reject) => {
-            var index = this.state.test.channels.indexOf(channel)
+            var index = Object.keys(this.state.test.channels).indexOf(channel)
             if (index < 0) {
                 resolve();
             }
-            var channels = this.state.test.channels.splice(0);
-            channels.splice(index, 1)
+            var channels = Object.assign({},this.state.test.channels)
+            delete channels[channel]
             this.setState({
                 test: {
                     ...this.state.test,
@@ -433,24 +433,38 @@ export default class Test extends React.Component<{
         <Table singleLine selectable attached='bottom' fixed>
             <Table.Header>
                 <Table.Row disabled={this.props.test.loading}>
-                <Table.HeaderCell>Device</Table.HeaderCell>
-                <Table.HeaderCell>Channel</Table.HeaderCell>
-                <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
+                    <Table.HeaderCell>Key</Table.HeaderCell>
+                    <Table.HeaderCell>Device</Table.HeaderCell>
+                    <Table.HeaderCell>Channel</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="right">Monitor</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-            {this.state.test.channels.map((row, index) => {
+            {Object.keys(this.state.test.channels).map((row, index) => {
+                const channelKey = this.state.test.channels[row]
                 var [ device, channel ] = getDeviceAndChannel(row)
                 return (<Table.Row key={index} disabled={this.props.test.loading}>
+                    {this.state.editing ? <Table.Cell><Button icon="remove" size="small" onClick={() => {
+                    this.removeChannel(row);
+                }}/> <Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
+                    var channels = Object.assign({}, this.state.test.channels)
+                    console.log(`${row} : ${e.currentTarget.value}`)
+                    channels[row] = e.currentTarget.value
+                    this.setState({
+                        ...this.state,
+                        test: {
+                            ...this.state.test,
+                            channels
+                        }
+                    })
+                }}/></Table.Cell> : <Table.Cell>{channelKey}</Table.Cell> }
                 <Table.Cell  {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/`)
                 }}}>{device}</Table.Cell>
                 <Table.Cell {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/${channel}`)
                 }}}>{channel}</Table.Cell>
-                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
-                    this.removeChannel(row);
-                }}/> : null }</Table.Cell>
+                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} /></Table.Cell>
                 </Table.Row>)
             })}
             {this.state.editing ? <Table.Row disabled={this.props.test.loading} {...{onClick:() => {
@@ -496,7 +510,7 @@ export default class Test extends React.Component<{
                             return Object.keys(device.channels).sort().map((channelName, index) => {
                                 var channelInfo = device.channels[channelName];
                                 return (<Table.Row>
-                                            <Table.Cell textAlign="center">{(this.state.test.channels.indexOf(`${device.name}/${channelName}`) >= 0) ? <Icon color='black' name='checkmark' size='small' /> : null}</Table.Cell>
+                                            <Table.Cell textAlign="center">{(Object.keys(this.state.test.channels).indexOf(`${device.name}/${channelName}`) >= 0) ? <Icon color='black' name='checkmark' size='small' /> : null}</Table.Cell>
                                             {(index == 0) ? <Table.Cell textAlign="center" rowSpan={Object.keys(device.channels).length} selectable onClick={() => {
                                                 Promsie.each(Object.keys(device.channels).sort(), (channel) => {
                                                     return this.addChannel(`${device.name}/${channel}`)
