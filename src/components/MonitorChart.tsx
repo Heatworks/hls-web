@@ -7,7 +7,7 @@ import TimeIntervalSelector from "./TimeIntervalSelector"
 declare var Dimmer;
 import { Segment, Loader, Button, Input, Table, Grid, Header,Popup , Select} from 'semantic-ui-react'
 
-import { valueWithUnit } from '../actions/units'
+import { valueWithUnit, toggleTemperatureUnit } from '../actions/units'
 
 export default class MonitorChart extends React.Component<{
     client: Client,
@@ -236,7 +236,7 @@ export default class MonitorChart extends React.Component<{
     }
     
     toggleUnit() {
-        
+        toggleTemperatureUnit()
     }
 
     labelForInterval(interval, intervals:Array<{value: number, text: string}>) {
@@ -312,7 +312,7 @@ export default class MonitorChart extends React.Component<{
                                     on='click'
                                     positioning='bottom center'
                                 />
-                                <Button size="mini" onClick={this.toggleUnit.bind(this)} toggle content="C&deg;" />
+                                <Button size="mini" onClick={this.toggleUnit.bind(this)} toggle content={valueWithUnit(0,"Celcius")} />
                             </Button.Group>
                         </Grid.Column>
                     </Grid>

@@ -8,6 +8,14 @@ export function useFarenheit() {
     window.localStorage.setItem(UNIT_KEY, "F");
 }
 
+export function toggleTemperatureUnit() {
+    if (getTemperatureUnit() == "C") {
+        useFarenheit()
+    } else {
+        useCelcius()
+    }
+}
+
 export function getTemperatureUnit(){
     return window.localStorage.getItem(UNIT_KEY);
 }
