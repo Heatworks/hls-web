@@ -303,7 +303,7 @@ export default class Test extends React.Component<{
       </Menu>
         <Segment attached={true} compact>
             <p>
-                <b>Name</b> {this.state.test.name}<br/>
+                <b>Name</b> <a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}`}>{this.state.test.name}</a><br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.test.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
                     this.setState({
                         ...this.state,
