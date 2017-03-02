@@ -428,13 +428,14 @@ export default class Test extends React.Component<{
             </Table.Header>
             <Table.Body>
             {Object.keys(this.state.test.channels).map((row, index) => {
-                const channelKey = this.state.test.channels[channel]
+                const channelKey = this.state.test.channels[row]
                 var [ device, channel ] = getDeviceAndChannel(row)
                 return (<Table.Row key={index} disabled={this.props.test.loading}>
-                    {this.state.editing ? <Table.Cell>{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
+                    {this.state.editing ? <Table.Cell><Button icon="remove" size="small" onClick={() => {
                     this.removeChannel(row);
-                }}/> : null }<Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
+                }}/> <Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
                     var channels = Object.assign({}, this.state.test.channels)
+                    console.log(`${row} : ${e.currentTarget.value}`)
                     channels[row] = e.currentTarget.value
                     this.setState({
                         ...this.state,
@@ -496,7 +497,7 @@ export default class Test extends React.Component<{
                             return Object.keys(device.channels).sort().map((channelName, index) => {
                                 var channelInfo = device.channels[channelName];
                                 return (<Table.Row>
-                                            <Table.Cell textAlign="center">{(this.state.test.channels.indexOf(`${device.name}/${channelName}`) >= 0) ? <Icon color='black' name='checkmark' size='small' /> : null}</Table.Cell>
+                                            <Table.Cell textAlign="center">{(Object.keys(this.state.test.channels).indexOf(`${device.name}/${channelName}`) >= 0) ? <Icon color='black' name='checkmark' size='small' /> : null}</Table.Cell>
                                             {(index == 0) ? <Table.Cell textAlign="center" rowSpan={Object.keys(device.channels).length} selectable onClick={() => {
                                                 Promsie.each(Object.keys(device.channels).sort(), (channel) => {
                                                     return this.addChannel(`${device.name}/${channel}`)
