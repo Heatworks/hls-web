@@ -7,6 +7,8 @@ import TimeIntervalSelector from "./TimeIntervalSelector"
 declare var Dimmer;
 import { Segment, Loader, Button, Input, Table, Grid, Header,Popup , Select} from 'semantic-ui-react'
 
+import { valueWithUnit } from '../actions/units'
+
 export default class MonitorChart extends React.Component<{
     client: Client,
     channels?: Array<{
@@ -226,6 +228,12 @@ export default class MonitorChart extends React.Component<{
             range: [moment(this.state.range[1]).subtract(interval, 'second').toDate(), this.state.range[1]]
         })
     }
+
+    setYRange(start, end) {
+        this.setState({
+            yRange: [start, end]
+        })
+    }
     
     toggleUnit() {
         
@@ -310,7 +318,7 @@ export default class MonitorChart extends React.Component<{
                     </Grid>
                 </Segment>
                 <Segment>
-                    <BarChart data={this.state.data} chartType="Line" height={300}  domain={{y: this.state.yRange, x: this.state.range }} changeRange={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>
+                    <BarChart data={this.state.data} chartType="Line" height={300} mouseFunction={"Move"} domain={{y: this.state.yRange, x: this.state.range }} changeYDomain={this.setYRange.bind(this)} formatXValue={(x) => { return moment(x).format("l LTS") }} formatYValue={(y) => { return valueWithUnit(y, "Celcius");}} changeXDomain={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>
                 </Segment>
                 <Segment>
                     <Button.Group size="mini" labeled>

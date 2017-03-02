@@ -18,7 +18,7 @@
   "author": "Weston Catron",
   "license": "UNLICENSED",
   "dependencies": {
-    "@heatworks/heatworks-chart-library-web": "^0.1.1",
+    "@heatworks/heatworks-chart-library-web": "^0.2.0",
     "@types/express": "^4.0.34",
     "@types/react": "^0.14.54",
     "@types/react-dom": "^0.14.19",
