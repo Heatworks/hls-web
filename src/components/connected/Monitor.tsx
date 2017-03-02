@@ -8,7 +8,7 @@ const mapStateToProps = (state, props) => {
     monitor: state.monitor,
     organizationName: props.params.organizationName,
     client: state.monitor.client,
-    accessToken: state.iam.data.accessToken,
+    accessToken: (state.iam.data) ? state.iam.data.accessToken : null
   }
 }
 function mapDispatchToProps(dispatch) {

@@ -9,6 +9,10 @@ import { Segment, Loader, Button, Input, Table, Grid, Header,Popup , Select} fro
 
 import { valueWithUnit } from '../actions/units'
 
+import * as DAC from '../apis/hls_dac'
+
+var api_dac = new DAC.DefaultApi()
+
 export default class MonitorChart extends React.Component<{
     client: Client,
     channels?: Array<{
@@ -26,6 +30,7 @@ export default class MonitorChart extends React.Component<{
     connected?:boolean,
     messages?: Array<any>,
     data?: Array<Array<TimeSeriesData>>,
+    dataRanges?:Array<[Date, Date]>,
     range?: [Date, Date],
     live?: boolean,
     previousRanges?: Array<[Date, Date]>,
@@ -58,39 +63,42 @@ export default class MonitorChart extends React.Component<{
                 this.props.client.subscribe(element.topic)
             })
         };
-        if (this.props.client.connected) {
-            connected(null)
-        }
-        this.props.client.on('connect', connected )
-
-        this.props.client.on('offline', function() {
-            console.log("offline");
-        });
-
-        this.props.client.on('reconnect', function() {
-            console.log("reconnect");
-        });
-        /*this.props.client.on("connect", (error) => {
-            console.log(error);
-            console.log('Connected!');
-            
-
-            
-            this.props.client.publish('/organizations/heatworks/devices/listeners', 'Hello mqtt')
-
-        })*/
-        this.props.client.on("error", (error) => {
-            console.log('Error: '+error);
-        })
-
-        this.props.client.on("message", (topic, message, packet) => {
-            console.log(`${topic} received ${message.toString()}`)
-            this.messageQueue.push({payload: message.toString(), topic})
-            var messageParts = message.toString().split(',');
-            if (messageParts.length == 2) {
-                this.props.receivedMessage(topic, messageParts[1]);
+        if (this.props.client) {
+            if (this.props.client.connected) {
+                connected(null)
             }
-        })
+            this.props.client.on('connect', connected )
+
+            this.props.client.on('offline', function() {
+                console.log("offline");
+            });
+
+            this.props.client.on('reconnect', function() {
+                console.log("reconnect");
+            });
+            /*this.props.client.on("connect", (error) => {
+                console.log(error);
+                console.log('Connected!');
+                
+
+                
+                this.props.client.publish('/organizations/heatworks/devices/listeners', 'Hello mqtt')
+
+            })*/
+            this.props.client.on("error", (error) => {
+                console.log('Error: '+error);
+            })
+
+            this.props.client.on("message", (topic, message, packet) => {
+                console.log(`${topic} received ${message.toString()}`)
+                this.messageQueue.push({payload: message.toString(), topic})
+                var messageParts = message.toString().split(',');
+                if (messageParts.length == 2) {
+                    this.props.receivedMessage(topic, messageParts[1]);
+                }
+            })
+        }
+        
         
         var currentDate = new Date()
         var previousTime = (currentDate.getTime() / 1000) - (60 * 60 * 1) // previous 24 hours
@@ -101,6 +109,7 @@ export default class MonitorChart extends React.Component<{
             connected: false,
             messages: [],
             data: this.props.channels.map(() => { return [] }),
+            dataRanges: this.props.channels.map(() => { return [currentDate, currentDate]}) as Array<[Date, Date]>,
             range: [previousDate, currentDate],
             live: true,
             previousRanges: [],
@@ -111,7 +120,7 @@ export default class MonitorChart extends React.Component<{
             interval
         }
         this.runProcessMessages()
-        
+        this.loadData()
     }
     componentWillUnmount() {
         clearTimeout(this.timeout)
@@ -120,23 +129,85 @@ export default class MonitorChart extends React.Component<{
         nextProps.channels.forEach((element) => {
             // Don't subscribe to error channel. It could be exploding with reports.
             //this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
-            element.topic = `/organizations/${element.organization}/devices/${element.device}/${element.channel}`;
-            this.props.client.subscribe(element.topic, (response, error) => {
-                console.log('Subscribe: '+error+' : '+element.topic);
-            })
+            if (this.props.client) {
+                element.topic = `/organizations/${element.organization}/devices/${element.device}/${element.channel}`;
+                this.props.client.subscribe(element.topic, (response, error) => {
+                    console.log('Subscribe: '+error+' : '+element.topic);
+                })
+            }
+            
         })
+        var dataRanges = []
         var data = nextProps.channels.map((newChannel) => {
             var index = this.props.channels.findIndex((oldChannel) => {
                 return (newChannel.organization == oldChannel.organization && newChannel.device == oldChannel.device && newChannel.channel == oldChannel.channel);
             })
             if (index >= 0) {
+                dataRanges.push(this.state.dataRanges[index])
                 return this.state.data[index]
             } else {
+                dataRanges.push([this.state.range[1], this.state.range[1]])
                 return []
             }
         })
+        this.state.dataRanges = dataRanges
         this.state.data = data
+        this.loadData()
     }
+
+    loadDataTimer:any
+    loadData() {
+        clearTimeout(this.loadDataTimer)
+        this.loadDataTimer = setTimeout(() => {
+            this.props.channels.forEach((channel, index) => {
+                if (this.state.dataRanges[index][0] > this.state.range[0]) {
+                    console.log(`Load ${channel} from ${this.state.range[0]} to ${this.state.dataRanges[index][0]}`)
+                    this.loadDataForChannelWithRange(channel, this.state.range[0], this.state.dataRanges[index][0])
+                    this.state.dataRanges[index][0] = this.state.range[0]
+                }
+                if (this.state.live == false && this.state.dataRanges[index][1] < this.state.range[1]) {
+                    // Should never be behind in the future because it's loading live data always.
+                    //console.log(`Load ${channel} from ${this.state.dataRanges[index][1]} to ${this.state.range[1]}`)
+                }
+            })
+        }, 1000)
+    }
+
+    loadDataForChannelWithRange(channel, startTime:Date, endTime:Date) {
+        return api_dac.dataGet(
+            { 
+                channel: `/organizations/${channel.organizations}/devices/${channel.device}/${channel.channel}`,
+                startTime: (startTime.getTime() / 1000) + "",
+                endTime: (endTime.getTime() / 1000) + ""
+            },{
+            headers: {
+                'Authorization': this.props.accessToken
+            }
+        }).then((data) => {
+            if ('errorMessage' in data) {
+                console.error(data);
+                throw Error(data['errorMessage'])
+            }
+            var channelIndex = this.props.channels.findIndex((_channel) => {
+                return (_channel.organization == channel.organization && _channel.device == channel.device && _channel.channel == channel.channel);
+            })
+            data.forEach((_datum) => {
+                var datum = new TimeSeriesData()
+                datum.datetime = new Date(0)
+                datum.datetime.setUTCSeconds(_datum.occurred)
+                if ('value_float' in _datum) {
+                    datum.value = _datum['value_float']
+                    this.state.data[channelIndex].push(datum)
+                }
+            })
+            this.state.data[channelIndex].sort((a,b) => {
+                return a.datetime.getTime() - b.datetime.getTime();
+            })
+        }).catch((error) => {
+            console.error(error);
+        })
+    }
+
     timeout:any
     runProcessMessages() {
         this.timeout = setTimeout(() => {
@@ -215,6 +286,7 @@ export default class MonitorChart extends React.Component<{
             live,
             range: [startDate, endDate]
         })
+        this.loadData()
     }
     previousRange() {
         if (this.state.previousRanges.length > 0) {
@@ -235,7 +307,7 @@ export default class MonitorChart extends React.Component<{
             yRange: [start, end]
         })
     }
-    
+
     toggleUnit() {
         
     }
@@ -322,6 +394,11 @@ export default class MonitorChart extends React.Component<{
                 </Segment>
                 <Segment>
                     <BarChart data={this.state.data} chartType="Line" height={300} mouseFunction={"Move"} domain={{y: this.state.yRange, x: this.state.range }} changeYDomain={this.setYRange.bind(this)} formatXValue={(x) => { return moment(x).format("l LTS") }} formatYValue={(y) => { return valueWithUnit(y, "Celcius");}} changeXDomain={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>
+                </Segment>
+                <Segment>
+                    {this.state.dataRanges.map((range, index) => {
+                        return (<li key={index}>{JSON.stringify(range)}</li>)
+                    })}
                 </Segment>
                 <Segment>
                     <Button.Group size="mini" labeled>
