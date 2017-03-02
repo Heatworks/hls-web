@@ -20,7 +20,8 @@ export default class MonitorChart extends React.Component<{
         }>
     styles?: Array<TimeSeriesStyle>,
     basic?:boolean,
-    receivedMessage: (topic:string, value:any) => any
+    receivedMessage: (topic:string, value:any) => any,
+    accessToken: string
 },{
     connected?:boolean,
     messages?: Array<any>,
@@ -238,6 +239,8 @@ export default class MonitorChart extends React.Component<{
     toggleUnit() {
         
     }
+
+    
 
     labelForInterval(interval, intervals:Array<{value: number, text: string}>) {
         for (var option of intervals) {
