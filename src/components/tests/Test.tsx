@@ -44,7 +44,7 @@ export default class Test extends React.Component<{
     test?: {
         name: string,
         description: string,
-        channels: Array<String>,
+        channels: any,
         tags: any,
         markers: Array<any>,
         range: Array<number>,
@@ -118,11 +118,11 @@ export default class Test extends React.Component<{
     }
     addChannel(channel) {
         return new Promise((resolve, reject) => {
-            if (this.state.test.channels.indexOf(channel) >= 0) {
+            if (Object.keys(this.state.test.channels).indexOf(channel) >= 0) {
                 resolve();
             }
-            var channels = this.state.test.channels.splice(0);
-            channels.push(channel);
+            var channels = Object.assign({},this.state.test.channels)
+            channels[channel] = ""
             this.setState({
                 test: {
                     ...this.state.test,
@@ -135,12 +135,12 @@ export default class Test extends React.Component<{
     }
     removeChannel(channel) {
         return new Promise((resolve, reject) => {
-            var index = this.state.test.channels.indexOf(channel)
+            var index = Object.keys(this.state.test.channels).indexOf(channel)
             if (index < 0) {
                 resolve();
             }
-            var channels = this.state.test.channels.splice(0);
-            channels.splice(index, 1)
+            var channels = Object.assign({},this.state.test.channels)
+            delete channels[channel]
             this.setState({
                 test: {
                     ...this.state.test,
@@ -427,12 +427,22 @@ export default class Test extends React.Component<{
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-            {Object.keys(this.state.test.channels).map((channelKey, index) => {
-                const row = this.state.test.channels[channelKey]
+            {Object.keys(this.state.test.channels).map((row, index) => {
+                const channelKey = this.state.test.channels[channel]
                 var [ device, channel ] = getDeviceAndChannel(row)
                 return (<Table.Row key={index} disabled={this.props.test.loading}>
-                    {this.state.editing ? <Table.Cell><Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
-                    
+                    {this.state.editing ? <Table.Cell>{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
+                    this.removeChannel(row);
+                }}/> : null }<Input type='text' placeholder='Value' value={channelKey} size="small" onChange={(e) => {
+                    var channels = Object.assign({}, this.state.test.channels)
+                    channels[row] = e.currentTarget.value
+                    this.setState({
+                        ...this.state,
+                        test: {
+                            ...this.state.test,
+                            channels
+                        }
+                    })
                 }}/></Table.Cell> : <Table.Cell>{channelKey}</Table.Cell> }
                 <Table.Cell  {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/`)
@@ -440,9 +450,7 @@ export default class Test extends React.Component<{
                 <Table.Cell {...{onClick:() => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${device}/${channel}`)
                 }}}>{channel}</Table.Cell>
-                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} />{this.state.editing ? <Button icon="remove" size="small" onClick={() => {
-                    this.removeChannel(row);
-                }}/> : null }</Table.Cell>
+                <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><MonitorButton organization={this.props.params.organizationName} device={device} channel={channel} /></Table.Cell>
                 </Table.Row>)
             })}
             {this.state.editing ? <Table.Row disabled={this.props.test.loading} {...{onClick:() => {
