@@ -336,7 +336,7 @@ export default class View extends React.Component<{
         }
         return (<Segment basic vertical>
                 <Helmet title={`HLS - ${this.props.params.organizationName} - Views`} />
-                <Grid stackable>
+                <Grid>
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Header>
