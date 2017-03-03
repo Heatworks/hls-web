@@ -31,6 +31,8 @@ export default class MonitorChart extends React.Component<{
     messages?: Array<any>,
     data?: Array<Array<TimeSeriesData>>,
     dataRanges?:Array<[Date, Date]>,
+    dataLoadingCount?:number,
+    dataLoadingError?:number,
     range?: [Date, Date],
     live?: boolean,
     previousRanges?: Array<[Date, Date]>,
@@ -117,7 +119,9 @@ export default class MonitorChart extends React.Component<{
             yRange: [10, 50],
             table: false,
             yRangeSelector: false,
-            interval
+            interval,
+            dataLoadingCount: 0,
+            dataLoadingError: 0
         }
         this.runProcessMessages()
         this.loadData()
@@ -383,6 +387,8 @@ export default class MonitorChart extends React.Component<{
                                     positioning='bottom center'
                                 />
                                 <Button size="mini" onClick={this.toggleUnit.bind(this)} toggle content={valueWithUnit(0,"Celcius")} />
+                                {this.state.dataLoadingCount > 0 ? <Button loading content={this.state.dataLoadingCount} /> : null }
+                                {this.state.dataLoadingError > 0 ? <Button loading icon="alert" content={this.state.dataLoadingError} /> : null }
                             </Button.Group>
                         </Grid.Column>
                     </Grid>
