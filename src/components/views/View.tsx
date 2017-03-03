@@ -77,7 +77,7 @@ export default class View extends React.Component<{
                                 component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
                                 props: {
                                     title: "Second Component",
-                                    size: "huge"
+                                    size: "big"
                                 },
                                 channels: {
                                     q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
