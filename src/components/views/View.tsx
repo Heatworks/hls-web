@@ -97,9 +97,14 @@ export default class View extends React.Component<{
                                     q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
                                     q17: "/organizations/heatworks/devices/test-station-a/thermocouple/8"
                                 }
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        fluid: true,
+                        columns: [
                             {
-                                width: 6,
+                                width: 8,
                                 component: "/organizations/hls/views/components/power/switch",
                                 props: {
                                     title: "Power",
@@ -109,6 +114,17 @@ export default class View extends React.Component<{
                                     control: "/organizations/heatworks/devices/test-station-a/power/control",
                                     value: "/organizations/heatworks/devices/test-station-a/power/value",
                                     amps: "/organizations/heatworks/devices/test-station-a/power/amps"
+                                }
+                            },
+                            {
+                                width: 8,
+                                component: "/organizations/heatworks/views/components/conductivity/recorder",
+                                props: {
+                                    title: "Conductivity Recorder",
+                                    icon: "eyedropper"
+                                },
+                                channels: {
+                                    conductivity: "/organizations/heatworks/devices/virtual/recorder/conductivity"
                                 }
                             }
                         ]
@@ -262,7 +278,7 @@ export default class View extends React.Component<{
     }
 
     receiveMessage(topic, message, packet) {
-        console.log(topic+": "+message)
+        console.log("REC: "+topic+": "+message)
         var unit = this.state.channels[topic].unit;
         var value = parseValueForUnit(unit, message.toString().split(",")[1]);
         var channels = {
@@ -351,6 +367,12 @@ export default class View extends React.Component<{
                 <OverlayPCB {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} />
+            )
+        } else if (column.component == "/organizations/heatworks/views/components/conductivity/recorder") {
+            return (
+                <ConductivityRecorder {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
             )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
@@ -496,7 +518,40 @@ class PowerSwitch extends React.Component<{
                     fontSize: 20
                 }} >{this.props.values.amps}A</span>
                 <br/>
-                
+            </Segment>
+        )
+    }
+}
+
+class ConductivityRecorder extends React.Component<{
+    title: string,
+    channels: {
+        conductivity: string
+    },
+    values: {
+        conductivity: number
+    },
+    publish: (topic, value) => any
+},{
+    value: string
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            value: ""
+        }
+    }
+    render() {
+        return (
+            <Segment>
+                <Input type="text" content={this.state.value} onChange={(e) => {
+                    this.setState({
+                        value: e.currentTarget.value
+                    })
+                }} />
+                <Button basic onClick={() =>{
+                    this.props.publish(this.props.channels.conductivity, this.state.value)
+                }}>Publish</Button>
             </Segment>
         )
     }
@@ -589,6 +644,7 @@ function parseValueForUnit(unit: string, value: string) {
         }
     }
 }
+
 
 
 
