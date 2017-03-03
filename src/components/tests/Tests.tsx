@@ -68,7 +68,6 @@ export default class Tests extends React.Component<{
                      </Grid.Row>
                     </Grid>
                 <Menu secondary>
-                    <Menu.Item name='users' as={Link} {...{to: `/${this.props.params.organizationName}/iam/users`}} />
                     <Menu.Menu position='right'>
                         <Menu.Item name="export" content="Export" icon="download" onClick={() => {
                                 saveJSON(this.tempData, 'tests-list.json')

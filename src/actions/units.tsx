@@ -52,9 +52,9 @@ export function valueWithUnit(value, unit) {
 
 function valueForTemperature(value) {
     if (getTemperatureUnit() == "F") {
-        return ((value * 9/5) + 32) + UnitLabels.Fahrenheit
+        return (Math.round(((value * 9/5) + 32) * 100)/100) + UnitLabels.Fahrenheit
     } else {
-        return value + UnitLabels.Celcius
+        return (Math.round(value * 100)/100) + UnitLabels.Celcius
     }
 }
 
