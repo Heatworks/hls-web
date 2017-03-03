@@ -482,7 +482,7 @@ export default class Test extends React.Component<{
                     }
                     
                 }}}>
-                <Table.Cell textAlign="center" { ...{colSpan:'3'}}>Add Channel</Table.Cell>
+                <Table.Cell textAlign="center" { ...{colSpan:'4'}}>Add Channel</Table.Cell>
                 </Table.Row> : null}
             </Table.Body>
         </Table>
