@@ -126,17 +126,6 @@ export default class MonitorChart extends React.Component<{
         clearTimeout(this.timeout)
     }
     componentWillReceiveProps(nextProps) {
-        nextProps.channels.forEach((element) => {
-            // Don't subscribe to error channel. It could be exploding with reports.
-            //this.props.client.subscribe(`/organizations/${element.organization}/devices/${element.device}/error`)
-            if (this.props.client) {
-                element.topic = `/organizations/${element.organization}/devices/${element.device}/${element.channel}`;
-                this.props.client.subscribe(element.topic, (response, error) => {
-                    console.log('Subscribe: '+error+' : '+element.topic);
-                })
-            }
-            
-        })
         var dataRanges = []
         var data = nextProps.channels.map((newChannel) => {
             var index = this.props.channels.findIndex((oldChannel) => {
@@ -146,6 +135,12 @@ export default class MonitorChart extends React.Component<{
                 dataRanges.push(this.state.dataRanges[index])
                 return this.state.data[index]
             } else {
+                if (this.props.client) {
+                    newChannel.topic = `/organizations/${newChannel.organization}/devices/${newChannel.device}/${newChannel.channel}`;
+                    this.props.client.subscribe(newChannel.topic, (response, error) => {
+                        console.log('Subscribe: '+error+' : '+newChannel.topic);
+                    })
+                }
                 dataRanges.push([this.state.range[1], this.state.range[1]])
                 return []
             }
