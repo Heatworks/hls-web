@@ -15,9 +15,10 @@ export class ColumnComponent {
         mobile: SemanticWIDTHS
         widescreen: SemanticWIDTHS
     }
-    component: string
-    props: any
-    channels: any
+    component?: string
+    props?: any
+    channels?: any
+    rows?: Array<RowObject>
 }
 
 export class RowObject {
@@ -30,7 +31,9 @@ export class ViewObject {
     name: string
     description: string
     tags: any
-    grid: Array<RowObject>
+    grid: {
+        rows: Array<RowObject>
+    }
 }
 
 export default class View extends React.Component<{
@@ -44,7 +47,8 @@ export default class View extends React.Component<{
     connected?: boolean,
     channels?: any,
     error?: string,
-    editing?: boolean
+    editing?: boolean,
+    live?:boolean
 }> {
     constructor(props) {
         super(props);
@@ -68,125 +72,141 @@ export default class View extends React.Component<{
                 tags: {
 
                 },
-                grid: [ 
-                    {
-                        columns: [
+                grid: {
+                    rows: [
+                        {
+                            columns: [
 
-                            {
-                                width: 16,
-                                component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
-                                props: {
-                                    title: "Second Component",
-                                    size: "big"
+                                {
+                                    width: 12,
+                                    component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
+                                    props: {
+                                        title: "Second Component",
+                                        size: "huge"
+                                    },
+                                    channels: {
+                                        q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
+                                        q2: "/organizations/heatworks/devices/test-station-a/thermocouple/1",
+                                        q3: "/organizations/heatworks/devices/test-station-a/thermocouple/2",
+                                        q4: "/organizations/heatworks/devices/test-station-a/thermocouple/3",
+                                        q5: "/organizations/heatworks/devices/test-station-a/thermocouple/4",
+                                        q6: "/organizations/heatworks/devices/test-station-a/thermocouple/5",
+                                        q7: "/organizations/heatworks/devices/test-station-a/thermocouple/6",
+                                        q8: "/organizations/heatworks/devices/test-station-a/thermocouple/7",
+                                        q10: "/organizations/heatworks/devices/test-station-a/thermocouple/9",
+                                        q11: "/organizations/heatworks/devices/test-station-a/thermocouple/10",
+                                        q12: "/organizations/heatworks/devices/test-station-a/thermocouple/11",
+                                        q13: "/organizations/heatworks/devices/test-station-a/thermocouple/12",
+                                        q14: "/organizations/heatworks/devices/test-station-a/thermocouple/13",
+                                        q15: "/organizations/heatworks/devices/test-station-a/thermocouple/14",
+                                        q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
+                                        q17: "/organizations/heatworks/devices/test-station-a/thermocouple/8"
+                                    }
                                 },
-                                channels: {
-                                    q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
-                                    q2: "/organizations/heatworks/devices/test-station-a/thermocouple/1",
-                                    q3: "/organizations/heatworks/devices/test-station-a/thermocouple/2",
-                                    q4: "/organizations/heatworks/devices/test-station-a/thermocouple/3",
-                                    q5: "/organizations/heatworks/devices/test-station-a/thermocouple/4",
-                                    q6: "/organizations/heatworks/devices/test-station-a/thermocouple/5",
-                                    q7: "/organizations/heatworks/devices/test-station-a/thermocouple/6",
-                                    q8: "/organizations/heatworks/devices/test-station-a/thermocouple/7",
-                                    q10: "/organizations/heatworks/devices/test-station-a/thermocouple/9",
-                                    q11: "/organizations/heatworks/devices/test-station-a/thermocouple/10",
-                                    q12: "/organizations/heatworks/devices/test-station-a/thermocouple/11",
-                                    q13: "/organizations/heatworks/devices/test-station-a/thermocouple/12",
-                                    q14: "/organizations/heatworks/devices/test-station-a/thermocouple/13",
-                                    q15: "/organizations/heatworks/devices/test-station-a/thermocouple/14",
-                                    q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
-                                    q17: "/organizations/heatworks/devices/test-station-a/thermocouple/8"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        fluid: true,
-                        columns: [
-                            {
-                                width: 8,
-                                component: "/organizations/hls/views/components/power/switch",
-                                props: {
-                                    title: "Power",
-                                    icon: "lightning"
-                                },
-                                channels: {
-                                    control: "/organizations/heatworks/devices/test-station-a/power/control",
-                                    value: "/organizations/heatworks/devices/test-station-a/power/value",
-                                    amps: "/organizations/heatworks/devices/test-station-a/power/amps"
-                                }
-                            },
-                            {
-                                width: 8,
-                                component: "/organizations/heatworks/views/components/conductivity/recorder",
-                                props: {
-                                    title: "Conductivity Recorder",
-                                    icon: "eyedropper"
-                                },
-                                channels: {
-                                    conductivity: "/organizations/heatworks/devices/virtual/recorder/conductivity"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        fluid: true,
-                        columns: [
-                            {
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "First Component",
-                                    icon: "cube"
-                                },
-                                channels: {
+                                {
+                                    width: 4,
+                                    props: {
 
+                                    },
+                                    rows: [
+                                        {
+                                            fluid: true,
+                                            columns: [
+                                                {
+                                                    width: 16,
+                                                    component: "/organizations/hls/views/components/power/switch",
+                                                    props: {
+                                                        title: "Power",
+                                                        icon: "lightning"
+                                                    },
+                                                    channels: {
+                                                        control: "/organizations/heatworks/devices/test-station-a/power/control",
+                                                        value: "/organizations/heatworks/devices/test-station-a/power/value",
+                                                        amps: "/organizations/heatworks/devices/test-station-a/power/amps"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            fluid: true,
+                                            columns: [
+                                                {
+                                                    width: 16,
+                                                    component: "/organizations/heatworks/views/components/conductivity/recorder",
+                                                    props: {
+                                                        title: "Conductivity Recorder",
+                                                        icon: "eyedropper"
+                                                    },
+                                                    channels: {
+                                                        conductivity: "/organizations/heatworks/devices/virtual/recorder/conductivity"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
-                            },
-                            {
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "First Component"
-                                },
-                                channels: {
+                            ]
+                        },
+                        {
+                            fluid: true,
+                            columns: [
+                                {
+                                    component: "/organizations/hls/views/components/test",
+                                    props: {
+                                        title: "First Component",
+                                        icon: "cube"
+                                    },
+                                    channels: {
 
-                                }
-                            },
-                            {
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "First Component"
+                                    }
                                 },
-                                channels: {
+                                {
+                                    component: "/organizations/hls/views/components/test",
+                                    props: {
+                                        title: "First Component"
+                                    },
+                                    channels: {
 
-                                }
-                            },
-                            {
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "First Component"
+                                    }
                                 },
-                                channels: {
+                                {
+                                    component: "/organizations/hls/views/components/test",
+                                    props: {
+                                        title: "First Component"
+                                    },
+                                    channels: {
 
-                                }
-                            },
-                            {
-                                component: "/organizations/hls/views/components/test",
-                                props: {
-                                    title: "First Component"
+                                    }
                                 },
-                                channels: {
+                                {
+                                    component: "/organizations/hls/views/components/test",
+                                    props: {
+                                        title: "First Component"
+                                    },
+                                    channels: {
 
+                                    }
+                                },
+                                {
+                                    component: "/organizations/hls/views/components/test",
+                                    props: {
+                                        title: "First Component"
+                                    },
+                                    channels: {
+
+                                    }
                                 }
-                            }
-                        ]
-                    }
-                ]
+                            ]
+                        }
+                    ]
+                }
             },
             channels: {
                 
             },
             connected: false,
-            editing: false
+            editing: false,
+            live: true
         }
 
         this.checkProps().then(() => {
@@ -214,13 +234,7 @@ export default class View extends React.Component<{
 
     processChannelsInView() {
         var channelPromises = []
-        this.state.view.grid.map((row) => {
-            row.columns.map((column) => {
-                Object.keys(column.channels).map((key) => {
-                    channelPromises.push(this.addChannel(column.channels[key]))
-                })
-            })
-        })
+        this.processChannelsInRows(this.state.view.grid.rows, channelPromises)
         return Promise.all(channelPromises).then((channels) => {
             console.log(channels);
             this.setState({
@@ -228,6 +242,21 @@ export default class View extends React.Component<{
                     return channelMap.name
                 }),channels)
             })
+        })
+    }
+
+    processChannelsInRows(rows: Array<RowObject>, channelPromises) {
+        rows.map((row) => {
+            row.columns.map((column) => {
+                if ('rows' in column) {
+                    this.processChannelsInRows(column.rows, channelPromises)
+                } else {
+                    Object.keys(column.channels).map((key) => {
+                        channelPromises.push(this.addChannel(column.channels[key]))
+                    })
+                }
+            })
+            
         })
     }
 
@@ -278,19 +307,22 @@ export default class View extends React.Component<{
     }
 
     receiveMessage(topic, message, packet) {
-        console.log("REC: "+topic+": "+message)
-        var unit = this.state.channels[topic].unit;
-        var value = parseValueForUnit(unit, message.toString().split(",")[1]);
-        var channels = {
-            ...this.state.channels
+        if (this.state.live) {
+            console.log("REC: "+topic+": "+message)
+            var unit = this.state.channels[topic].unit;
+            var value = parseValueForUnit(unit, message.toString().split(",")[1]);
+            var channels = {
+                ...this.state.channels
+            }
+            channels[topic] = {
+                unit,
+                value
+            }
+            this.setState({
+                channels
+            })
         }
-        channels[topic] = {
-            unit,
-            value
-        }
-        this.setState({
-            channels
-        })
+        
     }
 
     render() {
@@ -320,29 +352,7 @@ export default class View extends React.Component<{
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Grid stackable>
-                    {this.state.view.grid.map((row, rowIndex) => {
-                        return (
-                            <Grid.Row key={rowIndex} columns={(row.fluid) ? 'equal' : 16 } {...{ style: { paddingBottom: 0 } }}>
-                                {row.columns.map((column, columnIndex) => {
-                                    return (
-                                        <Column key={columnIndex} column={column} editing={this.state.editing} onChange={(_column) => {
-                                            console.log('Updated column...')
-                                            console.log(_column);
-                                            row.columns[columnIndex] = _column
-                                            this.setState({
-                                                view: this.state.view
-                                            })
-                                        }}>
-                                            { this.renderColumnComponent(column) }
-                                        </Column>
-                                        )
-                                    })
-                                }
-                            </Grid.Row>
-                        )
-                    })}
-                </Grid>
+                { this.renderRows(this.state.view.grid.rows) }
             </Segment>);
     }
 
@@ -351,6 +361,36 @@ export default class View extends React.Component<{
         var now = new Date();
         var timestamp = now.getTime() / 1000;
         this.props.client.publish(channel, `${timestamp},${value}`)
+    }
+
+
+    renderRows(rows) {
+        return rows.map((row, rowIndex) => {
+            return (<Grid stackable> { this.renderRow(row, rowIndex) } </Grid>)
+        })
+    }
+    renderRow(row, rowIndex) {
+        return (
+                <Grid.Row key={rowIndex} columns={(row.fluid) ? 'equal' : 16 } {...{ style: { paddingBottom: 0 } }}>
+                    {row.columns.map((column, columnIndex) => {
+                        return (
+                            <Column key={columnIndex} column={column} editing={this.state.editing} onChange={(_column) => {
+                                console.log('Updated column...')
+                                console.log(_column);
+                                row.columns[columnIndex] = _column
+                                this.setState({
+                                    view: this.state.view
+                                })
+                            }}>
+                            {
+                                ('rows' in column) ? this.renderRows(column.rows) : this.renderColumnComponent(column)
+                            }
+                            </Column>
+                            )
+                        })
+                    }
+                </Grid.Row>
+            )
     }
 
     renderColumnComponent(column: ColumnComponent) {
@@ -533,26 +573,42 @@ class ConductivityRecorder extends React.Component<{
     },
     publish: (topic, value) => any
 },{
-    value: string
+    value?: string,
+    publishing: boolean
 }> {
     constructor(props) {
         super(props)
         this.state = {
-            value: ""
+            value: "",
+            publishing: false
         }
     }
+
     render() {
         return (
             <Segment>
                 <Input fluid type="text" content={this.state.value} onChange={(e) => {
                     this.setState({
-                        value: e.currentTarget.value
+                        value: e.currentTarget.value,
+                        publishing: false
                     })
                 }} action >
-                <input />
+                <input placeholder={this.props.values.conductivity ? `${this.props.values.conductivity}` : ''} />
                 <Button basic onClick={() =>{
-                    this.props.publish(this.props.channels.conductivity, this.state.value)
-                }}>Publish</Button>
+                    var value = parseFloat(this.state.value)
+                    if (value == NaN) {
+                        alert(`Value (${this.state.value}) was not a number, please try again.`)
+                    }
+                    this.props.publish(this.props.channels.conductivity, value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            publishing: false
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Publish</Button>
                 </Input>
             </Segment>
         )
@@ -612,24 +668,24 @@ class OverlayPCB extends React.Component<{
     render() {
         return (
             <Segment>
-                <Image src={require('../../resources/board_bg.png')} fluid />
-                <div style={{position: 'absolute', right: '59%', top: '66%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q1, getUnitForTopic(this.props.channels.q1))} floating size={this.props.size} color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
-                <div style={{position: 'absolute', right: '69%', top: '60%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q2, getUnitForTopic(this.props.channels.q2))} floating size={this.props.size} color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '55%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q3, getUnitForTopic(this.props.channels.q3))} floating size={this.props.size} color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>
-                <div style={{position: 'absolute', right: '68%', top: '50%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q4, getUnitForTopic(this.props.channels.q4))} floating size={this.props.size} color={this.colorForValue(this.props.values.q4)} detail={"Q4"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q5, getUnitForTopic(this.props.channels.q5))} floating size={this.props.size} color={this.colorForValue(this.props.values.q5)} detail={"Q5"}/></div>
-                <div style={{position: 'absolute', right: '68%', top: '40%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q6, getUnitForTopic(this.props.channels.q6))} floating size={this.props.size} color={this.colorForValue(this.props.values.q6)} detail={"Q6"}/></div>
-                <div style={{position: 'absolute', right: '59%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q7, getUnitForTopic(this.props.channels.q7))} floating size={this.props.size} color={this.colorForValue(this.props.values.q7)} detail={"Q7"}/></div>
-                <div style={{position: 'absolute', right: '67%', top: '28%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q8, getUnitForTopic(this.props.channels.q8))} floating size={this.props.size} color={this.colorForValue(this.props.values.q8)} detail={"Q8"}/></div>
+                <Image src={require('../../resources/views_board_layout.png')} fluid />
+                <div style={{position: 'absolute', right: '61%', top: '79%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q1, getUnitForTopic(this.props.channels.q1))} floating size={this.props.size} color={this.colorForValue(this.props.values.q1)} detail={"Q1"}/></div>
+                <div style={{position: 'absolute', right: '79%', top: '69%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q2, getUnitForTopic(this.props.channels.q2))} floating size={this.props.size} color={this.colorForValue(this.props.values.q2)} detail={"Q2"}/></div>
+                <div style={{position: 'absolute', right: '61%', top: '60%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q3, getUnitForTopic(this.props.channels.q3))} floating size={this.props.size} color={this.colorForValue(this.props.values.q3)} detail={"Q3"}/></div>
+                <div style={{position: 'absolute', right: '79%', top: '52%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q4, getUnitForTopic(this.props.channels.q4))} floating size={this.props.size} color={this.colorForValue(this.props.values.q4)} detail={"Q4"}/></div>
+                <div style={{position: 'absolute', right: '61%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q5, getUnitForTopic(this.props.channels.q5))} floating size={this.props.size} color={this.colorForValue(this.props.values.q5)} detail={"Q5"}/></div>
+                <div style={{position: 'absolute', right: '79%', top: '37%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q6, getUnitForTopic(this.props.channels.q6))} floating size={this.props.size} color={this.colorForValue(this.props.values.q6)} detail={"Q6"}/></div>
+                <div style={{position: 'absolute', right: '61%', top: '28%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q7, getUnitForTopic(this.props.channels.q7))} floating size={this.props.size} color={this.colorForValue(this.props.values.q7)} detail={"Q7"}/></div>
+                <div style={{position: 'absolute', right: '77%', top: '18%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q8, getUnitForTopic(this.props.channels.q8))} floating size={this.props.size} color={this.colorForValue(this.props.values.q8)} detail={"Q8"}/></div>
 
-                <div style={{position: 'absolute', right: '49%', top: '35%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q10, getUnitForTopic(this.props.channels.q10))} floating size={this.props.size} color={this.colorForValue(this.props.values.q10)} detail={"Q10"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '38%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q11, getUnitForTopic(this.props.channels.q11))} floating size={this.props.size} color={this.colorForValue(this.props.values.q11)} detail={"Q11"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q12, getUnitForTopic(this.props.channels.q12))} floating size={this.props.size} color={this.colorForValue(this.props.values.q12)} detail={"Q12"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '48%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q13, getUnitForTopic(this.props.channels.q13))} floating size={this.props.size} color={this.colorForValue(this.props.values.q13)} detail={"Q13"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '51%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q14, getUnitForTopic(this.props.channels.q14))} floating size={this.props.size} color={this.colorForValue(this.props.values.q14)} detail={"Q14"}/></div>
-                <div style={{position: 'absolute', right: '38%', top: '57%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q15, getUnitForTopic(this.props.channels.q15))} floating size={this.props.size} color={this.colorForValue(this.props.values.q15)} detail={"Q15"}/></div>
-                <div style={{position: 'absolute', right: '49%', top: '61%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q16, getUnitForTopic(this.props.channels.q16))} floating size={this.props.size} color={this.colorForValue(this.props.values.q16)} detail={"Q16"}/></div>
-                <div style={{position: 'absolute', right: '40%', top: '67%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q17, getUnitForTopic(this.props.channels.q17))} floating size={this.props.size} color={this.colorForValue(this.props.values.q17)} detail={"Q17"}/></div>
+                <div style={{position: 'absolute', right: '40%', top: '30%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q10, getUnitForTopic(this.props.channels.q10))} floating size={this.props.size} color={this.colorForValue(this.props.values.q10)} detail={"Q10"}/></div>
+                <div style={{position: 'absolute', right: '22%', top: '38%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q11, getUnitForTopic(this.props.channels.q11))} floating size={this.props.size} color={this.colorForValue(this.props.values.q11)} detail={"Q11"}/></div>
+                <div style={{position: 'absolute', right: '40%', top: '44%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q12, getUnitForTopic(this.props.channels.q12))} floating size={this.props.size} color={this.colorForValue(this.props.values.q12)} detail={"Q12"}/></div>
+                <div style={{position: 'absolute', right: '22%', top: '50%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q13, getUnitForTopic(this.props.channels.q13))} floating size={this.props.size} color={this.colorForValue(this.props.values.q13)} detail={"Q13"}/></div>
+                <div style={{position: 'absolute', right: '40%', top: '55%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q14, getUnitForTopic(this.props.channels.q14))} floating size={this.props.size} color={this.colorForValue(this.props.values.q14)} detail={"Q14"}/></div>
+                <div style={{position: 'absolute', right: '22%', top: '65%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q15, getUnitForTopic(this.props.channels.q15))} floating size={this.props.size} color={this.colorForValue(this.props.values.q15)} detail={"Q15"}/></div>
+                <div style={{position: 'absolute', right: '40%', top: '70%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q16, getUnitForTopic(this.props.channels.q16))} floating size={this.props.size} color={this.colorForValue(this.props.values.q16)} detail={"Q16"}/></div>
+                <div style={{position: 'absolute', right: '26%', top: '80%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q17, getUnitForTopic(this.props.channels.q17))} floating size={this.props.size} color={this.colorForValue(this.props.values.q17)} detail={"Q17"}/></div>
 
             </Segment>
         )

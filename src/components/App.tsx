@@ -12,7 +12,7 @@ export default class App extends React.Component<{
 }, {}> {
     render() {
         return (
-            <Container fluid>
+            <div>
                 <Helmet
                     title="HLS"
                     meta={[
@@ -30,7 +30,7 @@ export default class App extends React.Component<{
                     </div>
                 </Segment>
                 <Monitor params={this.props.params} />
-            </Container>   
+            </div>   
         )
     }
 }
