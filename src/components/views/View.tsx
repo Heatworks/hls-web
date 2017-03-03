@@ -593,7 +593,7 @@ class ConductivityRecorder extends React.Component<{
                         publishing: false
                     })
                 }} action >
-                <input placeholder={this.props.values.conductivity ? `${this.props.values.conductivity}` : ''} />
+                <input placeholder={this.props.values.conductivity ? `${this.props.values.conductivity}` : ''} value={this.state.value} />
                 <Button basic onClick={() =>{
                     var value = parseFloat(this.state.value)
                     if (value == NaN) {
