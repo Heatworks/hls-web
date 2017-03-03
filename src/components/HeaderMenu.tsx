@@ -17,10 +17,14 @@ export default class SignIn extends React.Component<{
     location: {
         pathname: string
     }
-},{}> {
+},{
+    resourceURN: string
+}> {
     constructor(props) {
         super(props)
-
+        this.state = {
+            resourceURN: ""
+        }
     }
     inService(service) {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
@@ -44,7 +48,16 @@ export default class SignIn extends React.Component<{
                 <Menu.Menu position='right'>
                     <div className='ui right aligned category search item'>
                         <div className='ui transparent icon input'>
-                        <input className='prompt' type='text' placeholder='Jump to resource...' />
+                        <form onSubmit={(e) => {
+                            alert('Jump to resource: '+this.state.resourceURN + " (not implemented)")
+                            e.preventDefault()
+                        }}>
+                            <input className='prompt' type='text' placeholder='Jump to resource...' onChange={(e) => {
+                                this.setState({
+                                    resourceURN: e.currentTarget.value
+                                })
+                            }} />
+                        </form>
                         <i className='search link icon' />
                         </div>
                         <div className='results'></div>
