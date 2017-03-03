@@ -544,14 +544,16 @@ class ConductivityRecorder extends React.Component<{
     render() {
         return (
             <Segment>
-                <Input type="text" content={this.state.value} onChange={(e) => {
+                <Input fluid type="text" content={this.state.value} onChange={(e) => {
                     this.setState({
                         value: e.currentTarget.value
                     })
-                }} />
+                }} action >
+                <input />
                 <Button basic onClick={() =>{
                     this.props.publish(this.props.channels.conductivity, this.state.value)
                 }}>Publish</Button>
+                </Input>
             </Segment>
         )
     }
