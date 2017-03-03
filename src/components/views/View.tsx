@@ -605,7 +605,8 @@ class ConductivityRecorder extends React.Component<{
                     })
                     setTimeout(() => {
                         this.setState({
-                            publishing: false
+                            publishing: false,
+                            value: ""
                         })
                     }, 1000)
                 }} loading={this.state.publishing}>Publish</Button>
