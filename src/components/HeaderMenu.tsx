@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router'
 
@@ -18,7 +19,8 @@ export default class SignIn extends React.Component<{
         pathname: string
     }
 },{
-    resourceURN: string
+    resourceURN?: string,
+    settingsMenu?: boolean
 }> {
     constructor(props) {
         super(props)
@@ -30,10 +32,12 @@ export default class SignIn extends React.Component<{
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (this.props.location.pathname.startsWith(`/${organizationNameOrNull}/${service}/`))
     }
+    _menu
+    _settingsMenu
     render() {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (
-            <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}}>
+            <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}} ref={(menuScroll) => this._menu = menuScroll}>
                 <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
                 {
                     this.props.iam.organization ? 
@@ -64,20 +68,28 @@ export default class SignIn extends React.Component<{
                     </div>
                     {
                         (this.props.iam.organization) ? 
-                        <Menu.Item as={Dropdown} {...{text:this.props.iam.organization.organizationName || 'Account'}} position="right">
+                        <div style={{display:'flex', height: 54}} className="computer tablet only">
                         {
-                            (this.props.iam.loaded && this.props.iam.organization !== undefined) ? (
-                                <Dropdown.Menu>
-                                    <Dropdown.Item as={Link} {...{to: '/settings'}}><Icon name="settings" size="large"  /> Settings</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => {
+                            (this.props.iam.loaded && this.props.iam.organization !== undefined && this.state.settingsMenu) ? (
+                                <div style={{display:'flex', height: 54}} ref={(settingsMenu) => this._settingsMenu = settingsMenu}>
+                                    <Menu.Item icon="angle double right" onClick={() => {
+                                        this.setState({
+                                            settingsMenu: false
+                                        })
+                                    }} />
+                                    <Menu.Item as={Link} {...{to: '/settings'}} icon="settings"></Menu.Item>
+                                    <Menu.Item onClick={() => {
                                         window.location.href = window.location.href + "?accessToken=" + this.props.iam.data.accessToken
-                                    }}><Icon name="tv" size="large" /> Standalone Page</Dropdown.Item>
-                                    <Dropdown.Divider />   
-                                    <Dropdown.Item as={Link} {...{to: '/signOut'}}>Sign Out</Dropdown.Item>
-                                </Dropdown.Menu>
-                            ) : ( <Dropdown.Item as={Link} {...{to: '/signOut'}}>Sign Out</Dropdown.Item>)
+                                    }}><Icon name="tv" /> Standalone Page</Menu.Item>
+                                    <Menu.Item as={Link} {...{to: '/signOut'}}>Sign Out</Menu.Item>
+                                </div>
+                            ) : ( <Menu.Item icon="angle double left" position="right" onClick={() => {
+                                this.setState({
+                                    settingsMenu: true
+                                })                            
+                            }} />)
                         }                                
-                        </Menu.Item >
+                        </div>
                         : <Menu.Item link as={Link} {...{to: '/signIn'}}>Sign In</Menu.Item> 
                     }
                 </Menu.Menu>
