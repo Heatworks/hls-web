@@ -670,7 +670,7 @@ class TemperatureRecorder extends React.Component<{
                         publishing: false
                     })
                 }} action >
-                <input placeholder={this.props.values.temperature ? `${this.props.values.temperature}` : ''} value={this.state.value} />
+                <input placeholder={this.props.values.temperature ? `${valueWithUnit(this.props.values.temperature, "Celcius")}` : ''} value={this.state.value} />
                 <Button basic onClick={() =>{
                     var value = parseFloat(this.state.value)
                     if (value == NaN) {
