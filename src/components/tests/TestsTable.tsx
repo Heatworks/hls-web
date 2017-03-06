@@ -64,10 +64,10 @@ export default class TestsTable extends React.Component<{
         <Table selectable fixed sortable singleLine>
             <Table.Header>
                 <Table.Row disabled={this.props.tests.loading}>
-                <Table.HeaderCell sorted={(this.state.sortTag == "status") ? direction : null } onClick={() => {
+                <Table.HeaderCell sorted={(this.state.sortTag == "STATUS") ? direction : null } onClick={() => {
                     this.setState({
-                        sortTag: 'status',
-                        direction: (this.state.sortTag == "status" ? (this.state.direction*-1) : this.state.direction)
+                        sortTag: 'STATUS',
+                        direction: (this.state.sortTag == "STATUS" ? (this.state.direction*-1) : this.state.direction)
                     })
                     }}>Name</Table.HeaderCell>
                 <Table.HeaderCell>Description</Table.HeaderCell>
@@ -96,9 +96,9 @@ export default class TestsTable extends React.Component<{
                     if (this.state.sortTag == "name") {
                         return a.name > b.name ? -this.state.direction : this.state.direction
                     }
-                    if (this.state.sortTag == "status") {
+                    if (this.state.sortTag == "STATUS") {
                         const statusOrder = ["failed", "passed","passing","failing"]
-                        return (statusOrder.indexOf(a.tags['status']) > statusOrder.indexOf(b.tags['status'])) ?  -this.state.direction : this.state.direction
+                        return (statusOrder.indexOf(a.tags['STATUS']) > statusOrder.indexOf(b.tags['STATUS'])) ?  -this.state.direction : this.state.direction
                     }
                     var tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction
                     return tagSort
@@ -111,7 +111,7 @@ export default class TestsTable extends React.Component<{
                             browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
                         }
                         }}}>
-                        <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.status)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
+                        <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.STATUS)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
                         <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:MM:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
                         <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                         <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>

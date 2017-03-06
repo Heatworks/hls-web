@@ -90,7 +90,8 @@ export default class TestCreate extends React.Component<{
                             description: this.state.description,
                             tags: {
                                 ...this.state.testBase.tags,
-                                'CREATED_DATE': now.toISOString()
+                                'CREATED_DATE': now.toISOString(),
+                                'STATUS': false
                             },
                             range: [],
                             markers: []

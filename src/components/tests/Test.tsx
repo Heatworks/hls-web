@@ -160,7 +160,7 @@ export default class Test extends React.Component<{
                 ...this.state.test,
                 tags: {
                     ...this.state.test.tags,
-                    status
+                    'STATUS': status
                 }
             }
         }, callback);
@@ -172,11 +172,11 @@ export default class Test extends React.Component<{
         var now = new Date();
         var timestamp = now.getTime() / 1000;
         var tags = Object.assign({}, this.state.test.tags)
-        if (this.state.test.tags.status == 'passing') {
-            tags.status = 'passed'
+        if (this.state.test.tags.STATUS == 'passing') {
+            tags.STATUS = 'passed'
         }
-        if (this.state.test.tags.status == 'failing') {
-            tags.status = 'failed'
+        if (this.state.test.tags.STATUS == 'failing') {
+            tags.STATUS = 'failed'
         }
         this.setState({
             test: {
@@ -195,8 +195,8 @@ export default class Test extends React.Component<{
         var now = new Date();
         var timestamp = now.getTime() / 1000;
         var tags = Object.assign({}, this.state.test.tags)
-        if (this.state.test.tags.status == undefined) {
-            tags.status = 'passing'
+        if (this.state.test.tags.STATUS == false) {
+            tags.STATUS = 'passing'
         }
         this.setState({
             test: {
@@ -267,19 +267,19 @@ export default class Test extends React.Component<{
             <Dropdown.Item>Share</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <Dropdown trigger={<Menu.Item>{iconForStatus(this.state.test.tags.status)} {this.state.test.tags.status ? upperCaseFirst(this.state.test.tags.status) : 'Status'}</Menu.Item>} icon={null}>
+        <Dropdown trigger={<Menu.Item>{iconForStatus(this.state.test.tags.STATUS)} {this.state.test.tags.STATUS ? upperCaseFirst(this.state.test.tags.STATUS) : 'Status'}</Menu.Item>} icon={null}>
             <Dropdown.Menu>
-                <Dropdown.Item disabled={this.state.test.tags.status == 'failing'} onClick={() => {
+                <Dropdown.Item disabled={this.state.test.tags.STATUS == 'failing'} onClick={() => {
                     this.updateStatus('failing', () => {
                         this.saveTest()
                     })
                 }}>Failing</Dropdown.Item>
-                <Dropdown.Item disabled={this.state.test.tags.status == 'passing'} onClick={() => {
+                <Dropdown.Item disabled={this.state.test.tags.STATUS == 'passing'} onClick={() => {
                     this.updateStatus('passing', () => {
                         this.saveTest()
                     })
                 }}>Passing</Dropdown.Item>
-                <Dropdown.Item disabled={this.state.test.tags.status == 'failed'} onClick={() => {
+                <Dropdown.Item disabled={this.state.test.tags.STATUS == 'failed'} onClick={() => {
                     this.updateStatus('failed', () => {
                         if (!this.isComplete()) {
                             this.stopTest()
@@ -288,7 +288,7 @@ export default class Test extends React.Component<{
                         }
                     })
                 }}>Failed</Dropdown.Item>
-                <Dropdown.Item disabled={this.state.test.tags.status == 'passed'} onClick={() => {
+                <Dropdown.Item disabled={this.state.test.tags.STATUS == 'passed'} onClick={() => {
                     this.updateStatus('passed', () => {
                         if (!this.isComplete()) {
                             this.stopTest()
