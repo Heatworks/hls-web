@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, List, Header, Rail, Input, Menu, Dropdown, Icon, Image, Loader, Confirm } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, List, Header, Rail, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Form, Select, Checkbox } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
 var moment = require('moment')
@@ -41,6 +41,13 @@ export default class Device extends React.Component<{
     },
     reset?: {
         open: boolean
+    },
+    addChannelModel?: {
+        open: boolean,
+        name: string,
+        unit: string,
+        rate: string,
+        control: boolean
     }
 }> {
     constructor(props) {
@@ -57,6 +64,13 @@ export default class Device extends React.Component<{
             },
             reset: {
                 open: false
+            },
+            addChannelModel: {
+                open: false,
+                name: "",
+                unit: "",
+                rate: "",
+                control: false
             }
         }
     }
@@ -69,6 +83,8 @@ export default class Device extends React.Component<{
     toggleEditing() {
          if (this.state.editing) {
             if (JSON.stringify(this.state.device) !== JSON.stringify(this.props.device.data)) {
+                console.log('Saving...');
+                console.log(JSON.stringify(this.state.device))
                 this.props.actions.save(this.state.device, this.props.accessToken);
             } else { 
                 console.log('Did not need to save.');
@@ -197,8 +213,8 @@ export default class Device extends React.Component<{
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-            {Object.keys(this.props.device.data.channels).map((name, index) => {
-                var channelProps = this.props.device.data.channels[name];
+            {Object.keys(this.state.device.channels).map((name, index) => {
+                var channelProps = this.state.device.channels[name];
                 return (<Table.Row key={index} disabled={this.props.device.loading} {...{onClick:() => {
                     // browserHistory.push(`/${this.props.params.organizationName}/dac/data/${this.props.params.splat}/${name}/`)
                 }}}>
@@ -211,11 +227,112 @@ export default class Device extends React.Component<{
             })}
             {this.state.editing ? <Table.Row disabled={this.props.device.loading} {...{onClick:() => {
                     console.log('Add Channel');
+                    this.setState({
+                        addChannelModel: {
+                            ...this.state.addChannelModel,
+                            open: true
+                        }
+                    })
                 }}}>
                 <Table.Cell textAlign="center" { ...{colSpan:'5'}}>Add Channel</Table.Cell>
                 </Table.Row> : null}
             </Table.Body>
-        </Table></Segment>);
+        </Table>
+        <Modal open={this.state.addChannelModel.open} closeIcon="close" onClose={() => {
+            this.setState({
+                addChannelModel: {
+                    ...this.state.addChannelModel,
+                    open: false
+                }
+            })
+        }}>
+            <Modal.Header><Icon name="cubes" /> Channel Setup</Modal.Header>
+            <Modal.Content>
+                <Form>
+                    <Form.Field>
+                        <label>Channel Name</label>
+                        <Input type="text" label={`${this.state.device.name}/`} value={this.state.addChannelModel.name} fluid onChange={(e) => {
+                            this.setState({
+                                addChannelModel: {
+                                    ...this.state.addChannelModel,
+                                    name: e.currentTarget.value
+                                }
+                            })
+                        }} />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Unit</label>
+                        <Select options={unitOptions} placeholder='Select the unit.' selection={this.state.addChannelModel.unit} onChange={(e) => {
+                             this.setState({
+                                addChannelModel: {
+                                    ...this.state.addChannelModel,
+                                    unit: e.currentTarget.innerText
+                                }
+                            })
+                            }}>
+                            </Select>
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Rate</label>
+                        <Input type="text" fluid placeholder="Microseconds" value={this.state.addChannelModel.rate}  onChange={(e) => {
+                             this.setState({
+                                addChannelModel: {
+                                    ...this.state.addChannelModel,
+                                    rate: e.currentTarget.value
+                                }
+                            })
+                            }}/>
+                        <small>When set to 0, only on change.</small>
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Control Channel</label>
+                        <Checkbox value={this.state.addChannelModel.control ? 1 : 0} onChange={(e) => {
+                            this.setState({
+                                addChannelModel: {
+                                    ...this.state.addChannelModel,
+                                    control: (e.currentTarget.value == "true")
+                                }
+                            })
+                            }}/>
+                    </Form.Field>
+                    <Form.Field><Button fluid onClick={(e) => {
+                        e.preventDefault()
+                        if (this.state.addChannelModel.name.indexOf("/") !== -1) {
+                            alert("Channel names can not have slashes. You may want seperate devices.")
+                            return;
+                        }
+                        if (this.state.addChannelModel.unit == "") {
+                            alert("Please set the unit for the new channel.")
+                            return;
+                        }
+                        if (parseInt(this.state.addChannelModel.rate) == NaN) {
+                            alert("Please set a valid rate for the new channel.")
+                            return;
+                        }
+                        var channels = Object.assign({}, this.state.device.channels)
+                        var newChannel = {
+                            unit: this.state.addChannelModel.unit,
+                            rate: parseInt(this.state.addChannelModel.rate),
+                            control: this.state.addChannelModel.control
+                        }
+                        channels[this.state.addChannelModel.name] = newChannel
+
+                        this.setState({
+                            addChannelModel: {
+                                ...this.state.addChannelModel,
+                                open: false
+                            },
+                            device:{
+                                ...this.state.device,
+                                channels
+                            }
+                        })
+                        
+                        }}>Create Channel</Button></Form.Field>
+                </Form>
+            </Modal.Content>
+        </Modal>
+        </Segment>);
     }
 }
 
@@ -246,3 +363,9 @@ function normalizeValue(value) {
     }
     return number;
 }
+
+const unitOptions = [
+  { key: 'Celcius', text: 'Celcius', value: 'Celcius' },
+  { key: 'Microsiemens', text: 'Microsiemens', value: 'Microsiemens' },
+  { key: 'Amps', text: 'Amps', value: 'Amps' },
+]
