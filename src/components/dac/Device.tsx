@@ -262,14 +262,14 @@ export default class Device extends React.Component<{
                     </Form.Field>
                     <Form.Field>
                         <label>Unit</label>
-                        <Select options={unitOptions} placeholder='Select the unit.' selection={this.state.addChannelModel.unit} onChange={(e) => {
+                        <Select options={unitOptions} placeholder='Select the unit.' onChange={(e) => {
                              this.setState({
                                 addChannelModel: {
                                     ...this.state.addChannelModel,
                                     unit: e.currentTarget.innerText
                                 }
                             })
-                            }}>
+                            }} selection={true}>
                             </Select>
                     </Form.Field>
                     <Form.Field>
