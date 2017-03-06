@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router'
 
@@ -32,12 +31,11 @@ export default class SignIn extends React.Component<{
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (this.props.location.pathname.startsWith(`/${organizationNameOrNull}/${service}/`))
     }
-    _menu
-    _settingsMenu
+
     render() {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (
-            <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}} ref={(menuScroll) => this._menu = menuScroll}>
+            <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}}>
                 <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
                 {
                     this.props.iam.organization ? 
@@ -71,7 +69,7 @@ export default class SignIn extends React.Component<{
                         <div style={{display:'flex', height: 54}} className="computer tablet only">
                         {
                             (this.props.iam.loaded && this.props.iam.organization !== undefined && this.state.settingsMenu) ? (
-                                <div style={{display:'flex', height: 54}} ref={(settingsMenu) => this._settingsMenu = settingsMenu}>
+                                <div style={{display:'flex', height: 54}}>
                                     <Menu.Item icon="angle double right" onClick={() => {
                                         this.setState({
                                             settingsMenu: false
