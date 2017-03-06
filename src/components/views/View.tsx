@@ -5,7 +5,7 @@ import { Link , browserHistory} from 'react-router'
 import { Client, connect, Granted } from "mqtt"
 import Helmet from 'react-helmet'
 var zipObject = require('zip-object');
-import { valueWithUnit, getUnitForTopic } from '../../actions/units'
+import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '../../actions/units'
 
 export class ColumnComponent {
     width?: number
@@ -141,6 +141,23 @@ export default class View extends React.Component<{
                                                         conductivity: "/organizations/heatworks/devices/virtual/recorder/conductivity"
                                                     }
                                                 }
+                                            ]
+                                        },
+                                        {
+                                            fluid: true,
+                                            columns: [
+                                                {
+                                                    width: 16,
+                                                    component: "/organizations/heatworks/views/components/temperature/recorder",
+                                                    props: {
+                                                        title: "Temperature Recorder",
+                                                        icon: "calculator"
+                                                    },
+                                                    channels: {
+                                                        temperature: "/organizations/heatworks/devices/virtual/recorder/temperature"
+                                                    }
+                                                }
+                                                
                                             ]
                                         }
                                     ]
@@ -414,6 +431,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/temperature/recorder") {
+            return (
+                <TemperatureRecorder {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
@@ -611,6 +634,64 @@ class ConductivityRecorder extends React.Component<{
                     }, 1000)
                 }} loading={this.state.publishing}>Publish</Button>
                 </Input>
+            </Segment>
+        )
+    }
+}
+
+
+class TemperatureRecorder extends React.Component<{
+    title: string,
+    channels: {
+        temperature: string
+    },
+    values: {
+        temperature: number
+    },
+    publish: (topic, value) => any
+},{
+    value?: string,
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            value: "",
+            publishing: false
+        }
+    }
+
+    render() {
+        return (
+            <Segment>
+                <Input fluid type="text" content={this.state.value} onChange={(e) => {
+                    this.setState({
+                        value: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <input placeholder={this.props.values.temperature ? `${this.props.values.temperature}` : ''} value={this.state.value} />
+                <Button basic onClick={() =>{
+                    var value = parseFloat(this.state.value)
+                    if (value == NaN) {
+                        alert(`Value (${this.state.value}) was not a number, please try again.`)
+                    }
+                    if (getTemperatureUnit() == "F") {
+                        value = (value - 32) * (5/9)
+                    }
+                    this.props.publish(this.props.channels.temperature, value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            publishing: false,
+                            value: ""
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Publish</Button>
+                </Input>
+                <small>Units recorded in {getTemperatureUnit() == "F" ? UnitLabels.Fahrenheit : UnitLabels.Celcius}.</small>
             </Segment>
         )
     }
