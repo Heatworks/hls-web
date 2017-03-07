@@ -159,6 +159,22 @@ export default class View extends React.Component<{
                                                 }
                                                 
                                             ]
+                                        },
+                                        {
+                                            fluid: true,
+                                            columns: [
+                                                {
+                                                    width: 16,
+                                                    component: "/organizations/hls/views/components/timestamp",
+                                                    props: {
+                                                        title: "Timestamp",
+                                                        icon:"clock"
+                                                    },
+                                                    channels: {
+
+                                                    }
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -437,6 +453,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/hls/views/components/timestamp") {
+            return (
+                <TimestampView {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} />
+            )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
@@ -530,6 +552,65 @@ class Column extends React.Component<{
             </Grid.Column>
         )
     }
+}
+
+class TimestampView extends React.Component<{
+    title: string
+    channels: {
+
+    }
+    values: {
+
+    }
+},{
+    timestamp: Date
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            timestamp: new Date()
+        }
+    }
+    render () {
+        return (<Segment><Button icon="clipboard" size="big" compact labelPosition="right" label={this.state.timestamp.getTime() / 1000} onClick={() => {
+            var date = new Date()
+            this.setState({
+                timestamp: date
+            })
+            this.copyToClipboard(`${date.getTime() / 1000}`)
+        }} /><input type="text" style={{opacity: 0}} id="_hiddenCopyText_" /></Segment>)
+    }
+    copyToClipboard(string) {
+        // create hidden text element, if it doesn't already exist
+        var targetId = "_hiddenCopyText_";
+        var origSelectionStart, origSelectionEnd;
+        var target = document.getElementById(targetId) as HTMLInputElement | HTMLTextAreaElement;
+        if (!target) {
+            target = document.createElement("textarea") as HTMLTextAreaElement;
+            target.style.position = "absolute";
+            target.style.left = "-9999px";
+            target.style.top = "0";
+            target.id = targetId;
+            document.body.appendChild(target);
+        }
+        target.value = string
+        // select the content
+        var currentFocus = document.activeElement;
+        target.focus();
+        target.setSelectionRange(0, target.value.length);
+        
+        // copy the selection
+        var succeed;
+        try {
+            succeed = document.execCommand("copy");
+        } catch(e) {
+            succeed = false;
+        }
+        
+        return succeed;
+    }
+
 }
 
 class PowerSwitch extends React.Component<{
