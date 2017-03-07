@@ -5,12 +5,13 @@ import MonitorButton from '../connected/MonitorButton'
 var DateTime = require('react-datetime')
 var moment = require('moment')
 import * as Promsie from 'bluebird'
-
+import MarkersBar from './MarkersBar'
 require("../../resources/react-datetime.css")
 
 import { iconForStatus } from './helpers'
 
 import * as DAC from '../../apis/hls_dac'
+import { TestMarkers } from '../../apis/hls_tests'
 
 var api_dac = new DAC.DefaultApi()
 
@@ -28,7 +29,7 @@ export default class Test extends React.Component<{
             description: string,
             channels: any,
             tags: any,
-            markers: Array<any>,
+            markers: Array<TestMarkers>,
             range: Array<number>
         }
     },
@@ -302,6 +303,7 @@ export default class Test extends React.Component<{
         <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>Edit</span></Menu.Item>
       </Menu>
         <Segment attached={true} compact>
+            <Header sub textAlign="center">Basic Information</Header>
             <p>
                 <b>Name</b> <a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}`}>{this.state.test.name}</a><br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.test.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
@@ -324,7 +326,7 @@ export default class Test extends React.Component<{
                                     range
                                 }
                             })
-                        }} /> : <span><br/>{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} &nbsp;&nbsp;</span> )
+                        }} /> : <span>{index == 1 ? <Icon name="caret right" size="small" /> : null}{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} </span> )
                 })}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>
@@ -429,8 +431,38 @@ export default class Test extends React.Component<{
                 />
             </Button.Group>
         </Segment>
-       
-        <Table singleLine selectable attached='bottom' fixed>
+        <Segment attached={true}>
+            <Header sub textAlign="center">Markers</Header>
+            {/*<Segment vertical basic>
+                <MarkersBar />
+            </Segment>*/}
+        </Segment>
+        <Table singleLine selectable attached={true} fixed>
+                <Table.Header>
+                    <Table.Row disabled={this.props.test.loading}>
+                        <Table.HeaderCell>Timestamp</Table.HeaderCell>
+                        <Table.HeaderCell>Name</Table.HeaderCell>
+                        <Table.HeaderCell>Description</Table.HeaderCell>
+                        <Table.HeaderCell>Tags</Table.HeaderCell>
+                        <Table.HeaderCell textAlign="right">Action</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {this.state.test.markers.map((row, index) => {
+                        return (<Table.Row key={index} disabled={this.props.test.loading}>
+                            <Table.Cell>{row.timestamp}</Table.Cell>
+                            <Table.Cell>{row.name}</Table.Cell>
+                            <Table.Cell>{row.description}</Table.Cell>
+                            <Table.Cell>{JSON.stringify(row.tags)}</Table.Cell>
+                            <Table.Cell></Table.Cell>
+                        </Table.Row>)
+                    })}
+                </Table.Body>
+            </Table>
+        <Segment attached={true}>
+            <Header sub textAlign="center">Channels</Header>
+        </Segment>
+        <Table singleLine selectable attached="bottom" fixed>
             <Table.Header>
                 <Table.Row disabled={this.props.test.loading}>
                     <Table.HeaderCell>Key</Table.HeaderCell>
@@ -486,7 +518,6 @@ export default class Test extends React.Component<{
                 </Table.Row> : null}
             </Table.Body>
         </Table>
-        
         <Modal open={this.state.devicesModal} closeIcon="close" onClose={() => {
             this.setState({
                 devicesModal: false
