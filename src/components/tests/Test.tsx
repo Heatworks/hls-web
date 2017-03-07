@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Card, Divider } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
 var DateTime = require('react-datetime')
@@ -14,6 +14,10 @@ import * as DAC from '../../apis/hls_dac'
 import { TestMarkers } from '../../apis/hls_tests'
 
 var api_dac = new DAC.DefaultApi()
+
+export interface NewTestMarker extends TestMarkers {
+    added:boolean
+}
 
 export default class Test extends React.Component<{
     test: {
@@ -57,6 +61,7 @@ export default class Test extends React.Component<{
         key: string,
         value: string
     },
+    newMarkers?: Array<NewTestMarker>,
     reset?: {
         open: boolean
     },
@@ -87,7 +92,8 @@ export default class Test extends React.Component<{
                 open: false
             },
             devices: [],
-            devicesModal: false
+            devicesModal: false,
+            newMarkers: []
         }
     }
 
@@ -432,10 +438,87 @@ export default class Test extends React.Component<{
             </Button.Group>
         </Segment>
         <Segment attached={true}>
-            <Header sub textAlign="center">Markers</Header>
+            
+            <Header sub textAlign="center">Markers <Button floated="right" size="tiny" content="Add" compact onClick={() => {
+                var newMarkers = this.state.newMarkers.splice(0)
+                newMarkers.push({added: false, name:"", description:"",timestamp:null, tags:{}})
+                this.setState({
+                    newMarkers
+                })
+                }} /></Header>
             {/*<Segment vertical basic>
                 <MarkersBar />
             </Segment>*/}
+            <Card.Group>
+            {this.state.newMarkers.map((marker, index) => {
+                if (marker.added) {
+                    return false
+                }
+                return (<Card key={index}>
+                            <Card.Content>
+                                <Card.Header><Icon name="pin" /> New Marker
+                                </Card.Header>
+                                <Divider />
+                                <Input type="text" placeholder="Timestamp (leave blank for now)" icon="clock" fluid style={{marginBottom: 4}} value={marker.timestamp ? marker.timestamp : null} onChange={(e) => {
+                                    var newMarkers = this.state.newMarkers.splice(0)
+                                    newMarkers[index].timestamp = parseFloat(e.currentTarget.value)
+                                    this.setState({
+                                        newMarkers
+                                    })
+                                }}/>
+                                <Input type="text" placeholder="unique/marker/name" icon="pin" fluid  style={{marginBottom: 4}} value={marker.name} onChange={(e) => {
+                                    var newMarkers = this.state.newMarkers.splice(0)
+                                    newMarkers[index].name = e.currentTarget.value
+                                    this.setState({
+                                        newMarkers
+                                    })
+                                }}/>
+                                <Card.Description>
+                                <Input type="text" placeholder="Description for Marker" value={marker.description} fluid onChange={(e) => {
+                                    var newMarkers = this.state.newMarkers.splice(0)
+                                    newMarkers[index].description = e.currentTarget.value
+                                    this.setState({
+                                        newMarkers
+                                    })
+                                }}/>
+                                </Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <div className='ui two buttons'>
+                                <Button basic color='green' onClick={() => {
+                                    var marker = this.state.newMarkers[index]
+                                    if (!marker.timestamp) {
+                                        var date = new Date()
+                                        marker.timestamp = date.getTime() / 1000
+                                    }
+                                    marker.added = true
+                                    var newMarkers = this.state.newMarkers.splice(0)
+                                    var markers = this.state.test.markers.splice(0)
+                                    var testMarker = Object.assign({}, marker)
+                                    delete testMarker['added']
+                                    markers.push(testMarker)
+                                    this.setState({
+                                        newMarkers: newMarkers,
+                                        test: {
+                                            ...this.state.test,
+                                            markers
+                                        }
+                                    }, () => {
+                                        this.saveTest()
+                                    })
+                                    }}>Save</Button>
+                                <Button basic color='red' onClick={() => {
+                                    var newMarkers = this.state.newMarkers.splice(0)
+                                    newMarkers[index].added = true
+                                    this.setState({
+                                        newMarkers
+                                    })
+                                    }}>Cancel</Button>
+                                </div>
+                            </Card.Content>
+                        </Card>)
+            })}
+            </Card.Group>
         </Segment>
         <Table singleLine selectable attached={true} fixed>
                 <Table.Header>
@@ -451,10 +534,21 @@ export default class Test extends React.Component<{
                     {this.state.test.markers.map((row, index) => {
                         return (<Table.Row key={index} disabled={this.props.test.loading}>
                             <Table.Cell>{row.timestamp}</Table.Cell>
-                            <Table.Cell>{row.name}</Table.Cell>
+                            <Table.Cell><a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}:${row.name}`}>{row.name}</a></Table.Cell>
                             <Table.Cell>{row.description}</Table.Cell>
                             <Table.Cell>{JSON.stringify(row.tags)}</Table.Cell>
-                            <Table.Cell></Table.Cell>
+                            <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><Button icon="close" label={null} onClick={() =>{
+                                var markers = this.state.test.markers.splice(0)
+                                markers.splice(index, 1)
+                                this.setState({
+                                    test: {
+                                        ...this.state.test,
+                                        markers
+                                    }
+                                }, () => {
+                                    this.saveTest()
+                                })
+                                }} /></Table.Cell>
                         </Table.Row>)
                     })}
                 </Table.Body>
