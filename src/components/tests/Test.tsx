@@ -49,6 +49,7 @@ export default class Test extends React.Component<{
     }
 },{
     editing?: boolean,
+    saving?:boolean,
     test?: {
         name: string,
         description: string,
@@ -83,7 +84,8 @@ export default class Test extends React.Component<{
 
         this.state = {
             editing: false,
-            test: Object.assign({}, this.props.test.data),
+            saving: false,
+            test: this.props.test.data == null ? null : Object.assign({}, this.props.test.data),
             newTag: {
                 key: '',
                 value: ''
@@ -98,9 +100,18 @@ export default class Test extends React.Component<{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            test: Object.assign({}, nextProps.test.data),
-        })
+        if (this.state.test == null) {
+            this.setState({
+                test: Object.assign({}, nextProps.test.data),
+                saving: false
+            })
+        } else {
+            this.setState({
+                saving: false
+            })
+            console.log('(this.state.test == null) = false')
+            console.log(this.state.test)
+        }
     }
     toggleEditing() {
          if (this.state.editing) {
@@ -216,7 +227,17 @@ export default class Test extends React.Component<{
         })
     }
     saveTest() {
-        return this.props.actions.save(this.state.test, this.props.accessToken);
+        if (this.state.saving) {
+            setTimeout(() => {
+                this.saveTest()
+            }, 10)
+        } else {
+            this.setState({
+                saving: true
+            }, () => {
+                return this.props.actions.save(this.state.test, this.props.accessToken);
+            })
+        }
     }
     isComplete() {
         return (this.state.test.range.length == 2)
@@ -306,7 +327,7 @@ export default class Test extends React.Component<{
                 }}>Passed</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
-        <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>Edit</span></Menu.Item>
+        <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving || this.state.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving || this.state.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>Edit</span></Menu.Item>
       </Menu>
         <Segment attached={true} compact>
             <Header sub textAlign="center">Basic Information</Header>
@@ -439,7 +460,7 @@ export default class Test extends React.Component<{
         </Segment>
         <Segment attached={true}>
             
-            <Header sub textAlign="center">Markers <Button floated="right" size="tiny" content="Add" compact onClick={() => {
+            <Header sub textAlign="center">Markers <Button floated="right" size="tiny" content="Add" style={{ marginTop: -5, marginRight: -6, marginBottom: -5}} compact onClick={() => {
                 var newMarkers = this.state.newMarkers.splice(0)
                 newMarkers.push({added: false, name:"", description:"",timestamp:null, tags:{}})
                 this.setState({
@@ -532,6 +553,11 @@ export default class Test extends React.Component<{
                 </Table.Header>
                 <Table.Body>
                     {this.state.test.markers.map((row, index) => {
+                        return {
+                            ...row,
+                            index
+                        }
+                    }).sort((a, b) => { return b.timestamp - a.timestamp }).map((row, index) => {
                         return (<Table.Row key={index} disabled={this.props.test.loading}>
                             <Table.Cell>{row.timestamp}</Table.Cell>
                             <Table.Cell><a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}:${row.name}`}>{row.name}</a></Table.Cell>
@@ -539,7 +565,7 @@ export default class Test extends React.Component<{
                             <Table.Cell>{JSON.stringify(row.tags)}</Table.Cell>
                             <Table.Cell textAlign="right" style={{ margin: 0, padding: 0 }}><Button icon="close" label={null} onClick={() =>{
                                 var markers = this.state.test.markers.splice(0)
-                                markers.splice(index, 1)
+                                markers.splice(row.index, 1)
                                 this.setState({
                                     test: {
                                         ...this.state.test,
