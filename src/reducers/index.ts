@@ -3,6 +3,7 @@ import createMiddleware from './clientMiddleware';
 import { routerReducer } from 'react-router-redux';
 import data from './data'
 import tests from './tests'
+import views from './views'
 import iam from './iam'
 import dac from './dac'
 import monitor from './monitor'
@@ -13,7 +14,8 @@ const app = combineReducers({
     tests,
     iam,
     dac,
-    monitor
+    monitor,
+    views
 })
 
 export default app

@@ -1,11 +1,14 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message } from 'semantic-ui-react'
 import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
 import { Client, connect, Granted } from "mqtt"
 import Helmet from 'react-helmet'
 var zipObject = require('zip-object');
 import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '../../actions/units'
+import { View as ViewModel, ViewRow } from '../../apis/hls_views'
+import { normalizeName } from '../../utils/normalizeNames'
+
 
 export class ColumnComponent {
     width?: number
@@ -37,203 +40,60 @@ export class ViewObject {
 }
 
 export default class View extends React.Component<{
+    view: {
+        loading: boolean,
+        loaded: boolean,
+        saving: boolean,
+        saved: boolean,
+        deleting: boolean,
+        deleted: boolean,
+        error?: any,
+        data: ViewModel
+    },
+    accessToken: string,
+    actions: {
+        load: (name: any, accessToken:string) => any,
+        save: (view: any, accessToken: string) => any,
+        deleteView: (view: string, accessToken: string) => any
+    },
     params: {
         organizationName: string,
-        splat: string
+        splat: string 
     },
-    client: Client
+    client: Client,
+    
 },{
-    view?: ViewObject,
+    view?: ViewModel,
     connected?: boolean,
     channels?: any,
     error?: string,
     editing?: boolean,
-    live?:boolean
+    live?:boolean,
+    saving?:boolean
 }> {
     constructor(props) {
         super(props);
+        this.props.actions.load(this.props.params.splat, this.props.accessToken)
         this.setupView()
     }
 
+
     componentWillReceiveProps(nextProps) {
-        if (!this.state.connected) {
-            this.setupView()
+        if (this.state.view == null) {
+            this.setState({
+                view: Object.assign({}, nextProps.view.data),
+                saving: false
+            })
+        } else {
+            this.setState({
+                saving: false
+            })
         }
     }
 
     setupView() {
-        // Launch fullscreen for browsers that support it!
-        // the whole page
-        //launchIntoFullscreen(document.getElementById("videoElement")); // any individual element
         this.state = {
-            view : {
-                name: "sample/view",
-                description: "Example view just with a forced state.",
-                tags: {
-
-                },
-                grid: {
-                    rows: [
-                        {
-                            columns: [
-
-                                {
-                                    width: 12,
-                                    component: "/organizations/heatworks/views/components/model-2/pcb/thermocouples",
-                                    props: {
-                                        title: "Second Component",
-                                        size: "huge"
-                                    },
-                                    channels: {
-                                        q1: "/organizations/heatworks/devices/test-station-a/thermocouple/0",
-                                        q2: "/organizations/heatworks/devices/test-station-a/thermocouple/1",
-                                        q3: "/organizations/heatworks/devices/test-station-a/thermocouple/2",
-                                        q4: "/organizations/heatworks/devices/test-station-a/thermocouple/3",
-                                        q5: "/organizations/heatworks/devices/test-station-a/thermocouple/4",
-                                        q6: "/organizations/heatworks/devices/test-station-a/thermocouple/5",
-                                        q7: "/organizations/heatworks/devices/test-station-a/thermocouple/6",
-                                        q8: "/organizations/heatworks/devices/test-station-a/thermocouple/7",
-                                        q10: "/organizations/heatworks/devices/test-station-a/thermocouple/9",
-                                        q11: "/organizations/heatworks/devices/test-station-a/thermocouple/10",
-                                        q12: "/organizations/heatworks/devices/test-station-a/thermocouple/11",
-                                        q13: "/organizations/heatworks/devices/test-station-a/thermocouple/12",
-                                        q14: "/organizations/heatworks/devices/test-station-a/thermocouple/13",
-                                        q15: "/organizations/heatworks/devices/test-station-a/thermocouple/14",
-                                        q16: "/organizations/heatworks/devices/test-station-a/thermocouple/15",
-                                        q17: "/organizations/heatworks/devices/test-station-a/thermocouple/8"
-                                    }
-                                },
-                                {
-                                    width: 4,
-                                    props: {
-
-                                    },
-                                    rows: [
-                                        {
-                                            fluid: true,
-                                            columns: [
-                                                {
-                                                    width: 16,
-                                                    component: "/organizations/hls/views/components/power/switch",
-                                                    props: {
-                                                        title: "Power",
-                                                        icon: "lightning"
-                                                    },
-                                                    channels: {
-                                                        control: "/organizations/heatworks/devices/test-station-a/power/control",
-                                                        value: "/organizations/heatworks/devices/test-station-a/power/value",
-                                                        amps: "/organizations/heatworks/devices/test-station-a/power/amps"
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            fluid: true,
-                                            columns: [
-                                                {
-                                                    width: 16,
-                                                    component: "/organizations/heatworks/views/components/conductivity/recorder",
-                                                    props: {
-                                                        title: "Conductivity Recorder",
-                                                        icon: "eyedropper"
-                                                    },
-                                                    channels: {
-                                                        conductivity: "/organizations/heatworks/devices/virtual/recorder/conductivity"
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            fluid: true,
-                                            columns: [
-                                                {
-                                                    width: 16,
-                                                    component: "/organizations/heatworks/views/components/temperature/recorder",
-                                                    props: {
-                                                        title: "Temperature Recorder",
-                                                        icon: "calculator"
-                                                    },
-                                                    channels: {
-                                                        temperature: "/organizations/heatworks/devices/virtual/recorder/temperature"
-                                                    }
-                                                }
-                                                
-                                            ]
-                                        },
-                                        {
-                                            fluid: true,
-                                            columns: [
-                                                {
-                                                    width: 16,
-                                                    component: "/organizations/hls/views/components/timestamp",
-                                                    props: {
-                                                        title: "Timestamp",
-                                                        icon:"clock"
-                                                    },
-                                                    channels: {
-
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            fluid: true,
-                            columns: [
-                                {
-                                    component: "/organizations/hls/views/components/test",
-                                    props: {
-                                        title: "First Component",
-                                        icon: "cube"
-                                    },
-                                    channels: {
-
-                                    }
-                                },
-                                {
-                                    component: "/organizations/hls/views/components/test",
-                                    props: {
-                                        title: "First Component"
-                                    },
-                                    channels: {
-
-                                    }
-                                },
-                                {
-                                    component: "/organizations/hls/views/components/test",
-                                    props: {
-                                        title: "First Component"
-                                    },
-                                    channels: {
-
-                                    }
-                                },
-                                {
-                                    component: "/organizations/hls/views/components/test",
-                                    props: {
-                                        title: "First Component"
-                                    },
-                                    channels: {
-
-                                    }
-                                },
-                                {
-                                    component: "/organizations/hls/views/components/test",
-                                    props: {
-                                        title: "First Component"
-                                    },
-                                    channels: {
-
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            },
+            view : this.props.view.data == null ? null : Object.assign({}, this.props.view.data),
             channels: {
                 
             },
@@ -241,14 +101,20 @@ export default class View extends React.Component<{
             editing: false,
             live: true
         }
-
+        console.log('setupView...')
         this.checkProps().then(() => {
             return this.processChannelsInView();
         }).then(() => {
             return this.processConnectClient()
         }).then(() => {
-            console.log('Done!')
+            this.setState({
+                error: null
+            })
         }).catch((error) => {
+            setTimeout(() => {
+                this.setupView()
+            }, 1000)
+            console.error(error)
             this.setState({
                 error
             })
@@ -278,7 +144,7 @@ export default class View extends React.Component<{
         })
     }
 
-    processChannelsInRows(rows: Array<RowObject>, channelPromises) {
+    processChannelsInRows(rows: Array<ViewRow>, channelPromises) {
         rows.map((row) => {
             row.columns.map((column) => {
                 if ('rows' in column) {
@@ -367,13 +233,24 @@ export default class View extends React.Component<{
                 }}>Retry</Button>
             </Segment>)
         }
+        if (this.state.error !== "" && this.state.error !== null && this.state.error) {
+            return (<Segment basic vertical>
+            <Message icon>
+                <Icon name='warning sign' />
+                <Message.Content>
+                <Message.Header>{JSON.stringify(this.state.error)}</Message.Header>
+                Could not load view: <b>{this.props.params.splat}</b> Go back to <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> and try again.
+                </Message.Content>
+            </Message>
+            </Segment>)
+        }
         return (<Segment basic vertical>
                 <Helmet title={`HLS - ${this.props.params.organizationName} - Views`} />
                 <Grid>
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Header>
-                                <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> / {this.state.view.name}<br/><Header sub>{this.state.view.description}</Header>
+                                <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> / {normalizeName(this.state.view.name, "local")}<br/><Header sub>{this.state.view.description}</Header>
                             </Header>
                         </Grid.Column>
                         <Grid.Column>
@@ -509,11 +386,11 @@ class Column extends React.Component<{
                             },
                             unsavedChanges: true 
                         })
-                    }} />  : <Header subheader>{this.props.column.props.icon ? <Icon name={this.props.column.props.icon} circular style={{ marginRight: 0 }} /> : null }<Header.Content>{this.props.column.props.title} </Header.Content></Header>
+                    }} />  : (this.props.column.props.title ? <Header subheader>{this.props.column.props.icon ? <Icon name={this.props.column.props.icon} circular style={{ marginRight: 0 }} /> : null }<Header.Content>{this.props.column.props.title} </Header.Content></Header> : null)
                     }
                 {
                     this.props.editing ? <Segment vertical>
-                    <Table>
+                        {'channels' in this.props.column ? (<Table>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell sorted="ascending">Key</Table.HeaderCell>
@@ -521,25 +398,29 @@ class Column extends React.Component<{
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                        {Object.keys(this.props.column.channels).map((key, index) => {
+                            {Object.keys(this.props.column.channels).map((key, index) => {
                             return (<Table.Row key={index}>
                                 <Table.Cell>{key}</Table.Cell>
                                 <Table.Cell>.../{this.props.column.channels[key].split('/devices/')[1]}</Table.Cell>
                             </Table.Row>)
                         })}
+                            
                         </Table.Body>
-                    </Table>
+                    </Table>) : null }
+                    
+                    {'rows'in this.props.column ? <Segment>{this.props.children}</Segment> : null}
+
                     <Button.Group fluid>
                         <Button labelPosition='left' icon='left chevron' content='' onClick={(e) => {
-                            this.props.column.width += 1
-                            /*var prevColumn = (columnIndex == 0) ? null : row.columns[columnIndex - 1]
-                            if (prevColumn) {
-                                prevColumn.width -= 1
-                            }*/
-                            //this.setState({ view: this.state.view })
+                            var column = Object.assign({}, this.props.column)
+                            column.width -= 1
+                            this.props.onChange(column)
                         }} />
                         <Button />
                         <Button labelPosition='right' icon='right chevron' content='' onClick={(e) => {
+                            var column = Object.assign({}, this.props.column)
+                            column.width += 1
+                            this.props.onChange(column)
                             /*column.width = column.width + 1
                             var nextColumn = (columnIndex >= row.columns.length - 1) ? null : row.columns[columnIndex + 1]
                             if (nextColumn) {
@@ -547,7 +428,9 @@ class Column extends React.Component<{
                             }
                             this.setState({ view: this.state.view })*/
                         }} />
-                    </Button.Group></Segment> : this.props.children
+                    </Button.Group>
+                    
+                    </Segment> : this.props.children
                 }
             </Grid.Column>
         )

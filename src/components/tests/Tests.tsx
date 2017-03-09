@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Header, Grid, Icon, Image, Menu,Input } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Header, Grid, Icon, Image, Menu,Input, Divider } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import Helmet from 'react-helmet'
 import TestsTable from './connected/TestsTable'
@@ -67,6 +67,8 @@ export default class Tests extends React.Component<{
                     </Grid.Column>
                      </Grid.Row>
                     </Grid>
+                                        <Divider />
+
                 <Menu secondary>
                     <Menu.Menu position='right'>
                         <Menu.Item name="export" content="Export" icon="download" onClick={() => {
