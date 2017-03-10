@@ -75,7 +75,12 @@ export default class Test extends React.Component<{
             control: boolean
         }>
     }>,
-    devicesModal?: boolean
+    devicesModal?: boolean,
+    measuring?: boolean,
+    measuringTimestamp?: number,
+    measuringSelected?: boolean,
+    filtering?: boolean,
+    markersFilterRange?: Array<number>
 }> {
     constructor(props) {
         super(props)
@@ -95,7 +100,12 @@ export default class Test extends React.Component<{
             },
             devices: [],
             devicesModal: false,
-            newMarkers: []
+            newMarkers: [],
+            measuring: false,
+            measuringSelected: false,
+            measuringTimestamp: 0,
+            filtering: false,
+            markersFilterRange: null
         }
     }
 
@@ -459,7 +469,6 @@ export default class Test extends React.Component<{
             </Button.Group>
         </Segment>
         <Segment attached={true}>
-            
             <Header sub textAlign="center">Markers <Button floated="right" size="tiny" content="Add" style={{ marginTop: -5, marginRight: -6, marginBottom: -5}} compact onClick={() => {
                 var newMarkers = this.state.newMarkers.splice(0)
                 newMarkers.push({added: false, name:"", description:"",timestamp:null, tags:{}})
@@ -467,9 +476,9 @@ export default class Test extends React.Component<{
                     newMarkers
                 })
                 }} /></Header>
-            {/*<Segment vertical basic>
-                <MarkersBar />
-            </Segment>*/}
+        </Segment>
+        {this.state.newMarkers.length > 0 ? (
+        <Segment attached={true}>
             <Card.Group>
             {this.state.newMarkers.map((marker, index) => {
                 if (marker.added) {
@@ -540,6 +549,22 @@ export default class Test extends React.Component<{
                         </Card>)
             })}
             </Card.Group>
+        </Segment>) : null }
+         <Segment attached={true} vertical style={{paddingTop: 0, paddingBottom: 0}}>
+            <MarkersBar markers={this.state.test.markers} range={this.state.test.range.slice(0)} setFiltering={(filtering, range) => {
+                    this.setState({
+                        filtering,
+                        markersFilterRange: range
+                    })
+                }} setMeasuring={(measuring, timestamp) => {
+                    if (this.state.measuring && this.state.measuringSelected && measuring) {
+                        return;
+                    }
+                    this.setState({
+                        measuring,
+                        measuringTimestamp: timestamp
+                    })
+                }}/>
         </Segment>
         <Table singleLine selectable attached={true} fixed>
                 <Table.Header>
@@ -557,9 +582,40 @@ export default class Test extends React.Component<{
                             ...row,
                             index
                         }
-                    }).sort((a, b) => { return b.timestamp - a.timestamp }).map((row, index) => {
-                        return (<Table.Row key={index} disabled={this.props.test.loading}>
-                            <Table.Cell>{row.timestamp}</Table.Cell>
+                    }).sort((a, b) => { return b.timestamp - a.timestamp }).filter((row) => {
+                        return (this.state.filtering) ? (row.timestamp > this.state.markersFilterRange[0] && row.timestamp < this.state.markersFilterRange[1]) : true
+                    }).map((row, index, array) => {
+                        var isCurrentlySelected = false
+                        var duration; 
+
+                        if (this.state.measuring) {
+                            if (row.timestamp > this.state.measuringTimestamp - 0.01 && row.timestamp < this.state.measuringTimestamp + 0.01 ) {
+                                isCurrentlySelected = true
+                            }
+                            duration = moment.duration(Math.abs(row.timestamp - this.state.measuringTimestamp)*1000)
+                        }
+                        return (<Table.Row key={index} disabled={this.props.test.loading} active={isCurrentlySelected} onMouseOver={() => {
+                            if (this.state.measuring && !this.state.measuringSelected) {
+                                this.setState({
+                                    measuringTimestamp: row.timestamp
+                                })
+                            }
+                            }} onClick={() => {
+                                if (this.state.measuring) {
+                                    if (this.state.measuringTimestamp == row.timestamp && this.state.measuringSelected) {
+                                        this.setState({
+                                            measuringSelected: false,
+                                            measuringTimestamp: row.timestamp
+                                        })
+                                    } else {
+                                        this.setState({
+                                            measuringSelected: true,
+                                            measuringTimestamp: row.timestamp
+                                        })
+                                    }
+                                }
+                            }}>
+                            <Table.Cell>{row.timestamp} {this.state.measuring ? <small>{padWithZero(duration.hours())}:{padWithZero(duration.minutes())}:{padWithZero(duration.seconds())}.{padWithZero(Math.round(duration.milliseconds()),3)}</small>: null} </Table.Cell>
                             <Table.Cell><a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}:${row.name}`}>{row.name}</a></Table.Cell>
                             <Table.Cell>{row.description}</Table.Cell>
                             <Table.Cell>{JSON.stringify(row.tags)}</Table.Cell>
@@ -714,4 +770,11 @@ function normalizeValue(value) {
 
 function upperCaseFirst(str){
     return str.charAt(0).toUpperCase() + str.substring(1);
+}
+function padWithZero(input, length = 2) {
+    // Cast input to string
+    input = "" + input;
+
+    let paddingSize = Math.max(0, length - input.length);
+    return new Array(paddingSize > 0 ? paddingSize + 1 : 0).join("0") + input;
 }
