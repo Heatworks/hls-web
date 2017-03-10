@@ -41,7 +41,7 @@ export default class ViewsIndex extends React.Component<{
                     <Grid.Column>
                         <Button fluid onClick={() => {
                             browserHistory.push({
-                                pathname: `/${this.props.params.organizationName}/views/view/`
+                                pathname: `/${this.props.params.organizationName}/views/sample/view/`
                             });
                         }}>Demo</Button>
                     </Grid.Column>
