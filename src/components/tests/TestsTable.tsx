@@ -42,11 +42,13 @@ export default class TestsTable extends React.Component<{
             direction: 1,
             tagsInTable: []
         }
-        this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
 
         if (this.props.onDataLoad) {
             this.props.onDataLoad(this.props.tests.data)
         }
+    }
+    componentWillMount() {
+        this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.onDataLoad) {

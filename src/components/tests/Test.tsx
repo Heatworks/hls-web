@@ -85,8 +85,6 @@ export default class Test extends React.Component<{
     constructor(props) {
         super(props)
         console.log('load: '+this.props.params.splat)
-        this.props.actions.load(this.props.params.splat, this.props.accessToken)
-
         this.state = {
             editing: false,
             saving: false,
@@ -108,9 +106,12 @@ export default class Test extends React.Component<{
             markersFilterRange: null
         }
     }
+    componentWillMount() {
+        this.props.actions.load(this.props.params.splat, this.props.accessToken)
+    }
 
     componentWillReceiveProps(nextProps) {
-        if (this.state.test == null) {
+        if (this.state.test == null || nextProps.test.data.name !== this.state.test.name) {
             this.setState({
                 test: Object.assign({}, nextProps.test.data),
                 saving: false
