@@ -98,7 +98,7 @@ export default class View extends React.Component<{
                 view: Object.assign({}, nextProps.view.data),
                 saving: false
             }, () => {
-                this.setupView()
+                this.setupLive()
             })
         } else {
             this.setState({
@@ -107,7 +107,7 @@ export default class View extends React.Component<{
         }
     }
 
-    setupView() {
+    setupLive() {
         console.log('setupView...' + this.state.view.name)
         this.checkProps().then(() => {
             return this.processChannelsInView();
@@ -115,7 +115,8 @@ export default class View extends React.Component<{
             return this.processConnectClient()
         }).then(() => {
             this.setState({
-                error: null
+                error: null,
+                live: true
             })
         }).catch((error) => {
             console.error(error)
@@ -239,7 +240,7 @@ export default class View extends React.Component<{
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
                 <Button onClick={() => {
-                    this.setupView()
+                    this.setupLive()
                 }}>Retry</Button>
             </Segment>)
         }
@@ -256,7 +257,7 @@ export default class View extends React.Component<{
                     })
                     }} />
                     <Button content="Retry" onClick={() => {
-                        this.setupView()
+                        this.setupLive()
                         }} />
                 </Message.Content>
             </Message>
@@ -272,7 +273,14 @@ export default class View extends React.Component<{
                             </Header>
                         </Grid.Column>
                         <Grid.Column>
-                            <Menu floated="right"><Menu.Item as={Button} {...{onClick: () => {
+                            <Menu floated="right">
+                                <Menu.Item as={Button} content={this.state.live ? 'Live' : 'Historical'} {...{onClick: () => {
+                                    this.setState({
+                                        live: !this.state.live
+                                    })
+
+                                    }}} />
+                                <Menu.Item as={Button} {...{onClick: () => {
                                 this.setState({
                                     editing: !this.state.editing
                                 })
