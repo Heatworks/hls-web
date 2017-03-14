@@ -26,11 +26,11 @@ export default class ViewsIndex extends React.Component<{
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>
-                        <Header subheader><Icon name="block layout" circular style={{ marginRight: 0 }} /><Header.Content>Create a View </Header.Content></Header>
+                        <Header><Icon name="block layout" circular style={{ marginRight: 0 }} /><Header.Content>Create a View </Header.Content></Header>
                         <p>A view is a user interface mapped over a collection of devices or tests. Views give you quick insights and control over a test station, workspace, or entire lab.</p>
                     </Grid.Column>
                     <Grid.Column>
-                        <Header subheader><Icon name="block layout" circular style={{ marginRight: 0 }} /><Header.Content>View a Demo </Header.Content></Header>
+                        <Header><Icon name="block layout" circular style={{ marginRight: 0 }} /><Header.Content>View a Demo </Header.Content></Header>
                         <p>A view is a user interface mapped over a collection of devices or tests. Views give you quick insights and control over a test station, workspace, or entire lab.</p>
                     </Grid.Column>
                      </Grid.Row>

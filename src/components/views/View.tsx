@@ -73,16 +73,32 @@ export default class View extends React.Component<{
 }> {
     constructor(props) {
         super(props);
+        this.state = {
+            connected: false,
+            view: null,
+            channels: {},
+            live: false,
+            editing: false,
+            saving: false,
+            error: null
+        }
+    }
+    componentWillMount() {
+        console.log('componentWillMount' + this.props.params.splat )
         this.props.actions.load(this.props.params.splat, this.props.accessToken)
-        this.setupView()
+    }
+    componentWillUnmount() {
+        this.unsubscribeFromChannels()
     }
 
-
     componentWillReceiveProps(nextProps) {
-        if (this.state.view == null) {
+        if (this.state.view == null || nextProps.view.data.name !== this.state.view.name) {
+            this.unsubscribeFromChannels()
             this.setState({
                 view: Object.assign({}, nextProps.view.data),
                 saving: false
+            }, () => {
+                this.setupView()
             })
         } else {
             this.setState({
@@ -92,16 +108,7 @@ export default class View extends React.Component<{
     }
 
     setupView() {
-        this.state = {
-            view : this.props.view.data == null ? null : Object.assign({}, this.props.view.data),
-            channels: {
-                
-            },
-            connected: false,
-            editing: false,
-            live: true
-        }
-        console.log('setupView...')
+        console.log('setupView...' + this.state.view.name)
         this.checkProps().then(() => {
             return this.processChannelsInView();
         }).then(() => {
@@ -125,6 +132,12 @@ export default class View extends React.Component<{
             } else {
                 reject('MQTT Client has not been created yet.')
             }
+        })
+    }
+
+    unsubscribeFromChannels() {
+        Object.keys(this.state.channels).forEach((channel) => {
+            this.props.client.unsubscribe(channel)
         })
     }
 
@@ -222,7 +235,7 @@ export default class View extends React.Component<{
     }
 
     render() {
-        if (!this.props.view.loaded) {
+        if (!this.props.view.loaded || this.state.view == null) {
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
                 <Button onClick={() => {
