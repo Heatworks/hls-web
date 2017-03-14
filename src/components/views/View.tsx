@@ -221,12 +221,11 @@ export default class View extends React.Component<{
             this.setTopicValue(topic, rawValue)
         }
     }
-    setTopicValue(channel, rawValue) {
+    setTopicValue(channel, value) {
         var unit = (this.state.channels[channel]) ? this.state.channels[channel].unit : 'String';
-        if (this.state.channels[channel].unit == null) {
+        if (unit == null) {
             unit = 'String'
         }
-        var value = parseValueForUnit(unit, rawValue);
         var channels = {
             ...this.state.channels
         }

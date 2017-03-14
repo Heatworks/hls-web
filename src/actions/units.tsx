@@ -45,6 +45,8 @@ export function getUnitForTopic(topic) {
 export function valueWithUnit(value, unit) {
     if (unit == "Celcius") {
         return valueForTemperature(value);
+    } if (unit == "String") {
+        return value;
     } else {
         return value + " (" + unit + ")";
     }
