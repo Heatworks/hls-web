@@ -111,9 +111,6 @@ export default class View extends React.Component<{
                 error: null
             })
         }).catch((error) => {
-            setTimeout(() => {
-                this.setupView()
-            }, 1000)
             console.error(error)
             this.setState({
                 error
@@ -245,6 +242,9 @@ export default class View extends React.Component<{
                         error: null
                     })
                     }} />
+                    <Button content="Retry" onClick={() => {
+                        this.setupView()
+                        }} />
                 </Message.Content>
             </Message>
             </Segment>)
