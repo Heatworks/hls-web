@@ -240,6 +240,11 @@ export default class View extends React.Component<{
                 <Message.Content>
                 <Message.Header>{JSON.stringify(this.state.error)}</Message.Header>
                 Could not load view: <b>{this.props.params.splat}</b> Go back to <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> and try again.
+                <Button content="Ignore Error" onClick={() => {
+                    this.setState({
+                        error: null
+                    })
+                    }} />
                 </Message.Content>
             </Message>
             </Segment>)
@@ -732,7 +737,7 @@ class Camera extends React.Component<{
     }
     
     render() {
-        return <Segment>{(this.state.latest.length > 0) ? <Image src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
+        return <Segment>{(this.state.latest.length > 0) ? <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
         {this.state.latest}
         <br/><Button onClick={() => {
             this.getLatest()
