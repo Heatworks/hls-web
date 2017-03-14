@@ -113,8 +113,8 @@ export default class View extends React.Component<{
 
     setupLive() {
         console.log('setupView...' + this.state.view.name)
-        this.checkProps().then(() => {
-            return this.processChannelsInView();
+        this.processChannelsInView().then(() => {
+            return this.checkProps();
         }).then(() => {
             return this.processConnectClient()
         }).then(() => {
@@ -293,7 +293,7 @@ export default class View extends React.Component<{
     }
 
     render() {
-        if ((!this.props.view.loaded || this.state.view == null) || Object.keys(this.state.channels).length == 0) {
+        if (!this.props.view.loaded || this.state.view == null) {
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
                 <Button onClick={() => {
