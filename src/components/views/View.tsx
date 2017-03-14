@@ -835,6 +835,7 @@ class Camera extends React.Component<{
             <Grid.Column width={6}>
                     <h3>"Live"</h3>
                     <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.props.values.image}`} /> 
+                    <p><b>{this.props.values.image}</b></p>
                 </Grid.Column>
                 <Grid.Column width={6}>
                     <h3>1 Minute Playback</h3>
