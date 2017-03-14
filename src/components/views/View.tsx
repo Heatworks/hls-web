@@ -172,7 +172,7 @@ export default class View extends React.Component<{
         return new Promise((resolve, reject) => {
             resolve({
                 name: channel,
-                unit: channel.startsWith("/organizations/heatworks/devices/test-station-a/power/") ? 'Boolean' : 'Float',
+                unit: getUnitForTopic(channel),
                 value: null
             })
         })
@@ -223,6 +223,9 @@ export default class View extends React.Component<{
     }
     setTopicValue(channel, rawValue) {
         var unit = (this.state.channels[channel]) ? this.state.channels[channel].unit : 'String';
+        if (this.state.channels[channel].unit == null) {
+            unit = 'String'
+        }
         var value = parseValueForUnit(unit, rawValue);
         var channels = {
             ...this.state.channels
@@ -427,7 +430,9 @@ export default class View extends React.Component<{
             )
         } else if (column.component == "/organizations/hls/views/components/camera") {
             return (
-                <Camera {...column.props} accessToken={this.props.accessToken} />
+                <Camera {...column.props} accessToken={this.props.accessToken} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} />
             )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
@@ -755,7 +760,13 @@ class TemperatureRecorder extends React.Component<{
 }
 
 class Camera extends React.Component<{
-    accessToken: string
+    accessToken: string,
+    channels: {
+        image: string
+    },
+    values: {
+        image: string
+    }
 },{
     latest?: string[],
     iterate?: number
@@ -791,7 +802,8 @@ class Camera extends React.Component<{
             { 
                 channel: `/organizations/heatworks/devices/camera/a/image`,
                 startTime: (startTime.getTime() / 1000) + "",
-                endTime: (endTime.getTime() / 1000) + ""
+                endTime: (endTime.getTime() / 1000) + "",
+                limit: 10
             },{
             headers: {
                 'Authorization': this.props.accessToken
@@ -818,17 +830,30 @@ class Camera extends React.Component<{
     }
     
     render() {
-        return <Segment>{(this.state.latest.length > 0) ? <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
-        {this.state.latest.map((row, index) => {
-            if (this.state.iterate % this.state.latest.length == index) {
-                return <p key={index}><b>{row}</b></p>
-            } else {
-                return <p key={index}>{row}</p>
-            }
-        })}
+        return <Grid>
+            <Grid.Row>
+            <Grid.Column width={6}>
+                    <h3>"Live"</h3>
+                    <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.props.values.image}`} /> 
+                </Grid.Column>
+                <Grid.Column width={6}>
+                    <h3>1 Minute Playback</h3>
+                {(this.state.latest.length > 0) ? <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
+        {
+            this.state.latest.map((row, index) => {
+                if (this.state.iterate % this.state.latest.length == index) {
+                    return <p key={index}><b>{row}</b></p>
+                } else {
+                    return <p key={index}>{row}</p>
+                }
+            })
+        }
         <br/><Button onClick={() => {
             this.getLatest()
-            }} content="Get Latest" /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} /></Segment>
+            }} content="Get Latest" /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} />
+                </Grid.Column>
+                </Grid.Row>
+            </Grid>
     }
 }
 
@@ -916,6 +941,9 @@ function parseValueForUnit(unit: string, value: string) {
         }
         case 'Float': {
             return parseFloat(value)
+        }
+        case 'String': {
+            return value
         }
     }
 }
