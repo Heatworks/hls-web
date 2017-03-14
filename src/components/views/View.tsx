@@ -293,7 +293,7 @@ export default class View extends React.Component<{
     }
 
     render() {
-        if (!this.props.view.loaded || this.state.view == null) {
+        if ((!this.props.view.loaded || this.state.view == null) || Object.keys(this.state.channels).length == 0) {
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
                 <Button onClick={() => {
