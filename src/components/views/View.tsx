@@ -225,7 +225,7 @@ export default class View extends React.Component<{
     }
 
     render() {
-        if (!this.state.connected || !this.props.client) {
+        if (!this.props.view.loaded) {
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
                 <Button onClick={() => {
@@ -335,6 +335,10 @@ export default class View extends React.Component<{
                 <TimestampView {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} />
+            )
+        } else if (column.component == "/organizations/hls/views/components/camera") {
+            return (
+                <Camera {...column.props} accessToken={this.props.accessToken} />
             )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
@@ -658,6 +662,81 @@ class TemperatureRecorder extends React.Component<{
                 <small>Units recorded in {getTemperatureUnit() == "F" ? UnitLabels.Fahrenheit : UnitLabels.Celcius}.</small>
             </Segment>
         )
+    }
+}
+
+import * as DAC from '../../apis/hls_dac';
+var api_dac = new DAC.DefaultApi()
+
+class Camera extends React.Component<{
+    accessToken: string
+},{
+    latest?: string[],
+    iterate?: number
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            latest: [],
+            iterate: 0
+        }
+    }
+    iterateTimer = null
+    componentDidMount() {
+        this.getLatest()
+    }
+
+    next() {
+        this.setState({
+            iterate: this.state.iterate + 1
+        })
+    }
+    prev() {
+        this.setState({
+            iterate: Math.max(this.state.iterate - 1, 0)
+        })
+    }
+
+    getLatest() {
+        var startTime = new Date()
+        startTime.setTime(startTime.getTime() - 60*1000)
+        var endTime = new Date()
+        return api_dac.dataGet(
+            { 
+                channel: `/organizations/heatworks/devices/camera/a/image`,
+                startTime: (startTime.getTime() / 1000) + "",
+                endTime: (endTime.getTime() / 1000) + ""
+            },{
+            headers: {
+                'Authorization': this.props.accessToken
+            }
+        }).then((data) => {
+            console.log(data)
+            if ('errorMessage' in data) {
+                console.error(data);
+                throw Error(data['errorMessage'])
+            }
+            var latestValues = []
+            data.forEach((_datum) => {
+                if ('value_string' in _datum) {
+                    latestValues.push(_datum['value_string'])
+                }
+            })
+            this.setState({
+                latest: latestValues,
+                iterate: 0
+            })
+        }).catch((error) => {
+            console.error(error);
+        })
+    }
+    
+    render() {
+        return <Segment>{(this.state.latest.length > 0) ? <Image src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
+        {this.state.latest}
+        <br/><Button onClick={() => {
+            this.getLatest()
+            }} content="Get Latest" /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} /></Segment>
     }
 }
 
