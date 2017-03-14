@@ -738,7 +738,13 @@ class Camera extends React.Component<{
     
     render() {
         return <Segment>{(this.state.latest.length > 0) ? <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
-        {this.state.latest}
+        {this.state.latest.map((row, index) => {
+            if (this.state.iterate % this.state.latest.length == index) {
+                return <p key={index}><b>{row}</b></p>
+            } else {
+                return <p key={index}>{row}</p>
+            }
+        })}
         <br/><Button onClick={() => {
             this.getLatest()
             }} content="Get Latest" /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} /></Segment>
