@@ -9,6 +9,8 @@ import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '
 import { View as ViewModel, ViewRow } from '../../apis/hls_views'
 import { normalizeName } from '../../utils/normalizeNames'
 
+import * as DAC from '../../apis/hls_dac';
+var api_dac = new DAC.DefaultApi()
 
 export class ColumnComponent {
     width?: number
@@ -69,7 +71,8 @@ export default class View extends React.Component<{
     error?: string,
     editing?: boolean,
     live?:boolean,
-    saving?:boolean
+    saving?:boolean,
+    currentTimestamp?: number
 }> {
     constructor(props) {
         super(props);
@@ -80,7 +83,8 @@ export default class View extends React.Component<{
             live: false,
             editing: false,
             saving: false,
-            error: null
+            error: null,
+            currentTimestamp: 0
         }
     }
     componentWillMount() {
@@ -133,12 +137,6 @@ export default class View extends React.Component<{
             } else {
                 reject('MQTT Client has not been created yet.')
             }
-        })
-    }
-
-    unsubscribeFromChannels() {
-        Object.keys(this.state.channels).forEach((channel) => {
-            this.props.client.unsubscribe(channel)
         })
     }
 
@@ -219,20 +217,77 @@ export default class View extends React.Component<{
     receiveMessage(topic, message, packet) {
         if (this.state.live) {
             console.log("REC: "+topic+": "+message)
-            var unit = this.state.channels[topic].unit;
-            var value = parseValueForUnit(unit, message.toString().split(",")[1]);
-            var channels = {
-                ...this.state.channels
-            }
-            channels[topic] = {
-                unit,
-                value
-            }
-            this.setState({
-                channels
-            })
+            var rawValue = message.toString().split(",")[1]
+            this.setTopicValue(topic, rawValue)
         }
-        
+    }
+    setTopicValue(channel, rawValue) {
+        var unit = (this.state.channels[channel]) ? this.state.channels[channel].unit : 'String';
+        var value = parseValueForUnit(unit, rawValue);
+        var channels = {
+            ...this.state.channels
+        }
+        channels[channel] = {
+            unit,
+            value
+        }
+        this.setState({
+            channels
+        })
+    }
+
+    unsubscribeFromChannels() {
+        Object.keys(this.state.channels).forEach((channel) => {
+            this.props.client.unsubscribe(channel)
+        })
+    }
+
+    loadHistoricalTimestamp(timestamp) {
+        var startTime = new Date(0)
+        startTime.setTime(timestamp * 1000)
+        var endTime = new Date()
+        endTime.setTime(startTime.getTime() + 2*1000)
+        var getData = Object.keys(this.state.channels).map((channel) => {
+            return api_dac.dataGet(
+                { 
+                    channel: channel,
+                    startTime: (startTime.getTime() / 1000) + "",
+                    endTime: (endTime.getTime() / 1000) + "",
+                    limit: 1
+                },{
+                headers: {
+                    'Authorization': this.props.accessToken
+                }
+            }).then((data) => {
+                if ('errorMessage' in data) {
+                    console.error(data);
+                    return undefined;
+                    //throw Error(data['errorMessage'])
+                }
+                if (data.length > 0) {
+                    return {
+                        channel, 
+                        datum: data[0]
+                    }
+                }
+            })
+        })
+
+        return Promise.all(getData).then((data) => {
+            data.forEach((channelDatum, index) => {
+                if (channelDatum !== undefined) {
+                    if ('value_float' in channelDatum.datum) {
+                        this.setTopicValue(channelDatum.channel, parseFloat(channelDatum.datum['value_float']))
+                    } else {
+                        this.setTopicValue(channelDatum.channel, channelDatum.datum['value_string'])
+                    }
+                }
+            })
+        }).then(() => {
+            this.setState({
+                currentTimestamp: timestamp
+            })
+        })
     }
 
     render() {
@@ -274,11 +329,19 @@ export default class View extends React.Component<{
                         </Grid.Column>
                         <Grid.Column>
                             <Menu floated="right">
-                                <Menu.Item as={Button} content={this.state.live ? 'Live' : 'Historical'} {...{onClick: () => {
+                                {!this.state.live ? <Menu.Item style={{paddingTop:0,paddingBottom:0,paddingRight:3, paddingLeft:3}}><Input type="text" value={this.state.currentTimestamp} onChange={(e) => {
+                                    this.loadHistoricalTimestamp(parseFloat(e.currentTarget.value))
+                                }}/></Menu.Item> : null}
+                                {!this.state.live ? <Menu.Item as={Button} onClick={() => {
+                                    this.loadHistoricalTimestamp(this.state.currentTimestamp - 1)}} content='-1s' /> : null}
+                                {!this.state.live ? <Menu.Item as={Button} {...{onClick: () => {
+                                    this.loadHistoricalTimestamp(this.state.currentTimestamp + 1)
+                                }}} content='+1s' /> : null}
+                                <Menu.Item as={Button} content={'Live'} icon={this.state.live ? 'pause' : 'play'} {...{onClick: () => {
                                     this.setState({
-                                        live: !this.state.live
+                                        live: !this.state.live,
+                                        currentTimestamp: new Date().getTime() / 1000
                                     })
-
                                     }}} />
                                 <Menu.Item as={Button} {...{onClick: () => {
                                 this.setState({
@@ -690,9 +753,6 @@ class TemperatureRecorder extends React.Component<{
         )
     }
 }
-
-import * as DAC from '../../apis/hls_dac';
-var api_dac = new DAC.DefaultApi()
 
 class Camera extends React.Component<{
     accessToken: string

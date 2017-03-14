@@ -74,13 +74,14 @@ export const DefaultApiFetchParamCreator = {
      * @param endTime 
      * @param startTime 
      */
-    dataGet(params: {  "channel"?: string; "endTime"?: string; "startTime"?: string; }, options?: any): FetchArgs {
+    dataGet(params: {  "channel"?: string; "endTime"?: string; "startTime"?: string; "limit"?: number }, options?: any): FetchArgs {
         const baseUrl = `/Data`;
         let urlObj = url.parse(baseUrl, true);
         urlObj.query = assign({}, urlObj.query, {
             "channel": params["channel"],
             "endTime": params["endTime"],
             "startTime": params["startTime"],
+            "limit": params["limit"]
         });
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
@@ -277,7 +278,7 @@ export const DefaultApiFp = {
      * @param endTime 
      * @param startTime 
      */
-    dataGet(params: { "channel"?: string; "endTime"?: string; "startTime"?: string;  }, options?: any): (fetch: FetchAPI, basePath?: string) => Promise<Data> {
+    dataGet(params: { "channel"?: string; "endTime"?: string; "startTime"?: string; "limit"?:number  }, options?: any): (fetch: FetchAPI, basePath?: string) => Promise<Data> {
         const fetchArgs = DefaultApiFetchParamCreator.dataGet(params, options);
         return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
@@ -432,7 +433,7 @@ export class DefaultApi extends BaseAPI {
      * @param endTime 
      * @param startTime 
      */
-    dataGet(params: {  "channel"?: string; "endTime"?: string; "startTime"?: string; }, options?: any) {
+    dataGet(params: {  "channel"?: string; "endTime"?: string; "startTime"?: string; "limit"?:number}, options?: any) {
         return DefaultApiFp.dataGet(params, options)(this.fetch, this.basePath);
     }
     /** 
