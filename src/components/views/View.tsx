@@ -648,7 +648,7 @@ class Solenoid extends React.Component<{
                 }} label loading={this.state.publishing}><Icon name={values.value ? 'toggle on' : 'toggle off'} size="big" /></Button> <span style={{
                     float:'right',
                     fontSize: 20
-                }} >{(values.value) ? 'On' : 'Off'} ({JSON.stringify(values)})</span>
+                }} >{(values.value) ? 'On' : 'Off'}</span>
                 <br/>
             </Segment>
         )
