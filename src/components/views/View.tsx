@@ -278,7 +278,7 @@ export default class View extends React.Component<{
         return Promise.all(getData).then((data) => {
             data.forEach((channelDatum, index) => {
                 if (channelDatum !== undefined) {
-                    if ('value_float' in channelDatum.datum) {
+                    if (channelDatum.datum['value_float'] !== null) {
                         this.setTopicValue(channelDatum.channel, parseFloat(channelDatum.datum['value_float']))
                     } else {
                         this.setTopicValue(channelDatum.channel, channelDatum.datum['value_string'])
@@ -429,7 +429,7 @@ export default class View extends React.Component<{
             )
         } else if (column.component == "/organizations/hls/views/components/camera") {
             return (
-                <Camera {...column.props} accessToken={this.props.accessToken} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                <Camera {...column.props} accessToken={this.props.accessToken} currentTimestamp={this.state.currentTimestamp} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} />
             )
@@ -765,7 +765,8 @@ class Camera extends React.Component<{
     },
     values: {
         image: string
-    }
+    },
+    currentTimestamp: number
 },{
     latest?: string[],
     iterate?: number
@@ -795,14 +796,17 @@ class Camera extends React.Component<{
 
     getLatest() {
         var startTime = new Date()
-        startTime.setTime(startTime.getTime() - 60*1000)
+        startTime.setTime(this.props.currentTimestamp * 1000)
+        startTime.setTime(startTime.getTime() - 120*1000)
         var endTime = new Date()
+        endTime.setTime(this.props.currentTimestamp * 1000)
+        endTime.setTime(endTime.getTime() + 120*1000)
         return api_dac.dataGet(
             { 
                 channel: `/organizations/heatworks/devices/camera/a/image`,
                 startTime: (startTime.getTime() / 1000) + "",
                 endTime: (endTime.getTime() / 1000) + "",
-                limit: 10
+                limit: 100
             },{
             headers: {
                 'Authorization': this.props.accessToken
@@ -839,7 +843,11 @@ class Camera extends React.Component<{
                 <Grid.Column width={6}>
                     <h3>1 Minute Playback</h3>
                 {(this.state.latest.length > 0) ? <Image fluid src={`https://s3.amazonaws.com/hls-dac-images/${this.state.latest[this.state.iterate % this.state.latest.length]}`} /> : null}
-        {
+        
+        <Button onClick={() => {
+            this.getLatest()
+            }} content={`Load around ${this.props.currentTimestamp}`} /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} />
+                {
             this.state.latest.map((row, index) => {
                 if (this.state.iterate % this.state.latest.length == index) {
                     return <p key={index}><b>{row}</b></p>
@@ -848,9 +856,7 @@ class Camera extends React.Component<{
                 }
             })
         }
-        <br/><Button onClick={() => {
-            this.getLatest()
-            }} content="Get Latest" /><Button content="Next" onClick={() => {this.next()}} /><Button content="Previous" onClick={() => {this.prev()}} />
+        <br/>
                 </Grid.Column>
                 </Grid.Row>
             </Grid>
