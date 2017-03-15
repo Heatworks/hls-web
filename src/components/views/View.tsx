@@ -433,6 +433,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} />
             )
+        } else if (column.component == "/organizations/hls/views/components/solenoid") {
+            return (
+                <Solenoid {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
@@ -591,6 +597,62 @@ class TimestampView extends React.Component<{
         return succeed;
     }
 
+}
+
+class Solenoid extends React.Component<{
+    title: string
+    channels: {
+        control: string,
+        value: string
+    }
+    values: {
+        control: boolean,
+        value: boolean
+    }
+    publish: (topic, value) => any
+},{
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value != nextProps.values.control) {
+            this.setState({
+                publishing: true
+            })
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+    
+    render() {
+        var values = {
+            value: valueWithUnit(this.props.values.value, "Boolean"),
+            control: valueWithUnit(this.props.values.control, "Boolean")
+        }
+        return (
+            <Segment color={values.value ? 'green' : 'red'}>
+                <Button basic compact onClick={() => {
+                    this.props.publish(this.props.channels.control, values.value ? 0 : 1)
+                    this.setState({
+                        publishing: true
+                    })
+                }} label loading={this.state.publishing}><Icon name={values.value ? 'toggle on' : 'toggle off'} size="big" /></Button> <span style={{
+                    float:'right',
+                    fontSize: 20
+                }} >{(values.value) ? 'On' : 'Off'} ({JSON.stringify(values)})</span>
+                <br/>
+            </Segment>
+        )
+    }
 }
 
 class PowerSwitch extends React.Component<{

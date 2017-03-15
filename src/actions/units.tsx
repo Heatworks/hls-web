@@ -47,6 +47,8 @@ export function valueWithUnit(value, unit) {
         return valueForTemperature(value);
     } if (unit == "String") {
         return value;
+    } if (unit == "Boolean") {
+        return (parseInt(value) == 1)
     } else {
         return value + " (" + unit + ")";
     }
