@@ -662,7 +662,11 @@ class Solenoid extends React.Component<{
                 }} label loading={this.state.publishing}><Icon name={values.value ? 'toggle on' : 'toggle off'} size="big" /></Button> <span style={{
                     float:'right',
                     fontSize: 20
-                }} >{(values.value) ? 'On' : 'Off'}</span>
+                }} >{this.state.publishing ? <Button.Group basic size={"small"}><Button content={"On"} onClick={() => {
+                        this.props.publish(this.props.channels.control, 1)
+                    }} /><Button content={"Off"} onClick={() => {
+                        this.props.publish(this.props.channels.control, 0)
+                    }} /></Button.Group> : ((values.value) ? 'On' : 'Off')}</span>
                 <br/>
             </Segment>
         )
