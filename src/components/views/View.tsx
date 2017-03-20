@@ -94,7 +94,6 @@ export default class View extends React.Component<{
     componentWillUnmount() {
         this.unsubscribeFromChannels()
     }
-
     componentWillReceiveProps(nextProps) {
         if (this.state.view == null || nextProps.view.data.name !== this.state.view.name) {
             this.unsubscribeFromChannels()
@@ -182,13 +181,16 @@ export default class View extends React.Component<{
         return new Promise((resolve, reject) => {
             console.log("connecting...");
             var connected = (packet) => {
-                console.log('connect')
-                console.log(packet);
+                console.log('connect and subscribe to '+Object.keys(this.state.channels).length+' channels.')
                 this.setState({
                     connected: true
                 })
                 Object.keys(this.state.channels).forEach((channel) => {
-                    this.props.client.subscribe(channel)
+                    console.log('Subscribing to: '+channel)
+                    this.props.client.subscribe(channel, (err) => {
+                        console.log(err)
+                        console.log('Subscribed to: '+ channel)
+                    })
                 })
                 resolve()
             };
@@ -301,7 +303,7 @@ export default class View extends React.Component<{
                 }}>Retry</Button>
             </Segment>)
         }
-        if (this.state.error !== "" && this.state.error !== null && this.state.error) {
+        if ((this.state.error !== "" && this.state.error !== null && this.state.error) || (this.state.connected == false && this.state.live)) {
             return (<Segment basic vertical>
             <Message icon>
                 <Icon name='warning sign' />
@@ -310,7 +312,8 @@ export default class View extends React.Component<{
                 Could not load view: <b>{this.props.params.splat}</b> Go back to <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> and try again.
                 <Button content="Ignore Error" onClick={() => {
                     this.setState({
-                        error: null
+                        error: null,
+                        live: false
                     })
                     }} />
                     <Button content="Retry" onClick={() => {
@@ -345,6 +348,10 @@ export default class View extends React.Component<{
                                         currentTimestamp: new Date().getTime() / 1000
                                     })
                                     }}} />
+                                    <Menu.Item><Icon.Group>
+                            <Icon name="wifi" />
+                            <Icon corner name={this.state.connected ? 'check' : 'warning sign'} />
+                        </Icon.Group></Menu.Item>
                                 <Menu.Item as={Button} {...{onClick: () => {
                                 this.setState({
                                     editing: !this.state.editing
@@ -395,6 +402,9 @@ export default class View extends React.Component<{
     }
 
     renderColumnComponent(column: ColumnComponent) {
+        if (Object.keys(this.state.channels).length == 0) {
+            return <Segment loading />
+        }
         if (column.component == "/organizations/hls/views/components/power/switch") {
             return (
                 <PowerSwitch {...column.props} channels={column.channels} values={{
@@ -436,6 +446,12 @@ export default class View extends React.Component<{
         } else if (column.component == "/organizations/hls/views/components/solenoid") {
             return (
                 <Solenoid {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
+        } else if (column.component == "/organizations/heatworks/views/components/units/model-1x") {
+            return (
+                <ProductionTestStandUnit {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
@@ -623,9 +639,7 @@ class Solenoid extends React.Component<{
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.values.value != nextProps.values.control) {
-            this.setState({
-                publishing: true
-            })
+
         } else {
             this.setState({
                 publishing: false
@@ -650,6 +664,122 @@ class Solenoid extends React.Component<{
                     fontSize: 20
                 }} >{(values.value) ? 'On' : 'Off'}</span>
                 <br/>
+            </Segment>
+        )
+    }
+}
+const unit_visuals = {
+    full_on: require('../../resources/unit_visual/test_unit_visual_full_on@2x.png'),
+    full_off: require('../../resources/unit_visual/test_unit_visual_full_off@2x.png'),
+    flow_off:require('../../resources/unit_visual/test_unit_visual_flow_off@2x.png'),
+    flow_out_off:require('../../resources/unit_visual/test_unit_visual_flow_out_off@2x.png'),
+    flow_in_off:require('../../resources/unit_visual/test_unit_visual_flow_in_off@2x.png')
+}
+class ProductionTestStandUnit extends React.Component<{
+    title: string
+    channels: {
+        waterInControl: string,
+        waterInValue: string,
+        waterOutControl: string,
+        waterOutValue: string,
+        PowerInControl: string,
+        PowerInValue: string,
+        stabsControl: string,
+        stabsValue: string
+    }
+    values: {
+        waterInControl: boolean,
+        waterInValue: boolean,
+        waterOutControl: boolean,
+        waterOutValue: boolean,
+        PowerInControl: boolean,
+        PowerInValue: boolean,
+        stabsControl: boolean,
+        stabsValue: boolean
+    }
+    publish: (topic, value) => any
+},{
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value != nextProps.values.control) {
+            this.setState({
+                publishing: true
+            })
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+
+    engageStabs() {
+        this.props.publish(this.props.channels.stabsControl, 1)
+    }
+    disengageStabs() {
+        if (valueWithUnit(this.props.values.waterInValue, "Boolean") == true) {
+            alert('Can not disengage stabs when water in is on.');
+            return;
+        }
+        this.props.publish(this.props.channels.stabsControl, 0)
+        this.props.publish(this.props.channels.waterOutControl, 0)
+        this.props.publish(this.props.channels.waterInControl, 0)
+    }
+    startFlow() {
+        if (valueWithUnit(this.props.values.stabsValue, "Boolean") == false) {
+            alert('Can not start flow when tabs are disengaged.');
+            return;
+        }
+        this.props.publish(this.props.channels.waterOutControl, 1)
+        this.props.publish(this.props.channels.waterInControl, 1)
+    }
+    endFlow() {
+        this.props.publish(this.props.channels.waterOutControl, 0)
+        this.props.publish(this.props.channels.waterInControl, 0)
+    }
+    
+    render() {
+        var values = {
+            waterInValue: valueWithUnit(this.props.values.waterInValue, "Boolean"),
+            waterOutValue: valueWithUnit(this.props.values.waterOutValue, "Boolean"),
+            stabsValue: valueWithUnit(this.props.values.stabsValue, "Boolean")
+        }
+        var image = unit_visuals.full_off;
+        if (values.stabsValue == true) {
+            image = unit_visuals.flow_off;
+            if (values.waterInValue == true && values.waterOutValue == true) {
+                image = unit_visuals.full_on;
+            } else {
+                if (values.waterInValue == false && values.waterOutValue == true) {
+                    image = unit_visuals.flow_in_off;
+                }
+                if (values.waterOutValue == false && values.waterInValue == true) {
+                    image = unit_visuals.flow_out_off;
+                }
+            }
+        }
+        
+
+        return (
+            <Segment style={{height: 200, overflow:'hidden'}}>
+                <div style={{ width: '50%', height: 200, float:'left', marginTop: -15}}>
+                <Image src={image} style={{ height: '100%'}} />
+                </div>
+                <div style={{ width: '50%', float:'left', textAlign: 'right'}}>
+                {values.stabsValue == false ? (
+                    <p>
+                        <Button content="Engage Stabs" onClick={this.engageStabs.bind(this)} /><Button content="Disengage Stabs" color={"red"} onClick={this.disengageStabs.bind(this)} />
+                        </p>) : 
+                    (<p><Button.Group basic size={"large"}><Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} /></Button.Group><br/><br/>{values.waterInValue == true ? null : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}</p>)}
+                </div>
             </Segment>
         )
     }

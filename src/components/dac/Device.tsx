@@ -213,7 +213,7 @@ export default class Device extends React.Component<{
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-            {Object.keys(this.state.device.channels).map((name, index) => {
+            {Object.keys(this.state.device.channels).sort().map((name, index) => {
                 var channelProps = this.state.device.channels[name];
                 return (<Table.Row key={index} disabled={this.props.device.loading} {...{onClick:() => {
                     // browserHistory.push(`/${this.props.params.organizationName}/dac/data/${this.props.params.splat}/${name}/`)
