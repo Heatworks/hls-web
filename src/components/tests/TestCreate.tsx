@@ -125,7 +125,7 @@ export default class TestCreate extends React.Component<{
                      </Grid.Row>
                     </Grid>
                     <Header sub>Templates</Header>
-                <TestsTable params={this.props.params} prefix={this.state.prefixSearch.length == 0 ? 'templates/' : this.state.prefixSearch } onClick={(test) => {
+                <TestsTable params={this.props.params} showDuration={false} prefix={this.state.prefixSearch.length == 0 ? 'templates/' : this.state.prefixSearch } onClick={(test) => {
                     this.setState({
                         template: test.name
                     })

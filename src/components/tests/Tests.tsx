@@ -4,27 +4,23 @@ import { Link , browserHistory} from 'react-router'
 import Helmet from 'react-helmet'
 import TestsTable from './connected/TestsTable'
 
+import { Test } from '../../apis/hls_tests'
+var moment = require('moment')
+
 export default class Tests extends React.Component<{
     params: {
         organizationName: string
     }
 },{
-    duplicating?: boolean,
-    search?:string
+    duplicating?: boolean
 }> {
     constructor(props) {
         super(props)
         this.state = {
-            duplicating: false,
-            search: ""
+            duplicating: false
         }
-        this.dataReceived = this.dataReceived.bind(this)
     }
     tempData = null
-    dataReceived(data) {
-        console.log(data)
-        this.tempData = data
-    }
     render() {
         return (<Segment basic vertical>
                  <Helmet title={`HLS - ${this.props.params.organizationName} - Tests`} />
@@ -69,21 +65,8 @@ export default class Tests extends React.Component<{
                     </Grid>
                                         <Divider />
 
-                <Menu secondary>
-                    <Menu.Menu position='right'>
-                        <Menu.Item name="export" content="Export" icon="download" onClick={() => {
-                                saveJSON(this.tempData, 'tests-list.json')
-                            }} />
-                    <Menu.Item>
-                        <Input icon='search' placeholder='Search tests...' onChange={(e) => {
-                            this.setState({
-                                search: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/'))
-                            })
-                        }}/>
-                    </Menu.Item>
-                    </Menu.Menu>
-                </Menu>
-                <TestsTable params={this.props.params} prefix={this.state.search} onClick={(row) => {
+                
+                <TestsTable params={this.props.params} showDuration={true} onClick={(row) => {
                     if (this.state.duplicating) {
                         browserHistory.push({
                             pathname: `/${this.props.params.organizationName}/tests/create`,
@@ -94,32 +77,7 @@ export default class Tests extends React.Component<{
                     } else {
                         browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
                     }
-                }} onDataLoad={this.dataReceived}/>
+                }}/>
        </Segment>);
     }
-}
-
-function saveJSON(data, filename){
-
-    if(!data) {
-        console.error('No data')
-        return;
-    }
-
-    if(!filename) filename = 'console.json'
-
-    if(typeof data === "object"){
-        data = JSON.stringify(data, undefined, 4)
-    }
-
-    var blob = new Blob([data], {type: 'text/json'}),
-        e    = document.createEvent('MouseEvents'),
-        a    = document.createElement('a')
-        a.setAttribute('target', '_blank')
-
-    a.download = filename
-    a.href = window.URL.createObjectURL(blob)
-    a.dataset.downloadurl =  ['text/json', a.download, a.href].join(':')
-    e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-    a.dispatchEvent(e)
 }
