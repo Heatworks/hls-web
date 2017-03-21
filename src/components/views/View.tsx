@@ -487,6 +487,10 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/hls/views/components/analog") {
+            return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} />)
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
@@ -816,6 +820,25 @@ class ProductionTestStandUnit extends React.Component<{
                         </p>) : 
                     (<p><Button.Group basic size={"large"}><Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} /></Button.Group><br/><br/>{values.waterInValue == true ? null : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}</p>)}
                 </div>
+            </Segment>
+        )
+    }
+}
+
+class AnalogSensorValue extends React.Component<{
+    title: string
+    channels: {
+        value: string
+    }
+    values: {
+        value: string
+    },
+    units: string
+},{}> {
+    render() {
+        return (
+            <Segment>
+                {this.props.values.value}{this.props.units}
             </Segment>
         )
     }
