@@ -86,6 +86,8 @@ export default class View extends React.Component<{
             error: null,
             currentTimestamp: 0
         }
+        console.log('Client:')
+        console.log(this.props.client)
     }
     componentWillMount() {
         console.log('componentWillMount' + this.props.params.splat )
@@ -95,14 +97,20 @@ export default class View extends React.Component<{
         this.unsubscribeFromChannels()
     }
     componentWillReceiveProps(nextProps) {
+        console.log('Client:')
+        console.log(this.props.client)
         if (this.state.view == null || nextProps.view.data.name !== this.state.view.name) {
-            this.unsubscribeFromChannels()
-            this.setState({
-                view: Object.assign({}, nextProps.view.data),
-                saving: false
-            }, () => {
-                this.setupLive()
-            })
+            if (nextProps.client.connected) {
+                this.unsubscribeFromChannels()
+                this.setState({
+                    view: Object.assign({}, nextProps.view.data),
+                    saving: false
+                }, () => {
+                    setTimeout(() => {
+                        this.setupLive()
+                    },2000)
+                })
+            }
         } else {
             this.setState({
                 saving: false
@@ -185,14 +193,33 @@ export default class View extends React.Component<{
                 this.setState({
                     connected: true
                 })
-                Object.keys(this.state.channels).forEach((channel) => {
-                    console.log('Subscribing to: '+channel)
-                    this.props.client.subscribe(channel, (err) => {
-                        console.log(err)
-                        console.log('Subscribed to: '+ channel)
+                var subscribed = [];
+                var checkIfSubscribed = () => {
+                    console.log('checkIfSubscribed')
+
+                    Object.keys(this.state.channels).forEach((channel) => {
+                        console.log('Subscribing to: '+channel)
+                        if (subscribed.indexOf(channel) == -1) {
+                            this.props.client.subscribe(channel, (err) => {
+                                console.log(err)
+                                console.log('Subscribed to: '+ channel)
+                                if (subscribed.indexOf(channel) == -1) {
+                                    subscribed.push(channel)
+                                }
+                            })
+                        }
+                        
                     })
-                })
-                resolve()
+
+                    if (subscribed.length < Object.keys(this.state.channels).length) {
+                        setTimeout(() => {
+                            checkIfSubscribed()
+                        }, 1000)
+                    } else {
+                        resolve()
+                    }
+                }
+                checkIfSubscribed()
             };
             if (this.props.client.connected) {
                 connected(null)
@@ -343,10 +370,15 @@ export default class View extends React.Component<{
                                     this.loadHistoricalTimestamp(this.state.currentTimestamp + 1)
                                 }}} content='+1s' /> : null}
                                 <Menu.Item as={Button} content={'Live'} icon={this.state.live ? 'pause' : 'play'} {...{onClick: () => {
-                                    this.setState({
-                                        live: !this.state.live,
-                                        currentTimestamp: new Date().getTime() / 1000
-                                    })
+                                    if (this.state.live) {
+                                        this.setState({
+                                            live: false,
+                                            currentTimestamp: new Date().getTime() / 1000
+                                        })
+                                    } else {
+                                        this.setupLive()
+                                    }
+                                    
                                     }}} />
                                     <Menu.Item><Icon.Group>
                             <Icon name="wifi" />
