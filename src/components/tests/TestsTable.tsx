@@ -42,7 +42,7 @@ export default class TestsTable extends React.Component<{
             sortTag: "CREATED_DATE",
             direction: 1,
             tagsInTable: [],
-            search:""
+            search: this.props.prefix
         }
     }
     componentWillMount() {
