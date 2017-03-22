@@ -851,16 +851,12 @@ class AnalogSensorValue extends React.Component<{
             values: []
         }
     }
-    lastValue:number
     componentWillReceiveProps(nextProps) {
-        if (nextProps.values.value != this.lastValue) {
-            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
-            newValues.push(nextProps.values.value)
-            this.setState({
-                values: newValues
-            })
-            this.lastValue = nextProps.values.value;
-        }
+        var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
+        newValues.push(nextProps.values.value)
+        this.setState({
+            values: newValues
+        })
     }
     render() {
         return (
