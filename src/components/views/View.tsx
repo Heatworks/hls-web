@@ -100,7 +100,7 @@ export default class View extends React.Component<{
         console.log('Client:')
         console.log(this.props.client)
         if (this.state.view == null || nextProps.view.data.name !== this.state.view.name) {
-            if (nextProps.client.connected) {
+            if (nextProps.client && nextProps.client.connected) {
                 this.unsubscribeFromChannels()
                 this.setState({
                     view: Object.assign({}, nextProps.view.data),
