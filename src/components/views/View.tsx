@@ -180,7 +180,8 @@ export default class View extends React.Component<{
             resolve({
                 name: channel,
                 unit: getUnitForTopic(channel),
-                value: null
+                value: null,
+                timestamp: null
             })
         })
     }
@@ -246,11 +247,13 @@ export default class View extends React.Component<{
     receiveMessage(topic, message, packet) {
         if (this.state.live) {
             console.log("REC: "+topic+": "+message)
-            var rawValue = message.toString().split(",")[1]
-            this.setTopicValue(topic, rawValue)
+            var parts = message.toString().split(",")
+            var rawValue = parts[1]
+            var timestamp = parts[0]
+            this.setTopicValue(topic, rawValue, timestamp)
         }
     }
-    setTopicValue(channel, value) {
+    setTopicValue(channel, value, timestamp) {
         var unit = (this.state.channels[channel]) ? this.state.channels[channel].unit : 'String';
         if (unit == null) {
             unit = 'String'
@@ -260,7 +263,8 @@ export default class View extends React.Component<{
         }
         channels[channel] = {
             unit,
-            value
+            value,
+            timestamp
         }
         this.setState({
             channels
@@ -308,9 +312,9 @@ export default class View extends React.Component<{
             data.forEach((channelDatum, index) => {
                 if (channelDatum !== undefined) {
                     if (channelDatum.datum['value_float'] !== null) {
-                        this.setTopicValue(channelDatum.channel, parseFloat(channelDatum.datum['value_float']))
+                        this.setTopicValue(channelDatum.channel, parseFloat(channelDatum.datum['value_float']), channelDatum.datum['occurred'])
                     } else {
-                        this.setTopicValue(channelDatum.channel, channelDatum.datum['value_string'])
+                        this.setTopicValue(channelDatum.channel, channelDatum.datum['value_string'], channelDatum.datum['occurred'])
                     }
                 }
             })
@@ -489,7 +493,7 @@ export default class View extends React.Component<{
             )
         } else if (column.component == "/organizations/hls/views/components/analog") {
             return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
-                    return this.state.channels[column.channels[key]].value
+                    return this.state.channels[column.channels[key]]
                 }))} />)
         } else if (column.component == "/organizations/hls/views/components/divider") {
             return (<Divider />)
@@ -835,7 +839,11 @@ class AnalogSensorValue extends React.Component<{
         value: string
     }
     values: {
-        value: number
+        value: {
+            value: number,
+            unit: string,
+            timestamp: number
+        }
     },
     units: string,
     sparklinesLength: number,
@@ -851,12 +859,16 @@ class AnalogSensorValue extends React.Component<{
             values: []
         }
     }
+    lastValueTimestamp:number
     componentWillReceiveProps(nextProps) {
-        var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
-        newValues.push(nextProps.values.value)
-        this.setState({
-            values: newValues
-        })
+        if (nextProps.values.value.timestamp != this.lastValueTimestamp) {
+            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
+            newValues.push(nextProps.values.value.value)
+            this.setState({
+                values: newValues
+            })
+            this.lastValueTimestamp = nextProps.values.value.timestamp;
+        }
     }
     render() {
         return (
@@ -866,7 +878,7 @@ class AnalogSensorValue extends React.Component<{
                         <SparklinesLine color={this.props.color} />
                     </Sparklines>
                 </div>
-                <div style={{width: '30%'}}>{valueWithUnit(this.props.values.value,this.props.units)}</div>
+                <div style={{width: '30%'}}>{valueWithUnit(this.props.values.value.value,this.props.values.value.unit)}</div>
             </Segment>
         )
     }
