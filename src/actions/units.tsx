@@ -49,6 +49,10 @@ export function valueWithUnit(value, unit) {
         return value;
     } if (unit == "Boolean") {
         return (parseInt(value) == 1)
+    } if (unit == "GPM") {
+        return value + "gpm"
+    } if (unit == "Amps") {
+        return value + "A";
     } else {
         return value + " (" + unit + ")";
     }

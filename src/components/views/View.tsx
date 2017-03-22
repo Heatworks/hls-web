@@ -868,7 +868,7 @@ class AnalogSensorValue extends React.Component<{
                         <SparklinesLine color={this.props.color} />
                     </Sparklines>
                 </div>
-                <div style={{width: '30%'}}>{this.props.values.value}{this.props.units}</div>
+                <div style={{width: '30%'}}>{valueWithUnit(this.props.values.value,this.props.units)}</div>
             </Segment>
         )
     }
