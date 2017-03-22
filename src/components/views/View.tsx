@@ -108,7 +108,7 @@ export default class View extends React.Component<{
                 }, () => {
                     setTimeout(() => {
                         this.setupLive()
-                    },2000)
+                    }, 2000)
                 })
             }
         } else {
@@ -825,20 +825,50 @@ class ProductionTestStandUnit extends React.Component<{
     }
 }
 
+import { Sparklines, SparklinesLine } from 'react-sparklines';
+
 class AnalogSensorValue extends React.Component<{
     title: string
     channels: {
         value: string
     }
     values: {
-        value: string
+        value: number
     },
-    units: string
-},{}> {
+    units: string,
+    sparklinesLength: number,
+    min: number,
+    max: number,
+    color: string
+},{
+    values: Array<number>
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            values: []
+        }
+    }
+    lastValue:number
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value != this.lastValue) {
+            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
+            newValues.push(nextProps.values.value)
+            this.setState({
+                values: newValues
+            })
+            this.lastValue = nextProps.values.value;
+        }
+    }
     render() {
         return (
             <Segment>
-                {this.props.values.value}{this.props.units}
+                <div style={{width: '70%', float:'right'}}>
+                    <Sparklines data={this.state.values} height={30} min={this.props.min} max={this.props.max}>
+                        <SparklinesLine color={this.props.color} />
+                    </Sparklines>
+                </div>
+                <div style={{width: '30%'}}>{this.props.values.value}{this.props.units}</div>
             </Segment>
         )
     }
