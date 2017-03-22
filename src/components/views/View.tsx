@@ -491,6 +491,8 @@ export default class View extends React.Component<{
             return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} />)
+        } else if (column.component == "/organizations/hls/views/components/divider") {
+            return (<Divider />)
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
@@ -863,8 +865,8 @@ class AnalogSensorValue extends React.Component<{
     render() {
         return (
             <Segment>
-                <div style={{width: '70%', float:'right'}}>
-                    <Sparklines data={this.state.values} height={30} min={this.props.min} max={this.props.max}>
+                <div style={{width: '70%', float:'right', height: 30}}>
+                    <Sparklines data={this.state.values} height={30}  min={this.props.min} max={this.props.max}>
                         <SparklinesLine color={this.props.color} />
                     </Sparklines>
                 </div>
