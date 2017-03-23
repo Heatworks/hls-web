@@ -439,7 +439,7 @@ export default class View extends React.Component<{
 
     renderColumnComponent(column: ColumnComponent) {
         if (Object.keys(this.state.channels).length == 0) {
-            return <Segment loading />
+            return <Segment loading vertical />
         }
         if (column.component == "/organizations/hls/views/components/power/switch") {
             return (
@@ -497,6 +497,8 @@ export default class View extends React.Component<{
                 }))} />)
         } else if (column.component == "/organizations/hls/views/components/divider") {
             return (<Divider />)
+        } else if (column.component == "/organizations/hls/views/components/spacer") {
+            return (<Segment vertical {...column.props} />)
         } else {
             return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
