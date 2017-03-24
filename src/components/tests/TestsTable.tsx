@@ -44,11 +44,19 @@ export default class TestsTable extends React.Component<{
             tagsInTable: [],
             search: this.props.prefix
         }
+        this.previousPrefix = this.props.prefix
     }
     componentWillMount() {
         this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
     }
+    previousPrefix = ""
     componentWillReceiveProps(nextProps) {
+        if (nextProps.prefix != this.previousPrefix) {
+            this.previousPrefix = nextProps.prefix
+            this.setState({
+                search: nextProps.prefix
+            })
+        }
     }
     render() {
         const direction = (this.state.direction == 1 ? "ascending" : "descending")
