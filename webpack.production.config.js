@@ -77,30 +77,32 @@ module.exports = {
         
         // loaders handle the assets, like transforming sass to css or jsx to js.
         loaders: [
-            { test: /\.tsx?$/, loaders: ['babel', 'ts-loader'] }, {
-            test: /\.json?$/,
-            loader: 'json'
-        },{
-            test: /\.(jpe?g|png|gif|svg)$/i,
-            loaders: [
-                'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-                'image-webpack?bypassOnDebug'
-            ]
-        }, { 
-            test: /\.css$/, 
-            loader: 'style-loader!css-loader'
-        }, {
-            test: /\.scss$/,
-            // we extract the styles into their own .css file instead of having
-            // them inside the js.
-            loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
-        }, {
-            test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
-            loader: 'url?limit=10000&mimetype=application/font-woff'
-        }, {
-            test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
-            loader: 'file-loader'
-        }]
+            { test: /\.tsx?$/, loaders: ['babel', 'ts-loader'] },
+            {
+                test: /\.json?$/,
+                loader: 'json'
+            },{
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack?bypassOnDebug'
+                ]
+            }, { 
+                test: /\.css$/, 
+                loader: 'style-loader!css-loader'
+            }, {
+                test: /\.scss$/,
+                // we extract the styles into their own .css file instead of having
+                // them inside the js.
+                loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
+            }, {
+                test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/,
+                loader: 'url?limit=10000&mimetype=application/font-woff'
+            }, {
+                test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/,
+                loader: 'file-loader'
+            }
+        ]
     },
     postcss: [
         require('autoprefixer')
