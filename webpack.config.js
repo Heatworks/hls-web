@@ -4,7 +4,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackNotifierPlugin = require('webpack-notifier');
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     devtool: 'eval',
@@ -26,7 +26,6 @@ module.exports = {
           inject: 'body',
           filename: 'index.html'
         }),
-        new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -34,47 +33,58 @@ module.exports = {
         }),
         new WebpackNotifierPlugin()
     ],
-    eslint: {
-        configFile: '.eslintrc',
-        failOnWarning: false,
-        failOnError: false
-    },
-    optipng: {
-        optimizationLevel: 7,
-        interlaced: false
-    },
     resolve: {
-      extensions: ['', '.ts', '.tsx', '.js', '.jsx'],
-      modulesDirectories: ['src', 'node_modules'],
+      extensions: [ '.ts', '.tsx', '.js', '.jsx'],
+      modules: [path.resolve(__dirname, "src"), 'node_modules'],
     },
     module: {
-        loaders: [
-                { test: /\.tsx?$/, loaders: ['babel', 'ts-loader'] },
-            {
-                test: /\.json?$/,
-                loader: 'json'
+        rules: [
+            { test: /\.tsx?$/, use: [
+                    {loader: 'babel-loader'},
+                    {loader: 'ts-loader'}
+                ] 
             },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                loaders: [
-                    'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-                    'image-webpack?bypassOnDebug'
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {'hash':'sha512','digest':'hex','name':'[hash].[ext]'}
+                    },{
+                        loader: 'image-webpack-loader',
+                        options: {'bypassOnDebug': true}
+                    }
                 ]
             }, { 
                 test: /\.css$/, 
-                loader: 'style-loader!css-loader'
+                use: [
+                     {
+                       loader: "style-loader"
+                     },
+                     {
+                       loader: "css-loader",
+                       options: {
+                         modules: true
+                       }
+                     }
+                ]
             },
             {
                 test: /\.scss$/,
-                loader: 'style!css!sass?modules&localIdentName=[name]---[local]---[hash:base64:5]'
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader",
+                    publicPath: "/dist"
+                })
             },
             { 
                 test: /\.woff(2)?(\?[a-z0-9#=&.]+)?$/, 
-                loader: 'url?limit=10000&mimetype=application/font-woff' 
+                use: [{loader:'url-loader',
+                options: { limit: 10000, mimetype: 'application/font-woff' }}]
             },
             { 
                 test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/, 
-                loader: 'file-loader' 
+                use: [{loader:'file-loader'}]
             }
         ]
     }
