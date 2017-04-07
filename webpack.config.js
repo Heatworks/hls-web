@@ -57,7 +57,7 @@ module.exports = {
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loaders: [
-                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
                     'image-webpack?bypassOnDebug'
                 ]
             }, { 
@@ -74,7 +74,7 @@ module.exports = {
             },
             { 
                 test: /\.(ttf|eot|svg)(\?[a-z0-9#=&.]+)?$/, 
-                loader: 'file' 
+                loader: 'file-loader' 
             }
         ]
     }
