@@ -76,6 +76,7 @@ export default class View extends React.Component<{
 }> {
     constructor(props) {
         super(props);
+        var now = new Date();
         this.state = {
             connected: false,
             view: null,
@@ -84,7 +85,7 @@ export default class View extends React.Component<{
             editing: false,
             saving: false,
             error: null,
-            currentTimestamp: 0
+            currentTimestamp: now.getTime() / 1000
         }
         console.log('Client:')
         console.log(this.props.client)
@@ -100,17 +101,19 @@ export default class View extends React.Component<{
         console.log('Client:')
         console.log(this.props.client)
         if (this.state.view == null || nextProps.view.data.name !== this.state.view.name) {
-            if (nextProps.client && nextProps.client.connected) {
+            if (nextProps.client) {
                 this.unsubscribeFromChannels()
-                this.setState({
-                    view: Object.assign({}, nextProps.view.data),
-                    saving: false
-                }, () => {
-                    setTimeout(() => {
-                        this.setupLive()
-                    }, 2000)
-                })
             }
+            this.setState({
+                view: Object.assign({}, nextProps.view.data),
+                saving: false
+            }, () => {
+                setTimeout(() => {
+                    if (nextProps.client && nextProps.client.connected) {
+                        this.setupLive()
+                    }
+                }, 2000)
+            })
         } else {
             this.setState({
                 saving: false
@@ -329,6 +332,8 @@ export default class View extends React.Component<{
         if (!this.props.view.loaded || this.state.view == null) {
             return (<Segment basic vertical>
                 <Loader active inline='centered' />
+                <p>{this.props.view.loaded ? 'Loaded view.' : 'Loading view...'}<br/>
+                {this.state.view == null ? 'State view loading...' : 'State loaded.'}</p>
                 <Button onClick={() => {
                     this.setupLive()
                 }}>Retry</Button>
