@@ -1,6 +1,6 @@
 import { OPEN, START, CLOSE, STOP, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE } from "../reducers/monitor"
 import 'whatwg-fetch'
-import { Client, connect, Granted } from "mqtt"
+import { Client, connect } from "mqtt"
 
 export function open() {
     return {

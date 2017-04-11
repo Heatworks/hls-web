@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Table, Label, Sidebar, Menu, Icon, IconGroup, Segment, Button, Dropdown } from 'semantic-ui-react'
 import { Link } from 'react-router'
 import * as d3 from 'd3'
-import { Client, connect, Granted } from "mqtt"
+import { Client, connect } from "mqtt"
 import MonitorChart from "./MonitorChart"
 
 import 'whatwg-fetch'
@@ -75,6 +75,11 @@ const defaultStyles = [
     
 ]
 
+
+export interface ClientFixed extends Client {
+    connected: boolean
+}
+
 export default class Monitor extends React.Component<{
     monitor: {
         open: boolean,
@@ -82,7 +87,7 @@ export default class Monitor extends React.Component<{
         organization: string,
         device: string,
         channel: string,
-        clientError: string | null
+        clientError: any | null
     },
    monitorActions: {
        close: () => any,
@@ -90,7 +95,7 @@ export default class Monitor extends React.Component<{
        stop: (organization, device, channel) => any,
        newMonitoredValue: (topic, value) => any
    }
-   client: Client,
+   client: ClientFixed,
    organizationName: String,
    accessToken: string
 },{}> {
@@ -98,6 +103,7 @@ export default class Monitor extends React.Component<{
         
     }
     render() {
+        console.log('Render Monitor');
         return (
             <div>
                 <Sidebar as={Segment} animation='push' direction='bottom' visible={this.props.monitor.open}>
@@ -105,11 +111,12 @@ export default class Monitor extends React.Component<{
                         <Menu.Item as={Dropdown} {...{text: 'Channels'}}>
                             <Dropdown.Menu>
                                 {this.props.monitor.channels.map( (channel, index) => {
-                                    return (<Dropdown.Item key={index} as={Link} {...{to: `/${channel.organization}/dac/devices/${channel.device}/${channel.channel}`}}>{`${channel.device}/${channel.channel}`}</Dropdown.Item>)
+                                    return (<Dropdown.Item key={index}><Link to={`/${channel.organization}/dac/devices/${channel.device}/${channel.channel}`}>{`${channel.device}/${channel.channel}`}</Link></Dropdown.Item>)
                                 })}
                             </Dropdown.Menu>
                         </Menu.Item>
-                        <Menu.Item as={Button} {...{ onClick: () => {}}}>Generate Test</Menu.Item>                        <Menu.Item as={Button} {...{ onClick: this.props.monitorActions.close }} position="right">
+                        <Menu.Item as={Button} {...{ onClick: () => {}}}>Generate Test</Menu.Item>                        
+                        <Menu.Item as={Button} {...{ onClick: this.props.monitorActions.close }} position="right">
                             <Icon name='close' />Close</Menu.Item>
                     </Menu>
                     {this.props.monitor.channels.map( (channel, index) => {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Client, connect, Granted } from "mqtt"
+import { Client, connect } from "mqtt"
 import HWChart, { DataSource, DataSeries, BarChart, TimeSeriesData, TimeSeriesStyle } from "@heatworks/heatworks-chart-library-web"
 import * as d3 from 'd3'
 var moment = require('moment');
@@ -13,8 +13,12 @@ import * as DAC from '../apis/hls_dac'
 
 var api_dac = new DAC.DefaultApi()
 
+export interface ClientFixed extends Client {
+    connected: boolean
+}
+
 export default class MonitorChart extends React.Component<{
-    client: Client,
+    client: ClientFixed,
     channels?: Array<{
         organization: string,
         device:string,

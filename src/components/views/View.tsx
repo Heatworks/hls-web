@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message } from 'semantic-ui-react'
 import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
-import { Client, connect, Granted } from "mqtt"
+import { Client, connect } from "mqtt"
 import Helmet from 'react-helmet'
 var zipObject = require('zip-object');
 import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '../../actions/units'
@@ -41,6 +41,10 @@ export class ViewObject {
     }
 }
 
+export interface ClientFixed extends Client {
+    connected: boolean
+}
+
 export default class View extends React.Component<{
     view: {
         loading: boolean,
@@ -62,7 +66,7 @@ export default class View extends React.Component<{
         organizationName: string,
         splat: string 
     },
-    client: Client,
+    client: ClientFixed,
     
 },{
     view?: ViewModel,
