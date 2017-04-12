@@ -425,7 +425,7 @@ export default class Test extends React.Component<{
                                 <Icon name="tag" />
                                 <List.Content>
                                     <List.Header>{key}</List.Header>
-                                    <span>{JSON.stringify(this.props.test.data.tags[key])}</span>
+                                    <span>{this.renderTag(this.props.test.data.tags[key])}</span>
                                 </List.Content>
                             </List.Item>)
                 })}</List>}
@@ -739,6 +739,14 @@ export default class Test extends React.Component<{
         </Modal>
         </Segment>);
     }
+    renderTag(tag) {
+        if (typeof tag == "string") {
+            if (tag.indexOf("http://") == 0) {
+                return <a href={tag} target="_blank">Link <Icon name="linkify" /></a>
+            }
+        }
+        return JSON.stringify(tag)
+    }
 }
 
 function getDeviceAndChannel(name) {
@@ -765,6 +773,9 @@ function normalizeValue(value) {
         } else {
             return value;
         }
+    }
+    if (value + "" != number + "") {
+        return value;
     }
     return number;
 }
