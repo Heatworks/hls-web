@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Header, Icon, Input, Menu } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Header, Icon, Input, Menu, Dropdown } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 var moment = require('moment')
 
@@ -58,13 +58,24 @@ export default class TestsTable extends React.Component<{
             })
         }
     }
+    onClickRow(row) {
+        if (this.props.onClick) {
+            this.props.onClick(row);
+        } else {
+            browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
+        }
+    }
     render() {
         const direction = (this.state.direction == 1 ? "ascending" : "descending")
         var duration_seconds = 0
+        var tags = {};
         this.props.tests.data.forEach((test) => {
             if (test.range.length == 2) {
                 duration_seconds += test.range[1] - test.range[0];
             }
+            Object.keys(test.tags).forEach((key) => {
+                tags[key] = (this.state.tagsInTable.indexOf(key) !== -1);
+            });
         })
         var duration = moment.duration(duration_seconds * 1000)
         return (
@@ -75,6 +86,23 @@ export default class TestsTable extends React.Component<{
                             <Menu.Item name="export" content="Export" icon="download" onClick={() => {
                                     saveJSON(this.props.tests.data, 'tests-list.json')
                                 }} />
+                            <Menu.Item as={Dropdown} {...{text: 'Tags', scrolling: true}}>
+                                <Dropdown.Menu>
+                                    {Object.keys(tags).map( (tag, index) => {
+                                        return (<Dropdown.Item key={index} onClick={() => {
+                                            var newTagsInTable = this.state.tagsInTable.splice(0);
+                                            if (tags[tag]) {
+                                                newTagsInTable.splice(newTagsInTable.indexOf(tag), 1);
+                                            } else {
+                                                newTagsInTable.push(tag);
+                                            }
+                                            this.setState({
+                                                tagsInTable: newTagsInTable
+                                            })
+                                            }}>{tags[tag] ? <Icon name="check" /> : null}{tag}</Dropdown.Item>)
+                                    })}
+                                </Dropdown.Menu>
+                            </Menu.Item>
                         <Menu.Item>
                             <Input icon='search' placeholder='Search tests...' onChange={(e) => {
                                 this.setState({
@@ -132,14 +160,10 @@ export default class TestsTable extends React.Component<{
                         return tagSort
                         //return (a.range.length == b.range.length) ? dateSort : ((a.range.length > b.range.length) ? 1 : 0)
                     }).map((row, index) => {
-                        return (<Table.Row key={index} disabled={this.props.tests.loading} {...{onClick:() => {
-                            if (this.props.onClick) {
-                                this.props.onClick(row);
-                            } else {
-                                browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
-                            }
-                            }}}>
-                            <Table.Cell singleLine={true} width={4}>{iconForStatus(row.tags.STATUS)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
+                        return (<Table.Row key={index} disabled={this.props.tests.loading} >
+                            <Table.Cell onClick={() => {
+                                this.onClickRow(row);
+                                }} singleLine={true} style={{ cursor: 'pointer' }} width={4}>{iconForStatus(row.tags.STATUS)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
                             <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:MM:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
                             <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                             <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
