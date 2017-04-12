@@ -105,7 +105,7 @@ export default class TestCreate extends React.Component<{
                     <Input type="string" fluid value={this.state.name} label={`/organizations/${this.props.params.organizationName}/tests/`} onChange={(e) => {
                            this.setState({
                                name: e.currentTarget.value,
-                               prefixSearch: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/'))
+                               prefixSearch: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/')+1)
                            })
                        }}/><small>For best practice don't include date, or location information for the test. Metadata for a test can be added as tags.</small></Form.Field><Form.Field><label>Description</label>
                         <Input type="string" fluid value={this.state.description} onChange={(e) => {

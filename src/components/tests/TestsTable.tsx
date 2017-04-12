@@ -33,7 +33,8 @@ export default class TestsTable extends React.Component<{
     sortTag?:string,
     direction?: number,
     tagsInTable?: Array<string>,
-    search?:string
+    search?:string,
+    searchInput?:string
 }> {
     constructor(props) {
         super(props)
@@ -42,7 +43,8 @@ export default class TestsTable extends React.Component<{
             sortTag: "CREATED_DATE",
             direction: 1,
             tagsInTable: [],
-            search: this.props.prefix
+            search: this.props.prefix,
+            searchInput: this.props.prefix
         }
         this.previousPrefix = this.props.prefix
     }
@@ -53,10 +55,19 @@ export default class TestsTable extends React.Component<{
     componentWillReceiveProps(nextProps) {
         if (nextProps.prefix != this.previousPrefix) {
             this.previousPrefix = nextProps.prefix
-            this.setState({
-                search: nextProps.prefix
-            })
+            this.updateSearch(nextProps.prefix, nextProps.prefix);
         }
+    }
+    updateSearch(search, searchInput) {
+        this.setState({
+            search,
+            searchInput
+        }, () => {
+            if (this.state.search !== this.state.currentPrefix) {
+                this.state.currentPrefix = this.state.search;
+                this.props.actions.load(this.state.search, this.props.accessToken)
+            }
+        })
     }
     onClickRow(row) {
         if (this.props.onClick) {
@@ -104,15 +115,8 @@ export default class TestsTable extends React.Component<{
                                 </Dropdown.Menu>
                             </Menu.Item>
                         <Menu.Item>
-                            <Input icon='search' placeholder='Search tests...' onChange={(e) => {
-                                this.setState({
-                                    search: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/') + 1)
-                                }, () => {
-                                    if (this.state.search !== this.state.currentPrefix) {
-                                        this.state.currentPrefix = this.state.search;
-                                        this.props.actions.load(this.state.search, this.props.accessToken)
-                                    }
-                                })
+                            <Input icon='search' placeholder='Search tests...' value={this.state.searchInput} onChange={(e) => {
+                                this.updateSearch(e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/') + 1), e.currentTarget.value);
                             }}/>
                         </Menu.Item>
                         </Menu.Menu>
