@@ -504,6 +504,10 @@ export default class View extends React.Component<{
             return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
                 }))} />)
+        } else if (column.component == "/organizations/hls/views/components/log") {
+            return (<LogTable {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]]
+                }))} />);
         } else if (column.component == "/organizations/hls/views/components/divider") {
             return (<Divider />)
         } else if (column.component == "/organizations/hls/views/components/spacer") {
@@ -837,6 +841,59 @@ class ProductionTestStandUnit extends React.Component<{
                         </p>) : 
                     (<p><Button.Group basic size={"large"}><Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} /></Button.Group><br/><br/>{values.waterInValue == true ? null : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}</p>)}
                 </div>
+            </Segment>
+        )
+    }
+}
+
+class LogTable extends React.Component<{
+    title: string
+    channels: {
+        log: string
+    }
+    values: {
+        log: {
+            value: string,
+            unit: string,
+            timestamp: number
+        }
+    },
+    maxLines: number
+},{
+    values: Array<{
+            value: string,
+            unit: string,
+            timestamp: number
+        }>
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            values: []
+        }
+    }
+    lastValueTimestamp:number
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.log.timestamp != this.lastValueTimestamp) {
+            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.maxLines, 0))
+            newValues.push(nextProps.values.log)
+            this.setState({
+                values: newValues
+            })
+            this.lastValueTimestamp = nextProps.values.log.timestamp;
+        }
+    }
+    render() {
+        return (
+            <Segment vertical>
+                <Table size="small" compact>
+                    {this.state.values.reverse().map((row, index) => {
+                        return (<Table.Row key={index} active={index == 0} error={row.value.indexOf("[error]") == -1} warning={row.value.indexOf("[warning]") == -1}>
+                            <Table.Cell>{row.timestamp}</Table.Cell>
+                            <Table.Cell>{row.value}</Table.Cell>
+                        </Table.Row>)
+                    })}
+                </Table>
             </Segment>
         )
     }
