@@ -99,7 +99,7 @@ export default class TestsTable extends React.Component<{
                                 }} />
                             <Menu.Item as={Dropdown} {...{text: 'Tags', scrolling: true}}>
                                 <Dropdown.Menu>
-                                    {Object.keys(tags).map( (tag, index) => {
+                                    {Object.keys(tags).sort().map( (tag, index) => {
                                         return (<Dropdown.Item key={index} onClick={() => {
                                             var newTagsInTable = this.state.tagsInTable.splice(0);
                                             if (tags[tag]) {
