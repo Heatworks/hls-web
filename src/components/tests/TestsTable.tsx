@@ -70,7 +70,7 @@ export default class TestsTable extends React.Component<{
         return (
             <div>
                 <Menu secondary>
-                        {this.props.showDuration ? <Menu.Item>Duration: {duration.humanize()} ({`${Math.floor(duration.asDays())}D${duration.hours()}:${duration.minutes()}:${duration.seconds()}.${Math.floor(duration.milliseconds())}`})</Menu.Item> : null}
+                        {this.props.showDuration ? <Menu.Item>Duration: {duration.humanize()} ({`${Math.floor(duration.asDays())+Math.round(((duration.hours()/24)+(duration.minutes()/24/60)+(duration.seconds()/24/60/60))*1000)/1000}`})</Menu.Item> : null}
                         <Menu.Menu position='right'>
                             <Menu.Item name="export" content="Export" icon="download" onClick={() => {
                                     saveJSON(this.props.tests.data, 'tests-list.json')
