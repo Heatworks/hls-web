@@ -78,7 +78,7 @@ export default class TestsTable extends React.Component<{
                         <Menu.Item>
                             <Input icon='search' placeholder='Search tests...' onChange={(e) => {
                                 this.setState({
-                                    search: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/'))
+                                    search: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/') + 1)
                                 }, () => {
                                     if (this.state.search !== this.state.currentPrefix) {
                                         this.state.currentPrefix = this.state.search;
