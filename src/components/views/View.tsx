@@ -887,7 +887,7 @@ class LogTable extends React.Component<{
         return (
             <Segment vertical>
                 <Table size="small" compact>
-                    {this.state.values.reverse().map((row, index) => {
+                    {this.state.values.splice(0).reverse().map((row, index) => {
                         return (<Table.Row key={index} active={index == 0} error={row.value.indexOf("[error]") == -1} warning={row.value.indexOf("[warning]") == -1}>
                             <Table.Cell>{row.timestamp}</Table.Cell>
                             <Table.Cell>{row.value}</Table.Cell>
