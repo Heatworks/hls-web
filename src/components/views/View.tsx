@@ -471,6 +471,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/highpot/recorder") {
+            return (
+                <HighpotRecorder {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/temperature/recorder") {
             return (
                 <TemperatureRecorder {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
@@ -1051,6 +1057,128 @@ class ConductivityRecorder extends React.Component<{
                         this.setState({
                             publishing: false,
                             value: ""
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Publish</Button>
+                </Input>
+            </Segment>
+        )
+    }
+}
+
+class HighpotRecorder extends React.Component<{
+    title: string,
+    channels: {
+        "L1-Ground": string,
+        "L2-Ground": string
+        "L1-L2": string
+    },
+    values: {
+        temperature: number
+    },
+    publish: (topic, value) => any
+},{
+    l1ToG?: string,
+    l2ToG?: string,
+    l1Tol2?: string,
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            l1ToG: "",
+            l2ToG: "",
+            l1Tol2: "",
+            publishing: false
+        }
+    }
+
+    render() {
+        return (
+            <Segment>
+                <p>Measured in mA.</p>
+                <Input fluid type="text" label="L1-Ground" content={this.state.l1ToG} onChange={(e) => {
+                    this.setState({
+                        l1ToG: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <span>L1-Ground</span>
+                <input placeholder={this.props.values["L1-Ground"] ? `${valueWithUnit(this.props.values["L1-Ground"], "Amps")}` : ''} value={this.state.l1ToG} />
+                
+                <Button basic onClick={() =>{
+                    var value = parseFloat(this.state.l1ToG)
+                    if (value == NaN) {
+                        alert(`Value (${this.state.l1ToG}) was not a number, please try again.`)
+                    }
+                    value = value / 1000;
+                    this.props.publish(this.props.channels["L1-Ground"], value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            publishing: false,
+                            l1ToG: ""
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Publish</Button>
+                </Input>
+
+                
+
+                <Input fluid type="text" label="L2-Ground" content={this.state.l2ToG} onChange={(e) => {
+                    this.setState({
+                        l2ToG: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <span>L2-Ground</span>
+                <input placeholder={this.props.values["L2-Ground"] ? `${valueWithUnit(this.props.values["L2-Ground"], "Amps")}` : ''} value={this.state.l2ToG} />
+                
+                <Button basic onClick={() =>{
+                    var value = parseFloat(this.state.l2ToG)
+                    if (value == NaN) {
+                        alert(`Value (${this.state.l2ToG}) was not a number, please try again.`)
+                    }
+                    value = value / 1000;
+                    this.props.publish(this.props.channels["L2-Ground"], value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            publishing: false,
+                            l2ToG: ""
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Publish</Button>
+                </Input>
+
+                
+                <Input fluid type="text" content={this.state.l1Tol2} onChange={(e) => {
+                    this.setState({
+                        l1Tol2: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <span>L1-L2</span>
+                <input placeholder={this.props.values["L1-L2"] ? `${valueWithUnit(this.props.values["L1-L2"], "Amps")}` : ''} value={this.state.l1Tol2} />
+                
+                <Button basic onClick={() =>{
+                    var value = parseFloat(this.state.l1Tol2)
+                    if (value == NaN) {
+                        alert(`Value (${this.state.l1Tol2}) was not a number, please try again.`)
+                    }
+                    value = value / 1000;
+                    this.props.publish(this.props.channels["L1-L2"], value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            publishing: false,
+                            l1Tol2: ""
                         })
                     }, 1000)
                 }} loading={this.state.publishing}>Publish</Button>

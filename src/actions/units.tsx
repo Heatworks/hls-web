@@ -52,6 +52,9 @@ export function valueWithUnit(value, unit) {
     } if (unit == "GPM") {
         return value + "gpm"
     } if (unit == "Amps") {
+        if (value < 1.0) {
+            return (Math.round(value * 10000) / 10) + "mA";
+        }
         return value + "A";
     } else {
         return value + " (" + unit + ")";
