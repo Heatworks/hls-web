@@ -8,7 +8,7 @@ var zipObject = require('zip-object');
 import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '../../actions/units'
 import { View as ViewModel, ViewRow } from '../../apis/hls_views'
 import { normalizeName } from '../../utils/normalizeNames'
-import moment from 'moment'
+var moment = require('moment')
 
 import * as DAC from '../../apis/hls_dac';
 var api_dac = new DAC.DefaultApi()
