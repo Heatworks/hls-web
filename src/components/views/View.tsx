@@ -8,6 +8,7 @@ var zipObject = require('zip-object');
 import { valueWithUnit, getUnitForTopic, getTemperatureUnit, UnitLabels } from '../../actions/units'
 import { View as ViewModel, ViewRow } from '../../apis/hls_views'
 import { normalizeName } from '../../utils/normalizeNames'
+import * as moment from 'moment'
 
 import * as DAC from '../../apis/hls_dac';
 var api_dac = new DAC.DefaultApi()
@@ -888,8 +889,8 @@ class LogTable extends React.Component<{
             <Segment vertical>
                 <Table size="small" compact>
                     {this.state.values.map((row, index) => {
-                        return (<Table.Row key={index} active={index == this.state.values.length - 1} error={row.value.indexOf("[error]") == -1} warning={row.value.indexOf("[warning]") == -1}>
-                            <Table.Cell>{row.timestamp}</Table.Cell>
+                        return (<Table.Row key={index} active={index == this.state.values.length - 1} error={row.value.indexOf("[error]") == 0} warning={row.value.indexOf("[warning]") == 0}>
+                            <Table.Cell>{moment(row.timestamp * 1000).format()}</Table.Cell>
                             <Table.Cell>{row.value}</Table.Cell>
                         </Table.Row>)
                     }).reverse()}
