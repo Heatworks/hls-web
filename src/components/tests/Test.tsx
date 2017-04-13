@@ -741,7 +741,7 @@ export default class Test extends React.Component<{
     }
     renderTag(tag) {
         if (typeof tag == "string") {
-            if (tag.indexOf("http://") == 0) {
+            if (tag.indexOf("http") == 0) {
                 return <a href={tag} target="_blank">Link <Icon name="linkify" /></a>
             }
         }
