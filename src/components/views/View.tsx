@@ -76,6 +76,7 @@ export default class View extends React.Component<{
     error?: string,
     editing?: boolean,
     live?:boolean,
+    remotePlay?: boolean,
     saving?:boolean,
     currentTimestamp?: number
 }> {
@@ -87,6 +88,7 @@ export default class View extends React.Component<{
             view: null,
             channels: {},
             live: false,
+            remotePlay: false,
             editing: false,
             saving: false,
             error: null,
@@ -95,12 +97,14 @@ export default class View extends React.Component<{
         console.log('Client:')
         console.log(this.props.client)
     }
+    remotePlayTimeout = null
     componentWillMount() {
         console.log('componentWillMount' + this.props.params.splat )
         this.props.actions.load(this.props.params.splat, this.props.accessToken)
     }
     componentWillUnmount() {
         this.unsubscribeFromChannels()
+        this.stopRemotePlay();
     }
     componentWillReceiveProps(nextProps) {
         console.log('Client:')
@@ -116,6 +120,19 @@ export default class View extends React.Component<{
                 setTimeout(() => {
                     if (nextProps.client && nextProps.client.connected) {
                         this.setupLive()
+                    } else {
+                        this.processChannelsInView().then(() => {
+                            var now = new Date();
+                            this.loadHistoricalTimestamp((now.getTime() / 1000) - 10)
+                            this.setState({
+                                remotePlay: true
+                            }, () => {
+                                this.startRemotePlay();
+                            })
+                            
+                        }).catch((error) => {
+                            console.error(error);
+                        })
                     }
                 }, 2000)
             })
@@ -124,6 +141,31 @@ export default class View extends React.Component<{
                 saving: false
             })
         }
+    }
+
+    startRemotePlay() { 
+        clearTimeout(this.remotePlayTimeout);
+        this.setState({
+            remotePlay: true
+        }, () => {
+            this.loadNextTime();
+        })
+    }
+
+    stopRemotePlay() {
+        this.setState({
+            remotePlay: false
+        }, () => {
+            clearTimeout(this.remotePlayTimeout);
+        })
+    }
+
+    loadNextTime() {
+        var now = new Date();
+        this.loadHistoricalTimestamp((now.getTime() / 1000) - 10)
+        this.remotePlayTimeout = setTimeout(() => {
+            this.loadNextTime();
+        }, 5*1000)
     }
 
     setupLive() {
@@ -140,7 +182,8 @@ export default class View extends React.Component<{
         }).catch((error) => {
             console.error(error)
             this.setState({
-                error
+                error,
+                live: false
             })
         })
     }
@@ -330,6 +373,8 @@ export default class View extends React.Component<{
             this.setState({
                 currentTimestamp: timestamp
             })
+        }).catch((error) => {
+            console.error(error);
         })
     }
 
@@ -375,6 +420,13 @@ export default class View extends React.Component<{
                         </Grid.Column>
                         <Grid.Column>
                             <Menu floated="right">
+                                {!this.state.live ? <Menu.Item as={Button} content={''} active={this.state.remotePlay} icon={this.state.remotePlay ? 'pause' : 'play'} {...{onClick: () => {
+                                    if (this.state.remotePlay) {
+                                        this.stopRemotePlay();
+                                    } else {
+                                        this.startRemotePlay();
+                                    }
+                                    }}} /> : null}
                                 {!this.state.live ? <Menu.Item style={{paddingTop:0,paddingBottom:0,paddingRight:3, paddingLeft:3}}><Input type="text" value={this.state.currentTimestamp} onChange={(e) => {
                                     this.loadHistoricalTimestamp(parseFloat(e.currentTarget.value))
                                 }}/></Menu.Item> : null}
@@ -383,7 +435,8 @@ export default class View extends React.Component<{
                                 {!this.state.live ? <Menu.Item as={Button} {...{onClick: () => {
                                     this.loadHistoricalTimestamp(this.state.currentTimestamp + 1)
                                 }}} content='+1s' /> : null}
-                                <Menu.Item as={Button} content={'Live'} icon={this.state.live ? 'pause' : 'play'} {...{onClick: () => {
+                                
+                                <Menu.Item as={Button} content={'Live'} active={this.state.live && this.state.connected} icon={this.state.live ? 'pause' : 'play'} {...{onClick: () => {
                                     if (this.state.live) {
                                         this.setState({
                                             live: false,
