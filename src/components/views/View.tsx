@@ -507,6 +507,10 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/units/model-3/momepha/strategy") {
+            return (<MomephaStrategyVisual {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]]
+                }))} />)
         } else if (column.component == "/organizations/hls/views/components/analog") {
             return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
@@ -849,6 +853,167 @@ class ProductionTestStandUnit extends React.Component<{
                     (<p><Button.Group basic size={"large"}><Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} /></Button.Group><br/><br/>{values.waterInValue == true ? null : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}</p>)}
                 </div>
             </Segment>
+        )
+    }
+}
+
+class MomephaStrategyVisual extends React.Component<{
+    title: string
+    channels: {
+        strategy: string
+    }
+    values: {
+        strategy: {
+            value: number,
+            unit: string,
+            timestamp: number
+        }
+    },
+    maxLines: number
+},{
+    values?: Array<{
+            value: number,
+            unit: string,
+            timestamp: number
+        }>,
+    strategy?: number
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            values: [],
+            strategy: 0
+        }
+    }
+    lastValueTimestamp:number
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.strategy.timestamp != this.lastValueTimestamp) {
+            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.maxLines, 0))
+            newValues.push(nextProps.values.strategy)
+            this.setState({
+                values: newValues,
+                strategy: nextProps.values.strategy.value
+            })
+            this.lastValueTimestamp = nextProps.values.strategy.timestamp;
+        }
+    }
+    int2bin(int, length = 29){
+        var asString = (int >>> 0).toString(2);
+        while (asString.length < length) {
+            asString = "0"+asString;
+        }
+        return asString;
+    }
+    stateForSwitch(number) {
+        console.log(`${number}: ${this.int2bin(this.state.strategy >> (28-number))}`)
+        return ((this.state.strategy >> (29-number)) & 0b1);
+    }
+    render() {
+        return (
+            <Segment vertical>
+                <div><input value={this.int2bin(this.state.strategy)} 
+                    style={{width: 400, margin: 'auto', fontFamily: 'Courier', borderRadius: 5,padding: 5, border:0, textAlign: 'center'}} onChange={(e) => {
+                    this.setState({
+                        strategy: parseInt(e.currentTarget.value,2)
+                    })
+                }} /></div>
+                <svg viewBox="0 0 640 654" width="100%" height="1000pt" preserveAspectRatio="true">
+                    {/* Outer circle. */}
+                    <path d="M 494.4909 158.49932 C 591.35364 255.36157 591.35364 412.40618 494.4909 509.26843 C 397.62864 606.13118 240.58402 606.13118 143.72177 509.26843 C 46.859025 412.40618 46.859025 255.36157 143.72177 158.49932 C 240.58402 61.636568 397.62864 61.636568 494.4909 158.49932" fill="#ced5ff" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+                    {/* Channels. */}
+                    {this.renderChannel("0", 235.25727, 514.38908, 85.03937, 29.19685, "#a5a5a5")}
+                    {this.renderChannel("1", 234.77424, 466.83882, 85.03937, 37.417322, "#a5a5a5")}
+                    {this.renderChannel("2", 234.77424, 442.71742, 85.03937, 13.701459, "#a5a5a5")}
+                    {this.renderChannel("3", 98.711244, 427.15286, 221.10236, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("4", 98.711244, 408.39334, 221.10236, 8.638621, "#a5a5a5")}
+                    {this.renderChannel("5", 98.711244, 359.03156, 221.10236, 38.131234, "#a5a5a5")}
+                    {this.renderChannel("6", 98.711244, 342.86518, 221.10236, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("7", 98.711244, 320.90546, 221.10236, 12.36977, "#a5a5a5")}
+                    {this.renderChannel("8", 98.711244, 299.25948, 221.10236, 11.6818995, "#a5a5a5")}
+                    {this.renderChannel("9", 98.711244, 284.2858, 221.10236, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("10", 98.711244, 266.66105, 221.10236, 8.207862, "#a5a5a5")}
+                    {this.renderChannel("11", 235.57114, 243.55008, 85.03937, 13.589668, "#a5a5a5")}
+                    {this.renderChannel("12", 235.57114, 227.83372, 85.03937, 31.74803, "#a5a5a5")}
+                    {this.renderChannel("13", 235.57114, 186.25874, 85.03937, 31.74803, "#a5a5a5")}
+                    {this.renderChannel("14", 235.57114, 113.18573, 85.03937, 63.212596, "#a5a5a5")}
+                    {this.renderChannel("15", 329.03346, 125.7678, 85.03937, 72.0, "#a5a5a5")}
+                    {this.renderChannel("16", 329.03346, 207.72465, 85.03937, 27.496062, "#a5a5a5")}
+                    {this.renderChannel("17", 330.4338, 246.20625, 85.03937, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("18", 330.70299, 261.83226, 85.03937, 46.54515, "#a5a5a5")}
+                    {this.renderChannel("19", 329.82711, 317.85588, 85.03937, 6.519685, "#a5a5a5")}
+                    {this.renderChannel("20", 330.70299, 334.80312, 221.10236, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("21", 330.70299, 350.0207, 221.10236, 5.9527556, "#a5a5a5")}
+                    {this.renderChannel("22", 330.70299, 366.04486, 221.10236, 6.2362206, "#a5a5a5")}
+                    {this.renderChannel("23", 329.82711, 382.5134, 221.10236, 6.519685, "#a5a5a5")}
+                    {this.renderChannel("24", 329.82711, 400.28936, 221.10236, 7.086614, "#a5a5a5")}
+                    {this.renderChannel("25", 329.82711, 418.71455, 85.03937, 45.498196, "#a5a5a5")}
+                    {this.renderChannel("26", 329.82711, 473.00943, 85.03937, 8.503937, "#a5a5a5")}
+                    {this.renderChannel("27", 329.82711, 492.41534, 85.03937, 30.200384, "#a5a5a5")}
+                    {/* Switches. */}
+                    {this.renderSwitch(1, 234.77424, 543.58835, 85.03937, 8.985827, false,  true)}
+                    {this.renderSwitch(2, 234.77424, 504.56992, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(3, 234.77424, 457.12076, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(4, 98.711244, 433.53212, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(5, 98.711244, 417.27974, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(6, 98.711244, 398.32006, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(7, 98.711244, 349.17406, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(8, 98.711244, 333.52322, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(9, 98.711244, 311.50835, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(10, 98.711244, 290.24926, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(11, 98.711244, 274.86787, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(12, 98.711244, 257.24404, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(13, 236.44936, 233.64696, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(14, 236.44936, 218.49986, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(15, 236.44936, 176.61637, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(16, 236.44936, 104.25976, 85.03937, 8.985827, false, false)}
+
+                    {this.renderSwitch(16, 329.38788, 116.75976, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(17, 329.38788, 198.38484, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(18, 330.70299, 235.89022, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(19, 329.55212, 251.9803, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(20, 330.70299, 308.37741, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(21, 330.70299, 325.18706, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(22, 330.70299, 341.07932, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(23, 329.80714, 356.28923, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(24, 329.80714, 372.50665, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(25, 329.80714, 389.77177, 221.10236, 8.985827, false, true)}
+                    {this.renderSwitch(26, 329.80714, 408.12294, 221.10236, 8.985827, false, false)}
+                    {this.renderSwitch(27, 329.38788, 464.4019, 85.03937, 8.985827, false, true)}
+                    {this.renderSwitch(28, 329.38788, 482.35716, 85.03937, 8.985827, false, false)}
+                    {this.renderSwitch(29, 329.38788, 523.64638, 85.03937, 8.985827, false, true)}
+
+                </svg>
+
+                <Table size="small" compact>
+                    {this.state.values.map((row, index) => {
+                        return (<Table.Row key={index} active={row.value == this.state.strategy}>
+                            <Table.Cell>{moment(row.timestamp * 1000).format()}</Table.Cell>
+                            <Table.Cell>{row.value}</Table.Cell>
+                        </Table.Row>)
+                    }).reverse()}
+                </Table>
+            </Segment>
+        )
+    }
+
+    renderChannel(channel, x,y,width, height, fill) {
+        return (
+            <svg>
+                <rect x={x} y={y} width={width} height={height} fill={fill} />
+                <text transform={`translate(${x} ${y})`} fill="white">
+                <tspan fontFamily="Courier" fontSize="5" style={{fontVariant: "italic", fontWeight:"bold", textAlign:"center"}} fill="white" x={width/2} y={height/2} textAnchor="middle" alignment-baseline="central">{channel}</tspan>
+                </text>
+            </svg>
+        )
+    }
+    renderSwitch(number, x, y,width, height, state, polarity) {
+        return (
+            <svg>
+                <rect x={x} y={y} width={width} height={height} fill={this.stateForSwitch(number) ? 'white' : 'gray'} strokeWidth={2} stroke={polarity ? "#129702" : "#b1001c"} />
+                <text transform={`translate(${x} ${y})`} fill="white">
+                <tspan fontFamily="Courier" fontSize="9" style={{fontVariant: "italic", fontWeight:"bold", textAlign:"center"}} fill="black" x={width/2} y={7} textAnchor="middle" alignment-baseline="central">{number}</tspan>
+                </text>
+            </svg>
         )
     }
 }
@@ -1441,8 +1606,6 @@ function parseValueForUnit(unit: string, value: string) {
         }
     }
 }
-
-
 
 
 
