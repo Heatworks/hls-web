@@ -368,4 +368,5 @@ const unitOptions = [
   { key: 'Celcius', text: 'Celcius', value: 'Celcius' },
   { key: 'Microsiemens', text: 'Microsiemens', value: 'Microsiemens' },
   { key: 'Amps', text: 'Amps', value: 'Amps' },
+  { key: 'GPM', text: 'GPM', value: 'GPM' },
 ]

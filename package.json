@@ -21,7 +21,6 @@
     "@heatworks/heatworks-chart-library-web": "^0.2.0",
     "@types/d3": "^4.7.0",
     "@types/express": "^4.0.34",
-    "@types/mqtt": "0.0.34",
     "@types/node": "^7.0.12",
     "@types/react": "^0.14.54",
     "@types/react-dom": "^0.14.19",
