@@ -4,14 +4,16 @@ import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
 var moment = require('moment')
 
+export class DeviceChannelObject {
+    unit: string
+    rate: number
+    control: boolean
+}
+
 export class DeviceDocument {
     name: string
     description: string
-    channels: Map<String, {
-        unit: string,
-        rate: number,
-        control: boolean
-    }>
+    channels: Map<String, DeviceChannelObject>
     tags: any
 }
 

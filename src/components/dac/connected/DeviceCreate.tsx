@@ -1,24 +1,24 @@
 import { connect } from 'react-redux'
-import DevicesTable from '../DevicesTable'
-import { loadDevices as load } from '../../../actions/dac'
+import DeviceCreate from '../DeviceCreate'
+import { loadDevice as load, saveDevice as save } from '../../../actions/dac'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {
   return {
-    ...props,
-    devices: state.dac.devices,
-    accessToken: state.iam.data.accessToken
+    device: state.dac.device,
+    accessToken: state.iam.data.accessToken,
+    params: props.params
   }
 }
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ load }, dispatch)
+    actions: bindActionCreators({ save, load }, dispatch)
   }
 }
 
 const ConnectedTestsTable = connect(
   mapStateToProps,
   mapDispatchToProps
-)(DevicesTable)
+)(DeviceCreate)
 
 export default ConnectedTestsTable

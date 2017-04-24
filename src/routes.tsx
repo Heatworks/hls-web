@@ -18,6 +18,7 @@ import UsersTable from './components/iam/connected/UsersTable'
 import DACIndex from './components/dac/DACIndex'
 import ViewsIndex from './components/views/ViewsIndex'
 import Device from './components/dac/connected/Device'
+import DeviceCreate from './components/dac/connected/DeviceCreate'
 import View from './components/views/connected/View'
 import MonitorIndex from './components/monitor/MonitorIndex'
 import Index from './components/static/Index'
@@ -44,6 +45,7 @@ export default (
             </Route>
             <Route path="dac/">
                 <IndexRoute component={DACIndex} />
+                <Route path="devices/create" component={DeviceCreate} />
                 <Route path=":dacPage(/:dacId)" component={DACIndex} />
                 <Route path="devices/**/" component={Device} />
             </Route>

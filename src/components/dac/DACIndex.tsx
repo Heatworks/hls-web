@@ -24,7 +24,7 @@ export default class DACIndex extends React.Component<{
                      </Grid.Row>
                      <Grid.Row>
                      <Grid.Column>
-                        <Button fluid>Create a New Device</Button>
+                        <Button fluid as={Link} {...{to:`/${this.props.params.organizationName}/dac/devices/create`}}>Create a New Device</Button>
                     </Grid.Column>
                      </Grid.Row>
                     </Grid>
@@ -38,7 +38,9 @@ export default class DACIndex extends React.Component<{
                     </Menu.Item>
                     </Menu.Menu>
                 </Menu>
-                { this.props.params.dacPage == "devices" || this.props.params.dacPage == undefined ? <DevicesTable params={this.props.params} /> : null }
+                { this.props.params.dacPage == "devices" || this.props.params.dacPage == undefined ? <DevicesTable params={this.props.params} onClick={(row) => {
+                    browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${row.name.split('/devices/')[1]}/`)
+                }} /> : null }
                 { this.props.params.dacPage == "data" ? <h3>Data</h3> : null }
        </Segment>);
     }
