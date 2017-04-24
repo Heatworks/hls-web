@@ -6,7 +6,7 @@ import 'whatwg-fetch'
 
 var api = new DAC.DefaultApi()
 
-export function loadDevices(accessToken) {
+export function loadDevices(prefix, accessToken) {
     return {
         types: [
             DEVICES_LOAD,

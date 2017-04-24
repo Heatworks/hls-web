@@ -19,7 +19,7 @@ export default class DevicesTable extends React.Component<{
     },
     accessToken: string,
     actions: {
-        load: (accessToken: string) => any
+        load: (prefix: string, accessToken: string) => any
     },
     params: {
         organizationName: string
@@ -34,11 +34,40 @@ export default class DevicesTable extends React.Component<{
     search?:string,
     searchInput?:string
 }> {
+    previousPrefix:string
     constructor(props) {
         super(props)
-        this.props.actions.load(this.props.accessToken)
+        this.state = {
+            currentPrefix: this.props.prefix,
+            sortTag: "CREATED_DATE",
+            direction: 1,
+            tagsInTable: [],
+            search: this.props.prefix,
+            searchInput: this.props.prefix
+        }
+        this.previousPrefix = this.props.prefix
+    }
+    componentWillMount() {
+        this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+    }
+    updateSearch(search, searchInput) {
+        this.setState({
+            search,
+            searchInput
+        }, () => {
+            if (this.state.search !== this.state.currentPrefix) {
+                this.state.currentPrefix = this.state.search;
+                this.props.actions.load(this.state.search, this.props.accessToken)
+            }
+        })
     }
     render() {
+        var tags = {};
+        this.props.devices.data.forEach((test) => {
+            Object.keys(test.tags).forEach((key) => {
+                tags[key] = (this.state.tagsInTable.indexOf(key) !== -1);
+            });
+        })
         return (
         <div>
             <Menu secondary>
