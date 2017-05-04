@@ -1164,6 +1164,8 @@ class AnalogSensorValue extends React.Component<{
         }
     }
     render() {
+        var maxValue = Math.max(...this.state.values)
+        var minValue = Math.min(...this.state.values)
         return (
             <Segment>
                 <div style={{width: '70%', float:'right', height: 30}}>
@@ -1171,7 +1173,9 @@ class AnalogSensorValue extends React.Component<{
                         <SparklinesLine color={this.props.color} />
                     </Sparklines>
                 </div>
-                <div style={{width: '30%'}}>{valueWithUnit(this.props.values.value.value,this.props.values.value.unit)}</div>
+                <div style={{width: '30%', fontSize:9, position:'absolute',top:3 }}>{valueWithUnit(maxValue,this.props.values.value.unit)}</div>
+                <div style={{width: '30%', fontSize:9, position:'absolute',bottom:3 }}>{valueWithUnit(minValue,this.props.values.value.unit)}</div>
+                <div style={{width: '30%', position:'relative', left: -5}}>{valueWithUnit(this.props.values.value.value,this.props.values.value.unit)}</div>
             </Segment>
         )
     }
