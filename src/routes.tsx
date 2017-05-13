@@ -21,6 +21,7 @@ import Device from './components/dac/connected/Device'
 import DeviceCreate from './components/dac/connected/DeviceCreate'
 import View from './components/views/connected/View'
 import MonitorIndex from './components/monitor/MonitorIndex'
+import ScriptsIndex from './components/scripts/ScriptsIndex'
 import Index from './components/static/Index'
 import Settings from './components/settings/Index'
 
@@ -55,6 +56,10 @@ export default (
             </Route>
             <Route path="monitor/">
                 <IndexRoute component={MonitorIndex} />
+                <Route path=":monitorPage(/:monitorId)" component={MonitorIndex} />
+            </Route>
+            <Route path="scripts/">
+                <IndexRoute component={ScriptsIndex} />
                 <Route path=":monitorPage(/:monitorId)" component={MonitorIndex} />
             </Route>
         </Route> 
