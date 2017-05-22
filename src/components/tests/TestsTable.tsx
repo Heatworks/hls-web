@@ -168,7 +168,7 @@ export default class TestsTable extends React.Component<{
                             <Table.Cell onClick={() => {
                                 this.onClickRow(row);
                                 }} singleLine={true} style={{ cursor: 'pointer' }} width={4}>{iconForStatus(row.tags.STATUS)} {row.name.substr(`/organizations/${this.props.params.organizationName}/tests/`.length)}<br/>
-                            <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:MM:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
+                            <small>{row.range.map((time) => { return (<span>{ moment(time * 1000).format('MM/DD/YYYY HH:mm:SS') } &nbsp;&nbsp;</span>) })}</small></Table.Cell>
                             <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                             <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
                             {this.state.tagsInTable.map((tag) => {
