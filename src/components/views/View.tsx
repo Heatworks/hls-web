@@ -626,7 +626,7 @@ class Column extends React.Component<{
                             },
                             unsavedChanges: true 
                         })
-                    }} />  : (this.props.column.props.title ? <Header subheader>{this.props.column.props.icon ? <Icon name={this.props.column.props.icon} circular style={{ marginRight: 0 }} /> : null }<Header.Content>{this.props.column.props.title} </Header.Content></Header> : null)
+                    }} />  : (this.props.column.props.title ? <Header subheader>{this.props.column.props.icon ? <Icon name={this.props.column.props.icon} circular style={{ marginRight: 0, marginTop: 15 }} /> : null }<Header.Content>{this.props.column.props.title} </Header.Content></Header> : null)
                     }
                 {
                     this.props.editing ? <Segment vertical>
@@ -789,6 +789,7 @@ class Solenoid extends React.Component<{
                         this.props.publish(this.props.channels.control, 0)
                     }} /></Button.Group> : ((values.value) ? 'On' : 'Off')}</span>
                 <br/>
+                <div style={{ fontSize: 14, marginTop: -22, textAlign: 'center', width: '100%', float: 'left'}}>{this.props.title}</div>
             </Segment>
         )
     }
