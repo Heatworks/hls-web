@@ -111,7 +111,7 @@ export default class DevicesTable extends React.Component<{
                 {
                     this.props.devices.data.map((row, index) => {
                         return (<Table.Row key={index} disabled={this.props.devices.loading} {...{onClick:() => {
-                                
+                                browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${row.name.split('/devices/')[1]}/`)
                             }}}>
                         <Table.Cell>{row.name.substr(`/organizations/${this.props.params.organizationName}/devices/`.length)}</Table.Cell>
                         <Table.Cell>{row.description}</Table.Cell>
