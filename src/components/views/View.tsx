@@ -568,6 +568,10 @@ export default class View extends React.Component<{
             return (<AnalogSensorValue {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
                 }))} />)
+        } else if (column.component == "/organizations/hls/views/components/oscilloscope") {
+            return (<Oscilloscope {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]]
+                }))} />)
         } else if (column.component == "/organizations/hls/views/components/log") {
             return (<LogTable {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
@@ -1120,6 +1124,84 @@ class LogTable extends React.Component<{
                         </Table.Row>)
                     }).reverse()}
                 </Table>
+            </Segment>
+        )
+    }
+}
+
+// BBEA/wAA/wD/AP8A//8AAP//AP//AP8A////AP8A/wD/AP8AAP//AAD//wD/AAD/AP8A/wAA////AAAAAP//AP8A/wD/AP//Af8A//8A/wD//wAA/wAA/wAA/wAA/wD/AAD/AP//AP8A/wAA/wAA/wD/AP//AP8AAAA=
+
+const Base64Binary = require('../../utils/Base64Binary.ts')
+const maxChangeValue = Math.pow(2, 7);
+
+function decodeHA8(base64Encoded: string) {
+    console.log(base64Encoded)
+    var uintArray = Base64Binary.decode(base64Encoded);
+    var significantDigits = uintArray[0];
+    var startingValue = uintArray[1] / significantDigits;
+    var values = [startingValue];
+    for (var i = 2; i < uintArray.length; i++) {
+        var value = uintArray[i];
+        if (value > maxChangeValue) {
+            value -= maxChangeValue * 2;
+        }
+        values.push(values[i-2] + (value / significantDigits))
+    }
+    return values
+}
+
+class Oscilloscope extends React.Component<{
+    title: string
+    channels: {
+        value: string
+    }
+    values: {
+        value: {
+            value: string,
+            unit: string,
+            timestamp: number
+        }
+    },
+    units: string,
+    sparklinesLength: number,
+    min: number,
+    max: number,
+    color: string,
+    showMin: boolean,
+    showMax: boolean
+},{
+    values: Array<number>
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            values: []
+        }
+    }
+    lastValueTimestamp:number
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value.timestamp != this.lastValueTimestamp) {
+            var newValues = this.state.values.slice(Math.max(this.state.values.length - this.props.sparklinesLength, 0))
+            newValues.push(...decodeHA8(nextProps.values.value.value))
+            this.setState({
+                values: newValues
+            })
+            this.lastValueTimestamp = nextProps.values.value.timestamp;
+        }
+    }
+    render() {
+        var maxValue = Math.max(...this.state.values)
+        var minValue = Math.min(...this.state.values)
+        return (
+            <Segment>
+                <div style={{width: '70%', float:'right', height: 30}}>
+                    <Sparklines data={this.state.values} height={30}  min={this.props.min} max={this.props.max}>
+                        <SparklinesLine color={this.props.color} />
+                    </Sparklines>
+                </div>
+                {this.props.showMax ? (<div style={{width: '30%', fontSize:9, position:'absolute',top:3 }}>{valueWithUnit(maxValue,this.props.values.value.unit)}</div>) : null}
+                {this.props.showMin ? (<div style={{width: '30%', fontSize:9, position:'absolute',bottom:3 }}>{valueWithUnit(minValue,this.props.values.value.unit)}</div>) : null}
+                <div style={{width: '30%', position:'relative', left: -5}}>{valueWithUnit(0,this.props.values.value.unit)}</div>
             </Segment>
         )
     }
