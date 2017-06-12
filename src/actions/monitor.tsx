@@ -61,10 +61,14 @@ export function loadingClientError(error) {
     }
 }
 
+export function getMQTTBrokerHostname () {
+    return window.localStorage.getItem("hls.mqtt_broker") || "hls-local-server.local"
+}
+
 export function loadClient(accessToken) {
     return (dispatch) => {
         try {
-            var client = connect("ws://hls-local-server.local:1884", {
+            var client = connect(`ws://${getMQTTBrokerHostname()}:1884`, {
                 username: 'HLS:AccessToken',
                 password: accessToken,
                 reconnectPeriod: 1000 * 5

@@ -1,13 +1,22 @@
 import * as React from 'react'
 import { Link, browserHistory } from 'react-router'
-import { Segment, Header, Image, Grid, Icon, Button } from 'semantic-ui-react'
+import { Segment, Header, Image, Grid, Icon, Button, Input } from 'semantic-ui-react'
 import { useCelcius, useFarenheit, UnitLabels } from '../../actions/units'
 
 export default class Index extends React.Component<{
     params: {
         organizationName: string
     }
-}, {}> {
+}, {
+    broker: string
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            broker: window.localStorage.getItem("hls.mqtt_broker")
+        }
+    }
     render() {
         return (
             <Grid>
@@ -51,6 +60,23 @@ export default class Index extends React.Component<{
                     <Grid.Column computer={1} width={1} mobile={16} {...{style: {marginTop: 10} }}>
                         <Button content={UnitLabels.Fahrenheit} fluid onClick={() => {
                             useFarenheit()
+                        }} />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column computer={4} width={4} mobile={16}>
+                    </Grid.Column>
+                    <Grid.Column computer={6} width={6} mobile={16}>
+                        <Header subheader><Icon name="setting" circular /><Header.Content>MQTT Borker <Header sub>Set the IP/Hostname for the MQTT Broker</Header></Header.Content></Header>
+                    </Grid.Column>
+                    <Grid.Column computer={2} width={2} mobile={16} {...{style: {marginTop: 10} }}>
+                        <Input type="text" value={this.state.broker} style={{textAlign:'center'}} onChange={(e) => {
+                            this.setState({
+                                broker: e.currentTarget.value
+                            }, () => {
+                                window.localStorage.setItem("hls.mqtt_broker", this.state.broker);
+                            })
+                            
                         }} />
                     </Grid.Column>
                 </Grid.Row>
