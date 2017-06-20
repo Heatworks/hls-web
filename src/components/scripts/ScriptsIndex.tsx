@@ -37,12 +37,12 @@ export default class ScriptsIndex extends React.Component<{
                             let header = new Headers({
                                 'Access-Control-Allow-Origin':'*'
                             });
-                            let sentData={
-                                method: 'GET',
-                                mode: 'cors',
-                                header: header
-                            };
-                                fetch('http://hls-local-server.local/scripts/Run/Start?name=/organizations/heatworks/scripts/model-2/CycleFlowFluctuatingInterval/test-station-a-reworked', sentData).then((response) => {
+                            
+                                fetch('http://hls-local-server.local/scripts/Run/Start?name=/organizations/heatworks/scripts/model-2/CycleFlowFluctuatingInterval/test-station-a-reworked', {
+                                    method: 'GET',
+                                    mode: "cors",
+                                    headers: header
+                                }).then((response) => {
                                     return response.json();
                                 }).then((data) => {
                                     alert(data['message']);

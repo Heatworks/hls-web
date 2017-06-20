@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createStore, combineReducers, compose, applyMiddleware, Store } from 'redux'
+import { createStore, combineReducers, compose, applyMiddleware, Store, StoreEnhancer } from 'redux'
 import { persistState, createDevTools, IDevTools } from 'redux-devtools'
 import LogMonitor from 'redux-devtools-log-monitor'
 import DockMonitor from 'redux-devtools-dock-monitor'
@@ -30,8 +30,9 @@ export function configureStore(initialState) {
   const store = createStore(
     rootReducer,
     initialState,
-    enhancer
+    enhancer as any
   )
+  
 
   store.dispatch(loadPersistantData())
 
