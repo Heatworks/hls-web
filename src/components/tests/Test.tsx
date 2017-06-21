@@ -354,7 +354,7 @@ export default class Test extends React.Component<{
                     })
                 }} /> : this.state.test.description}<br/>
                 <b>Range</b> {this.state.test.range.map((time, index) => {
-                    return (this.state.editing ? <DateTime value={moment(time*1000)}  onChange={(value) => {
+                    return (this.state.editing ? <span>{index == 1 ? <Icon name="caret right" size="small" /> : null}<DateTime value={moment(time*1000)}  onChange={(value) => {
                             var range = this.state.test.range.slice()
                             range[index] = moment(value).unix();
                             this.setState({
@@ -364,7 +364,7 @@ export default class Test extends React.Component<{
                                     range
                                 }
                             })
-                        }} /> : <span>{index == 1 ? <Icon name="caret right" size="small" /> : null}{moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} </span> )
+                        }} /></span> : <span>{index == 1 ? <Icon name="caret right" size="small" /> : null} {moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} </span> )
                 })}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>
