@@ -68,7 +68,7 @@ export default class View extends React.Component<{
         splat: string 
     },
     client: ClientFixed,
-    
+    standalone: boolean
 },{
     view?: ViewModel,
     connected?: boolean,
@@ -415,7 +415,7 @@ export default class View extends React.Component<{
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Header>
-                                <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link> / {normalizeName(this.state.view.name, "local")}<br/><Header sub>{this.state.view.description}</Header>
+                                {this.props.standalone ? 'Views' : <Link to={`/${this.props.params.organizationName}/views/`}>Views</Link>} / {normalizeName(this.state.view.name, "local")}<br/><Header sub>{this.state.view.description}</Header>
                             </Header>
                         </Grid.Column>
                         <Grid.Column>
@@ -451,11 +451,11 @@ export default class View extends React.Component<{
                             <Icon name="wifi" />
                             <Icon corner name={this.state.connected ? 'check' : 'warning sign'} />
                         </Icon.Group></Menu.Item>
-                                <Menu.Item as={Button} {...{onClick: () => {
+                                {this.props.standalone ? null : <Menu.Item as={Button} {...{onClick: () => {
                                 this.setState({
                                     editing: !this.state.editing
                                 })
-                            }}} active={this.state.editing}><Icon name="edit" />Edit</Menu.Item></Menu>
+                            }}} active={this.state.editing}><Icon name="edit" />Edit</Menu.Item> }</Menu>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

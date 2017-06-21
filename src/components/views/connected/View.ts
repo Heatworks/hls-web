@@ -8,7 +8,8 @@ const mapStateToProps = (state, props) => {
     view: state.views.view,
     accessToken: state.iam.data.accessToken,
     params: props.params,    
-    client: state.monitor.client
+    client: state.monitor.client,
+    standalone: state.standalone.engaged
   }
 }
 function mapDispatchToProps(dispatch) {

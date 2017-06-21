@@ -8,7 +8,8 @@ import Helmet from "react-helmet"
 
 export default class App extends React.Component<{
     params: any,
-    location: string
+    location: string,
+    standalone: boolean
 }, {}> {
     render() {
         return (
@@ -23,13 +24,14 @@ export default class App extends React.Component<{
                         { rel: "apple-touch-icon", href: require("../resources/icon.png") },
                     ]}
                  />
-                <Segment basic>
+                 { this.props.standalone ? <Segment basic>{this.props.children}</Segment> : <Segment basic>
                     <HeaderMenu location={this.props.location} />
                     <div style={{ marginTop: 44, paddingBottom: 26 }}>
                         {this.props.children}
                     </div>
                 </Segment>
-                <Monitor params={this.props.params} />
+                    }
+                { this.props.standalone ? null : <Monitor params={this.props.params} />}
             </div>   
         )
     }

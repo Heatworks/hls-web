@@ -3,7 +3,7 @@ import { Provider } from "react-redux"
 import { Route, browserHistory, IndexRoute, Router } from 'react-router';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
-import App from './components/App'
+import App from './components/connected/App'
 import DevTools from './components/DevTools'
 
 import A from './components/connected/A'

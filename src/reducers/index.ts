@@ -7,6 +7,7 @@ import views from './views'
 import iam from './iam'
 import dac from './dac'
 import monitor from './monitor'
+import standalone from './standalone'
 
 const app = combineReducers({
     routing: routerReducer,
@@ -15,7 +16,8 @@ const app = combineReducers({
     iam,
     dac,
     monitor,
-    views
+    views,
+    standalone
 })
 
 export default app
