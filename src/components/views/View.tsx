@@ -548,6 +548,18 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} />
             )
+        } else if (column.component == "/organizations/hls/views/components/textbox") {
+            return (
+                <TextBox {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
+        } else if (column.component == "/organizations/hls/views/components/passfail") {
+            return (
+                <PassFail {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/hls/views/components/solenoid") {
             return (
                 <Solenoid {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
@@ -738,6 +750,101 @@ class TimestampView extends React.Component<{
         return succeed;
     }
 
+}
+
+class TextBox extends React.Component<{
+    title: string
+    channels: {
+        text: string
+    }
+    values: {
+        text: string
+    }
+    publish: (topic, value) => any
+},{
+    text: string
+}> {
+    constructor (props) {
+        super(props)
+        this.state = {
+            text: "Messages..."
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.text != this.state.text) {
+            this.setState({
+                text: nextProps.values.text
+            })
+        }
+    }
+    render() {
+        return (
+            <Segment>
+                <h3>{this.state.text}</h3>
+            </Segment>
+        )
+    }
+}
+
+class PassFail extends React.Component<{
+    title: string
+    channels: {
+        passing: string
+    }
+    values: {
+        passing: boolean
+    }
+    publish: (topic, value) => any
+},{
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value != nextProps.values.control) {
+
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+    
+    render() {
+        var values = {
+            passing: valueWithUnit(this.props.values.passing, "Boolean")
+        }
+        return (
+            <Segment color={values.passing ? 'green' : 'red'}>
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={8}>
+                        <Button size="huge" basic={values.passing} positive onClick={() => {
+                            this.props.publish(this.props.channels.passing, 1)
+                            this.setState({
+                                publishing: true
+                            })
+                        }}  fluid loading={this.state.publishing}>Pass</Button>
+                        </Grid.Column>
+                        <Grid.Column width={8}>
+                        <Button size="huge" basic={!values.passing} onClick={() => {
+                            this.props.publish(this.props.channels.passing, 0)
+                            this.setState({
+                                publishing: true
+                            })
+                        }} fluid negative loading={this.state.publishing}>Fail</Button> 
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Segment>
+        )
+    }
 }
 
 class Solenoid extends React.Component<{
