@@ -1044,7 +1044,7 @@ class ProductionTestStandUnit extends React.Component<{
                         <br/>
                         <br/>
                         {values.waterInValue == true ? <Button content="Releave Pressure" compact color={"orange"} onClick={this.releavePressure.bind(this)} /> : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}<br/><br/>
-                        {values.powerValue == true ? <Button content="Power Off" compact color={"red"} onClick={this.powerOff.bind(this)} /> : (values.waterInValue == true ? <Button content="Power On" compact color={"red"} onClick={this.powerOn.bind(this)} /> : null)}
+                        <Button content="Power Off" compact color={"red"} onClick={this.powerOff.bind(this)} /> {values.powerValue == true ? null : (values.waterInValue == true ? <Button content="Power On" compact color={"red"} onClick={this.powerOn.bind(this)} /> : null)}
                     </p>)}
                 </div>
             </Segment>
