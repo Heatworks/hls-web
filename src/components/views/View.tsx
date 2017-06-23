@@ -919,8 +919,8 @@ class ProductionTestStandUnit extends React.Component<{
         waterInValue: string,
         waterOutControl: string,
         waterOutValue: string,
-        PowerInControl: string,
-        PowerInValue: string,
+        powerControl: string,
+        powerValue: string,
         stabsControl: string,
         stabsValue: string
     }
@@ -929,8 +929,8 @@ class ProductionTestStandUnit extends React.Component<{
         waterInValue: boolean,
         waterOutControl: boolean,
         waterOutValue: boolean,
-        PowerInControl: boolean,
-        PowerInValue: boolean,
+        powerControl: boolean,
+        powerValue: boolean,
         stabsControl: boolean,
         stabsValue: boolean
     }
@@ -980,14 +980,35 @@ class ProductionTestStandUnit extends React.Component<{
     }
     endFlow() {
         this.props.publish(this.props.channels.waterOutControl, 0)
+        this.props.publish(this.props.channels.waterInControl, 1)
+    }
+
+    releavePressure() {
+        this.props.publish(this.props.channels.waterOutControl, 1)
         this.props.publish(this.props.channels.waterInControl, 0)
+    }
+
+    powerOn() {
+        if (valueWithUnit(this.props.values.stabsValue, "Boolean") == false) {
+            alert('Can not turn on power when tabs are disengaged.');
+            return;
+        }
+        if (valueWithUnit(this.props.values.waterInValue, "Boolean") == false) {
+            alert('Can not turn on power when water is not on.');
+            return;
+        }
+        this.props.publish(this.props.channels.powerControl, 1)
+    }
+    powerOff() {
+        this.props.publish(this.props.channels.powerControl, 0)
     }
     
     render() {
         var values = {
             waterInValue: valueWithUnit(this.props.values.waterInValue, "Boolean"),
             waterOutValue: valueWithUnit(this.props.values.waterOutValue, "Boolean"),
-            stabsValue: valueWithUnit(this.props.values.stabsValue, "Boolean")
+            stabsValue: valueWithUnit(this.props.values.stabsValue, "Boolean"),
+            powerValue: valueWithUnit(this.props.values.powerValue, "Boolean"),
         }
         var image = unit_visuals.full_off;
         if (values.stabsValue == true) {
@@ -1011,11 +1032,20 @@ class ProductionTestStandUnit extends React.Component<{
                 <Image src={image} style={{ height: '100%'}} />
                 </div>
                 <div style={{ width: '50%', float:'left', textAlign: 'right'}}>
-                {values.stabsValue == false ? (
+                {
+                    values.stabsValue == false ? (
                     <p>
                         <Button content="Engage Stabs" onClick={this.engageStabs.bind(this)} /><Button content="Disengage Stabs" color={"red"} onClick={this.disengageStabs.bind(this)} />
                         </p>) : 
-                    (<p><Button.Group basic size={"large"}><Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} /></Button.Group><br/><br/>{values.waterInValue == true ? null : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}</p>)}
+                    (<p>
+                        <Button.Group basic size={"large"}>
+                            <Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} />
+                        </Button.Group>
+                        <br/>
+                        <br/>
+                        {values.waterInValue == true ? <Button content="Releave Pressure" compact color={"orange"} onClick={this.releavePressure.bind(this)} /> : <Button content="Disengage Stabs" compact color={"red"} onClick={this.disengageStabs.bind(this)} />}<br/><br/>
+                        {values.powerValue == true ? <Button content="Power Off" compact color={"red"} onClick={this.powerOff.bind(this)} /> : (values.waterInValue == true ? <Button content="Power On" compact color={"red"} onClick={this.powerOn.bind(this)} /> : null)}
+                    </p>)}
                 </div>
             </Segment>
         )
