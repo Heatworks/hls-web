@@ -80,6 +80,11 @@ export default class Index extends React.Component<{
                         }} />
                     </Grid.Column>
                 </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                       <Link to='/signOut'>Sign Out</Link>
+                    </Grid.Column>
+                </Grid.Row>
             </Grid>
         )
     }

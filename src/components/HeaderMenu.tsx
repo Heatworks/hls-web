@@ -75,11 +75,10 @@ export default class SignIn extends React.Component<{
                                             settingsMenu: false
                                         })
                                     }} />
-                                    <Menu.Item as={Link} {...{to: '/settings'}} icon="settings"></Menu.Item>
                                     <Menu.Item onClick={() => {
                                         window.location.href = window.location.href + "?accessToken=" + this.props.iam.data.accessToken
                                     }}><Icon name="tv" /> Standalone Page</Menu.Item>
-                                    <Menu.Item as={Link} {...{to: '/signOut'}}>Sign Out</Menu.Item>
+                                    <Menu.Item as={Link} {...{to: '/settings'}} icon="settings"></Menu.Item>
                                 </div>
                             ) : ( <Menu.Item icon="angle double left" position="right" onClick={() => {
                                 this.setState({
