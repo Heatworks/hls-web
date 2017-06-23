@@ -81,8 +81,10 @@ export default class Index extends React.Component<{
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column>
-                       <Link to='/signOut'>Sign Out</Link>
+                     <Grid.Column computer={6} width={6} mobile={16}>
+                    </Grid.Column>
+                    <Grid.Column computer={4} width={4} mobile={16}>
+                       <Button as={Link} {...{to:'/signOut'}} fluid>Sign Out</Button>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
