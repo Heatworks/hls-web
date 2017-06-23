@@ -1254,10 +1254,12 @@ class LogTable extends React.Component<{
         return (
             <Segment vertical>
                 <Table size="small" compact>
-                    {this.state.values.map((row, index) => {
+                    {this.state.values.sort((rowA, rowB) => {
+                        return rowA.timestamp - rowB.timestamp;
+                    }).map((row, index) => {
                         return (<Table.Row key={index} active={index == this.state.values.length - 1} error={row.value.indexOf("[error]") == 0} warning={row.value.indexOf("[warning]") == 0}>
-                            <Table.Cell>{moment(row.timestamp * 1000).format()}</Table.Cell>
-                            <Table.Cell>{row.value}</Table.Cell>
+                            <Table.Cell style={{padding: '.1em .7em'}}>{moment(row.timestamp * 1000).format()}</Table.Cell>
+                            <Table.Cell style={{padding: '.1em .7em'}}>{row.value}</Table.Cell>
                         </Table.Row>)
                     }).reverse()}
                 </Table>
