@@ -1025,7 +1025,7 @@ class ProductionTestStandUnit extends React.Component<{
             }
         }
         
-
+        // TODO: Require power off before releaving pressure.
         return (
             <Segment style={{height: 200, overflow:'hidden'}}>
                 <div style={{ width: '50%', height: 200, float:'left', marginTop: -15}}>
