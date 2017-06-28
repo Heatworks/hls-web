@@ -6,13 +6,13 @@ export class DefaultApi {
             'Access-Control-Allow-Origin':'*',
             'Content-Type': 'application/json'
         });
-        var url = `http://${getMQTTBrokerHostname()}/scripts/Start?name=${script}&environment=${environment}`;
-        console.log(url);
+        // TODO: Use a library.
+        var url = `http://${getMQTTBrokerHostname()}/scripts/Start?name=${script}&environment=${environment}&${Object.keys(extraVariables).map((key) => {return `${key}=${extraVariables[key]}`}).join("&")}`;
+
         return fetch(url, {
             method: 'GET',
             mode: "cors",
-            headers: header/*,
-            body: JSON.stringify(extraVariables)*/
+            headers: header
         }).then((response) => {
             console.log("Got response!");
             return response.json();
