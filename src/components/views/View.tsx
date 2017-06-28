@@ -13,6 +13,9 @@ var moment = require('moment')
 import * as DAC from '../../apis/hls_dac';
 var api_dac = new DAC.DefaultApi()
 
+import * as ScriptsLocal from '../../apis/hls_scripts_local';
+var api_scripts_local  = new ScriptsLocal.DefaultApi();
+
 export class ColumnComponent {
     width?: number
     widths?: {
@@ -572,6 +575,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/model-2/production/FunctionalTestScriptController") {
+            return (
+                <FunctionalTestScriptController {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/units/model-3/momepha/strategy") {
             return (<MomephaStrategyVisual {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
@@ -905,6 +914,102 @@ class Solenoid extends React.Component<{
         )
     }
 }
+
+
+
+
+class FunctionalTestScriptController extends React.Component<{
+    title: string
+    channels: {
+    }
+    values: {
+    }
+    script: string
+    environment: string
+    publish: (topic, value) => any
+},{
+    starting?: boolean
+    running?: boolean
+    unit?: string
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            starting: false,
+            running: false,
+            unit: ""
+        }
+    }
+    
+    checking = null
+
+    startScript() {
+        this.setState({
+            starting: true,
+            running: false
+        }, () => {
+            api_scripts_local.scriptStart(this.props.script, this.props.environment, {
+                unit: this.state.unit
+            }).then(() => {
+                this.setState({
+                    starting: false,
+                    running: true
+                });
+                this.checkStatus();
+            })
+        })
+        
+    }
+
+    stopScript() {
+        api_scripts_local.scriptStop(this.props.script, this.props.environment).then(() => {
+            this.setState({
+                running: false
+            })
+            clearTimeout(this.checking);
+        })
+    }
+
+    checkStatus() {
+        this.checking = setTimeout(() => {
+            api_scripts_local.scriptStatus(this.props.script, this.props.environment).then((status) => {
+                if (status) {
+                    this.setState({
+                        running: true
+                    })
+                    this.checkStatus();
+                } else {
+                    this.setState({
+                        running: false
+                    })
+                    clearTimeout(this.checking);
+                }
+            })
+        }, 5000)
+    }
+
+    render() {
+        return (
+            <Segment color={this.state.running ? 'green' : 'red'}>
+                <Button onClick={() => {
+                    this.startScript();
+                }}  loading={this.state.starting}>Start</Button> <span style={{
+                    float:'right',
+                    fontSize: 20,
+                    margin: 0,
+                    padding: 0
+                }} ><Input type="text" placeholder="Unit Number" style={{fontSize: 14}} value={this.state.unit} onChange={(e) => {
+                    this.setState({
+                        unit: e.currentTarget.value
+                    })
+                }} /></span>
+                <br/>
+            </Segment>
+        )
+    }
+}
+
 const unit_visuals = {
     full_on: require('../../resources/unit_visual/test_unit_visual_full_on@2x.png'),
     full_off: require('../../resources/unit_visual/test_unit_visual_full_off@2x.png'),
@@ -912,6 +1017,8 @@ const unit_visuals = {
     flow_out_off:require('../../resources/unit_visual/test_unit_visual_flow_out_off@2x.png'),
     flow_in_off:require('../../resources/unit_visual/test_unit_visual_flow_in_off@2x.png')
 }
+
+
 class ProductionTestStandUnit extends React.Component<{
     title: string
     channels: {
