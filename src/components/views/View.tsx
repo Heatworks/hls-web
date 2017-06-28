@@ -940,6 +940,8 @@ class FunctionalTestScriptController extends React.Component<{
             running: false,
             unit: ""
         }
+
+        this.checkStatus();
     }
     
     checking = null
@@ -958,9 +960,10 @@ class FunctionalTestScriptController extends React.Component<{
                     running: true
                 });
                 this.checkStatus();
+            }).catch((error) => {
+                console.error(error);
             })
         })
-        
     }
 
     stopScript() {
@@ -969,6 +972,8 @@ class FunctionalTestScriptController extends React.Component<{
                 running: false
             })
             clearTimeout(this.checking);
+        }).catch((error) => {
+            console.error(error);
         })
     }
 

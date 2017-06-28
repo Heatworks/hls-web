@@ -6,13 +6,15 @@ export class DefaultApi {
             'Access-Control-Allow-Origin':'*',
             'Content-Type': 'application/json'
         });
-
-        return fetch(`http://${getMQTTBrokerHostname()}/scripts/Start?name=${script}&environment=${environment}`, {
+        var url = `http://${getMQTTBrokerHostname()}/scripts/Start?name=${script}&environment=${environment}`;
+        console.log(url);
+        return fetch(url, {
             method: 'GET',
             mode: "cors",
-            headers: header,
-            body: JSON.stringify(extraVariables)
+            headers: header/*,
+            body: JSON.stringify(extraVariables)*/
         }).then((response) => {
+            console.log("Got response!");
             return response.json();
         }).then((data) => {
             return data['message'];
@@ -25,7 +27,6 @@ export class DefaultApi {
         });
         return fetch(`http://${getMQTTBrokerHostname()}/scripts/Status?name=${script}&environment=${environment}`, {
             method: 'GET',
-            mode: "cors",
             headers: header
         }).then((response) => {
             return response.json();
