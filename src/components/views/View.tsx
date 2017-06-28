@@ -949,6 +949,7 @@ class FunctionalTestScriptController extends React.Component<{
             starting: true,
             running: false
         }, () => {
+            console.log("Call start script.");
             api_scripts_local.scriptStart(this.props.script, this.props.environment, {
                 unit: this.state.unit
             }).then(() => {
@@ -993,7 +994,11 @@ class FunctionalTestScriptController extends React.Component<{
         return (
             <Segment color={this.state.running ? 'green' : 'red'}>
                 <Button onClick={() => {
-                    this.startScript();
+                    if (this.state.running) {
+                        this.stopScript();
+                    } else {
+                        this.startScript();
+                    }
                 }}  loading={this.state.starting}>Start</Button> <span style={{
                     float:'right',
                     fontSize: 20,
