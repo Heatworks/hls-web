@@ -1004,7 +1004,7 @@ class FunctionalTestScriptController extends React.Component<{
                     } else {
                         this.startScript();
                     }
-                }}  loading={this.state.starting}>Start</Button> <span style={{
+                }}  loading={this.state.starting}>{(this.state.running) ? 'Stop' : 'Start'}</Button> <span style={{
                     float:'right',
                     fontSize: 20,
                     margin: 0,
