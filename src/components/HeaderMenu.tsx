@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router'
-import { checkPolicy } from 'apis/hls_iam_policy'
+import { checkPolicy } from '../apis/hls_iam_policy'
 
 export default class SignIn extends React.Component<{
     iam: {
