@@ -581,6 +581,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/model-2/production/FunctionalTestNotes") {
+            return (
+                <FunctionalTestNotes {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/units/model-3/momepha/strategy") {
             return (<MomephaStrategyVisual {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]]
@@ -794,6 +800,85 @@ class TextBox extends React.Component<{
         )
     }
 }
+
+class FunctionalTestNotes extends React.Component<{
+    title: string
+    channels: {
+        notes: string
+    }
+    values: {
+        notes: string
+    }
+    publish: (topic, value) => any
+},{
+    publishing: boolean,
+    previousNotes?: Array<string>,
+    value?: string
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false,
+            previousNotes: new Array(),
+            value: ""
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.notes != this.state.value) {
+            
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+    
+    render() {
+        var displayNotes = this.state.previousNotes.slice()
+        return (
+            <Segment>
+                <Input fluid type="text" content={this.state.value} onChange={(e) => {
+                    this.setState({
+                        value: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <input placeholder={'Notes...'} value={this.state.value} />
+                <Button onClick={() =>{
+                    this.props.publish(this.props.channels.notes, this.state.value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        var nextNotes = this.state.previousNotes.slice();
+                        nextNotes.push(this.state.value);
+                        this.setState({
+                            publishing: false,
+                            value: "",
+                            previousNotes: nextNotes
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Save</Button>
+                </Input>
+                <br/>
+                <Grid>
+                    {displayNotes.reverse().map((note) => {
+                        return (
+                            <Grid.Row>
+                                <Grid.Column>
+                                    {note}
+                                </Grid.Column>
+                            </Grid.Row>
+                        )
+                    })}
+                </Grid>
+            </Segment>
+        )
+    }
+}
+
 
 class PassFail extends React.Component<{
     title: string

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router'
+import { checkPolicy } from 'apis/hls_iam_policy'
 
 export default class SignIn extends React.Component<{
     iam: {
@@ -11,7 +12,8 @@ export default class SignIn extends React.Component<{
         },
         organization?: {
             organizationName: string,
-            organizationId: string
+            organizationId: string,
+            policy: any
         }
     },
     location: {
@@ -34,17 +36,18 @@ export default class SignIn extends React.Component<{
 
     render() {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
+        var baseResource = `/organizations/${organizationNameOrNull}/*`;
         return (
             <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}}>
                 <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
                 {
                     this.props.iam.organization ? 
                     <div style={{display:'flex'}} className="computer tablet only">
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/iam/`}} active={this.inService('iam')}>IAM</Menu.Item>
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/dac/`}} active={this.inService('dac')}>DAC</Menu.Item>
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/tests/`}} active={this.inService('tests')}>Tests</Menu.Item>
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/views/`}} active={this.inService('views')}>Views</Menu.Item>
-                        <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/scripts/`}} active={this.inService('scripts')}>Scripts</Menu.Item>
+                        {checkPolicy(this.props.iam.organization.policy, 'hls:iam', baseResource) ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/iam/`}} active={this.inService('iam')}>IAM</Menu.Item> : null }
+                        {checkPolicy(this.props.iam.organization.policy, 'hls:dac', baseResource) ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/dac/`}} active={this.inService('dac')}>DAC</Menu.Item> : null }
+                        {checkPolicy(this.props.iam.organization.policy, 'hls:tests', baseResource) ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/tests/`}} active={this.inService('tests')}>Tests</Menu.Item> : null }
+                        {checkPolicy(this.props.iam.organization.policy, 'hls:views', baseResource) ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/views/`}} active={this.inService('views')}>Views</Menu.Item> : null }
+                        {checkPolicy(this.props.iam.organization.policy, 'hls:scripts', baseResource) ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/scripts/`}} active={this.inService('scripts')}>Scripts</Menu.Item> : null }
                     </div> : null
                 }
                 <Menu.Menu position='right'>
