@@ -42,11 +42,11 @@ export default class SignIn extends React.Component<{
                 {
                     this.props.iam.organization ? 
                     <div style={{display:'flex'}} className="computer tablet only">
-                        {canPerformAction(this.props.iam.organization.policy, 'hls:iam') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/iam/`}} active={this.inService('iam')}>IAM</Menu.Item> : null }
-                        {canPerformAction(this.props.iam.organization.policy, 'hls:dac') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/dac/`}} active={this.inService('dac')}>DAC</Menu.Item> : null }
-                        {canPerformAction(this.props.iam.organization.policy, 'hls:tests') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/tests/`}} active={this.inService('tests')}>Tests</Menu.Item> : null }
-                        {canPerformAction(this.props.iam.organization.policy, 'hls:views') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/views/`}} active={this.inService('views')}>Views</Menu.Item> : null }
-                        {canPerformAction(this.props.iam.organization.policy, 'hls:scripts') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/scripts/`}} active={this.inService('scripts')}>Scripts</Menu.Item> : null }
+                        {canPerformAction(this.props.iam.organization.policy, 'hls:iam:View') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/iam/`}} active={this.inService('iam')}>IAM</Menu.Item> : null }
+                        {canPerformAction(this.props.iam.organization.policy, 'hls:dac:View') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/dac/`}} active={this.inService('dac')}>DAC</Menu.Item> : null }
+                        {canPerformAction(this.props.iam.organization.policy, 'hls:tests:View') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/tests/`}} active={this.inService('tests')}>Tests</Menu.Item> : null }
+                        {canPerformAction(this.props.iam.organization.policy, 'hls:views:View') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/views/`}} active={this.inService('views')}>Views</Menu.Item> : null }
+                        {canPerformAction(this.props.iam.organization.policy, 'hls:scripts:View') ? <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/scripts/`}} active={this.inService('scripts')}>Scripts</Menu.Item> : null }
                     </div> : null
                 }
                 <Menu.Menu position='right'>
