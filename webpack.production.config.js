@@ -46,12 +46,6 @@ module.exports = {
     module: {
         // loaders handle the assets, like transforming sass to css or jsx to js.
         rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                enforce:"pre",
-                loader: 'eslint-loader'
-            },
             { test: /\.tsx?$/, use: ['babel-loader', 'ts-loader'] },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
