@@ -809,6 +809,7 @@ class FunctionalTestNotes extends React.Component<{
     values: {
         notes: string
     }
+    showTextbox: boolean
     publish: (topic, value) => any
 },{
     publishing: boolean,
@@ -834,12 +835,28 @@ class FunctionalTestNotes extends React.Component<{
             })
         }
     }
+
+    publishNote(text) {
+        this.props.publish(this.props.channels.notes, text)
+        this.setState({
+            publishing: true
+        })
+        setTimeout(() => {
+            var nextNotes = this.state.previousNotes.slice();
+            nextNotes.push(text);
+            this.setState({
+                publishing: false,
+                value: "",
+                previousNotes: nextNotes
+            })
+        }, 1000)
+    }
     
     render() {
         var displayNotes = this.state.previousNotes.slice()
         return (
             <Segment>
-                <Input fluid type="text" content={this.state.value} onChange={(e) => {
+                {this.props.showTextbox ?  <Input fluid type="text" content={this.state.value} onChange={(e) => {
                     this.setState({
                         value: e.currentTarget.value,
                         publishing: false
@@ -862,6 +879,21 @@ class FunctionalTestNotes extends React.Component<{
                     }, 1000)
                 }} loading={this.state.publishing}>Save</Button>
                 </Input>
+                 : <p>
+                     <Button content="E9" onClick={() => {
+                         this.publishNote('error/e9')
+                      }} loading={this.state.publishing} />
+                     <Button content="E2" onClick={() => {
+                         this.publishNote('error/e2')
+                      }} loading={this.state.publishing} />
+                     <Button content="E0" onClick={() => {
+                         this.publishNote('error/e0')
+                      }} loading={this.state.publishing} />
+                     <Button content="No Power" onClick={() => {
+                         this.publishNote('error/power')
+                      }} loading={this.state.publishing} />
+                     </p>}
+                
                 <br/>
                 <Grid>
                     {displayNotes.reverse().map((note) => {
@@ -874,6 +906,11 @@ class FunctionalTestNotes extends React.Component<{
                         )
                     })}
                 </Grid>
+                {displayNotes.length > 0 ? <Button onClick={() => {
+                    this.setState({
+                        publishing: this.state.publishing,
+                        previousNotes: []
+                    })}} style={{}} content={'Clear Notes'} size="tiny" /> : null}
             </Segment>
         )
     }
@@ -1098,6 +1135,10 @@ class FunctionalTestScriptController extends React.Component<{
                     this.setState({
                         unit: e.currentTarget.value
                     })
+                }} onKeyPress={(e) => {
+                    if (e.keyCode == 74 && e.ctrlKey) {
+                        e.preventDefault();
+                    }
                 }} /></span>
                 <br/>
             </Segment>
@@ -1230,18 +1271,19 @@ class ProductionTestStandUnit extends React.Component<{
         // TODO: Require power off before releaving pressure.
         return (
             <Segment style={{height: 200, overflow:'hidden'}}>
-                <div style={{ width: '50%', height: 200, float:'left', marginTop: -15}}>
+                <div style={{ width: '40%', height: 200, float:'left', marginTop: -15}}>
                 <Image src={image} style={{ height: '100%'}} />
                 </div>
-                <div style={{ width: '50%', float:'left', textAlign: 'right'}}>
+                <div style={{ width: '60%', float:'left', textAlign: 'right'}}>
                 {
                     values.stabsValue == false ? (
                     <p>
                         <Button content="Engage Stabs" onClick={this.engageStabs.bind(this)} /><Button content="Disengage Stabs" color={"red"} onClick={this.disengageStabs.bind(this)} />
                         </p>) : 
                     (<p>
-                        <Button.Group basic size={"large"}>
-                            <Button content="Flow Start" onClick={this.startFlow.bind(this)} /><Button content="Flow Stop" onClick={this.endFlow.bind(this)} />
+                        <span><b>Flow:</b>&nbsp;&nbsp;</span>
+                        <Button.Group basic>
+                            <Button content="Start" onClick={this.startFlow.bind(this)} /><Button content="Stop" onClick={this.endFlow.bind(this)} />
                         </Button.Group>
                         <br/>
                         <br/>
