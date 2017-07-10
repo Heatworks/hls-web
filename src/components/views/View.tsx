@@ -1142,11 +1142,11 @@ class FunctionalTestScriptController extends React.Component<{
                     if (e.keyCode == 74 && e.ctrlKey) {
                         e.preventDefault();
                     }
-                }} /></span>
+                }} /></span><br/><br/>
                 <span style={{
                     float:'right',
                     fontSize: 20,
-                    margin: 0,
+                    margin: '-10px 0px',
                     padding: 0
                 }} ><Input type="text" placeholder="Operator ID" style={{fontSize: 14}} value={this.state.operator} onChange={(e) => {
                     this.setState({
