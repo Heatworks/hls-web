@@ -1053,6 +1053,7 @@ class FunctionalTestScriptController extends React.Component<{
     starting?: boolean
     running?: boolean
     unit?: string
+    operator?: string
 }> {
     constructor(props) {
         super(props)
@@ -1060,7 +1061,8 @@ class FunctionalTestScriptController extends React.Component<{
         this.state = {
             starting: false,
             running: false,
-            unit: ""
+            unit: "",
+            operator: ""
         }
 
         this.checkStatus();
@@ -1075,7 +1077,8 @@ class FunctionalTestScriptController extends React.Component<{
         }, () => {
             console.log("Call start script.");
             api_scripts_local.scriptStart(this.props.script, this.props.environment, {
-                unit: this.state.unit
+                unit: this.state.unit,
+                operator: this.state.operator
             }).then(() => {
                 this.setState({
                     starting: false,
@@ -1134,6 +1137,20 @@ class FunctionalTestScriptController extends React.Component<{
                 }} ><Input type="text" placeholder="Unit Number" style={{fontSize: 14}} value={this.state.unit} onChange={(e) => {
                     this.setState({
                         unit: e.currentTarget.value
+                    })
+                }} onKeyPress={(e) => {
+                    if (e.keyCode == 74 && e.ctrlKey) {
+                        e.preventDefault();
+                    }
+                }} /></span>
+                <span style={{
+                    float:'right',
+                    fontSize: 20,
+                    margin: 0,
+                    padding: 0
+                }} ><Input type="text" placeholder="Operator ID" style={{fontSize: 14}} value={this.state.operator} onChange={(e) => {
+                    this.setState({
+                        operator: e.currentTarget.value
                     })
                 }} onKeyPress={(e) => {
                     if (e.keyCode == 74 && e.ctrlKey) {
