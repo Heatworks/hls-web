@@ -892,6 +892,9 @@ class FunctionalTestNotes extends React.Component<{
                      <Button content="No Power" onClick={() => {
                          this.publishNote('error/power')
                       }} loading={this.state.publishing} />
+                      <Button content="Operator" onClick={() => {
+                         this.publishNote('operator')
+                      }} loading={this.state.publishing} />
                      </p>}
                 
                 <br/>
@@ -1148,7 +1151,7 @@ class FunctionalTestScriptController extends React.Component<{
                     fontSize: 20,
                     margin: '-10px 0px',
                     padding: 0
-                }} ><Input type="text" placeholder="Operator ID" style={{fontSize: 14}} value={this.state.operator} onChange={(e) => {
+                }} ><Input type="text" placeholder="Operator ID" style={{fontSize: 10}} value={this.state.operator} onChange={(e) => {
                     this.setState({
                         operator: e.currentTarget.value
                     })
