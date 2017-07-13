@@ -1071,6 +1071,7 @@ class FunctionalTestScriptController extends React.Component<{
     starting?: boolean
     running?: boolean
     unit?: string
+    currentlyRunningUnit?: string
     operator?: string
 }> {
     constructor(props) {
@@ -1080,7 +1081,8 @@ class FunctionalTestScriptController extends React.Component<{
             starting: false,
             running: false,
             unit: "",
-            operator: ""
+            operator: "",
+            currentlyRunningUnit: ""
         }
 
         this.checkStatus();
@@ -1100,7 +1102,9 @@ class FunctionalTestScriptController extends React.Component<{
             }).then(() => {
                 this.setState({
                     starting: false,
-                    running: true
+                    running: true,
+                    currentlyRunningUnit: this.state.unit,
+                    unit: ''
                 });
                 this.checkStatus();
             }).catch((error) => {
@@ -1152,7 +1156,7 @@ class FunctionalTestScriptController extends React.Component<{
                     fontSize: 20,
                     margin: 0,
                     padding: 0
-                }} ><Input type="text" placeholder="Unit Number" style={{fontSize: 14}} value={this.state.unit} onChange={(e) => {
+                }} ><Input type="text" placeholder={(this.state.currentlyRunningUnit !== "") ? "Unit Number" : this.state.currentlyRunningUnit} style={{fontSize: 14}} value={this.state.unit} onChange={(e) => {
                     this.setState({
                         unit: e.currentTarget.value
                     })
