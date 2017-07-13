@@ -884,6 +884,9 @@ class FunctionalTestNotes extends React.Component<{
                      <Button content="E9" onClick={() => {
                          this.publishNote('error/e9')
                       }} loading={this.state.publishing} />
+                    <Button content="E5" onClick={() => {
+                         this.publishNote('error/e5')
+                      }} loading={this.state.publishing} />
                      <Button content="E2" onClick={() => {
                          this.publishNote('error/e2')
                       }} loading={this.state.publishing} />
@@ -904,6 +907,9 @@ class FunctionalTestNotes extends React.Component<{
                       }} loading={this.state.publishing} />
                       <Button content="Operator" onClick={() => {
                          this.publishNote('operator')
+                      }} loading={this.state.publishing} />
+                       <Button content="Major" onClick={() => {
+                         this.publishNote('major')
                       }} loading={this.state.publishing} />
                      </p>}
                 <br/>
