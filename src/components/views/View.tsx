@@ -172,6 +172,7 @@ export default class View extends React.Component<{
     }
 
     setupLive() {
+        this.stopRemotePlay();
         console.log('setupView...' + this.state.view.name)
         this.processChannelsInView().then(() => {
             return this.checkProps();
