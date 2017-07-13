@@ -890,14 +890,22 @@ class FunctionalTestNotes extends React.Component<{
                      <Button content="E0" onClick={() => {
                          this.publishNote('error/e0')
                       }} loading={this.state.publishing} />
+                      <Button content="No Flow" onClick={() => {
+                         this.publishNote('flow')
+                      }} loading={this.state.publishing} />
                      <Button content="No Power" onClick={() => {
-                         this.publishNote('error/power')
+                         this.publishNote('power')
+                      }} loading={this.state.publishing} />
+                      <Button content="Script" onClick={() => {
+                         this.publishNote('script')
+                      }} loading={this.state.publishing} />
+                      <Button content="Buttons" onClick={() => {
+                         this.publishNote('buttons')
                       }} loading={this.state.publishing} />
                       <Button content="Operator" onClick={() => {
                          this.publishNote('operator')
                       }} loading={this.state.publishing} />
                      </p>}
-                
                 <br/>
                 <Grid>
                     {displayNotes.reverse().map((note) => {
