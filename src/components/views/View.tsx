@@ -1091,26 +1091,33 @@ class FunctionalTestScriptController extends React.Component<{
     checking = null
 
     startScript() {
-        this.setState({
-            starting: true,
-            running: false
-        }, () => {
-            console.log("Call start script.");
-            api_scripts_local.scriptStart(this.props.script, this.props.environment, {
-                unit: this.state.unit,
-                operator: this.state.operator
-            }).then(() => {
-                this.setState({
-                    starting: false,
-                    running: true,
-                    currentlyRunningUnit: this.state.unit,
-                    unit: ''
-                });
-                this.checkStatus();
-            }).catch((error) => {
-                console.error(error);
+        if (/^MX[0-9]\d{11}$/.test(this.state.unit)) {
+            this.setState({
+                starting: true,
+                running: false
+            }, () => {
+                console.log("Call start script.");
+                api_scripts_local.scriptStart(this.props.script, this.props.environment, {
+                    unit: this.state.unit,
+                    operator: this.state.operator
+                }).then(() => {
+                    this.setState({
+                        starting: false,
+                        running: true,
+                        currentlyRunningUnit: this.state.unit,
+                        unit: ''
+                    });
+                    this.checkStatus();
+                }).catch((error) => {
+                    console.error(error);
+                })
             })
-        })
+        } else {
+            alert(`Invalid serial number: ${this.state.unit}`);
+            this.setState({
+                unit: ''
+            })
+        }
     }
 
     stopScript() {
