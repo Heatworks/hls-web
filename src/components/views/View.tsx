@@ -887,6 +887,12 @@ class FunctionalTestNotes extends React.Component<{
                     <Button content="E5" onClick={() => {
                          this.publishNote('error/e5')
                       }} loading={this.state.publishing} />
+                        <Button content="E4" onClick={() => {
+                         this.publishNote('error/e4')
+                      }} loading={this.state.publishing} />
+                    <Button content="E3" onClick={() => {
+                         this.publishNote('error/e3')
+                      }} loading={this.state.publishing} />
                      <Button content="E2" onClick={() => {
                          this.publishNote('error/e2')
                       }} loading={this.state.publishing} />
@@ -1091,6 +1097,10 @@ class FunctionalTestScriptController extends React.Component<{
     checking = null
 
     startScript() {
+        if (this.state.operator == "") {
+            alert(`Please add an operator ID.`);
+            return;
+        }
         if (/^MX[0-9]\d{11}$/.test(this.state.unit)) {
             this.setState({
                 starting: true,
