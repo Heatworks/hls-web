@@ -56,12 +56,21 @@ export default class DevicesTable extends React.Component<{
             searchInput
         }, () => {
             if (this.state.search !== this.state.currentPrefix) {
+                console.log(`prefix: ${this.state.currentPrefix}`);
                 this.state.currentPrefix = this.state.search;
                 this.props.actions.load(this.state.search, this.props.accessToken)
             }
         })
     }
+    onClickRow(row) {
+        if (this.props.onClick) {
+            this.props.onClick(row);
+        } else {
+            browserHistory.push(`/${this.props.params.organizationName}/devices/${row.name.split('/devices/')[1]}/`)
+        }
+    }
     render() {
+        const direction = (this.state.direction == 1 ? "ascending" : "descending")        
         var tags = {};
         this.props.devices.data.forEach((test) => {
             Object.keys(test.tags).forEach((key) => {
@@ -93,7 +102,7 @@ export default class DevicesTable extends React.Component<{
                         </Dropdown.Menu>
                     </Menu.Item>
                 <Menu.Item>
-                    <Input icon='search' placeholder='Search tests...' value={this.state.searchInput} onChange={(e) => {
+                    <Input icon='search' placeholder='Search devices...' disabled value={this.state.searchInput} onChange={(e) => {
                         this.updateSearch(e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/') + 1), e.currentTarget.value);
                     }}/>
                 </Menu.Item>
@@ -105,17 +114,37 @@ export default class DevicesTable extends React.Component<{
                     <Table.HeaderCell sorted={"descending"}>Name</Table.HeaderCell>
                     <Table.HeaderCell>Description</Table.HeaderCell>
                     <Table.HeaderCell>Channels</Table.HeaderCell>
+                    {this.state.tagsInTable.map((tag) => {
+                        return (
+                            <Table.HeaderCell sorted={(this.state.sortTag == tag) ? direction : null } onClick={() => {
+                                this.setState({
+                                    sortTag: tag,
+                                    direction: (this.state.sortTag == tag ? (this.state.direction*-1) : this.state.direction)
+                                })
+                                }}>{tag}</Table.HeaderCell>
+                        )
+                    })}
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
                 {
-                    this.props.devices.data.map((row, index) => {
-                        return (<Table.Row key={index} disabled={this.props.devices.loading} {...{onClick:() => {
-                                browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${row.name.split('/devices/')[1]}/`)
-                            }}}>
-                        <Table.Cell>{row.name.substr(`/organizations/${this.props.params.organizationName}/devices/`.length)}</Table.Cell>
-                        <Table.Cell>{row.description}</Table.Cell>
-                        <Table.Cell>{Object.keys(row.channels).length}</Table.Cell>
+                    this.props.devices.data.sort((a, b) => {
+                        if (this.state.sortTag == "name") {
+                            return a.name > b.name ? -this.state.direction : this.state.direction
+                        }
+                        var tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction
+                        return tagSort
+                        //return (a.range.length == b.range.length) ? dateSort : ((a.range.length > b.range.length) ? 1 : 0)
+                    }).map((row, index) => {
+                        return (<Table.Row key={index} disabled={this.props.devices.loading} >
+                            <Table.Cell onClick={() => {
+                                this.onClickRow(row);
+                                }} singleLine={true} style={{ cursor: 'pointer' }} width={4}>{row.name.substr(`/organizations/${this.props.params.organizationName}/devices/`.length)}</Table.Cell>
+                            <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
+                            <Table.Cell>{Object.keys(row.channels).length}</Table.Cell>
+                            {this.state.tagsInTable.map((tag) => {
+                                return (<Table.Cell>{row.tags[tag]}</Table.Cell>)
+                            })}
                         </Table.Row>)
                     })
                 }

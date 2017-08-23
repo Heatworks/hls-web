@@ -29,19 +29,9 @@ export default class DACIndex extends React.Component<{
                      </Grid.Row>
                     </Grid>
                     <Divider />
-                <Menu secondary>
-                    <Menu.Item name='devices' active={(this.props.params.dacPage == 'devices' || this.props.params.dacPage == undefined)} as={Link} {...{to: `/${this.props.params.organizationName}/dac/devices`}} />
-                    <Menu.Item name='data' active={(this.props.params.dacPage == 'data')} as={Link} {...{to: `/${this.props.params.organizationName}/dac/data`}}/>
-                    <Menu.Menu position='right'>
-                    <Menu.Item>
-                        <Input icon='search' placeholder='Search devices...' />
-                    </Menu.Item>
-                    </Menu.Menu>
-                </Menu>
-                { this.props.params.dacPage == "devices" || this.props.params.dacPage == undefined ? <DevicesTable params={this.props.params} onClick={(row) => {
+                    <DevicesTable params={this.props.params} onClick={(row) => {
                     browserHistory.push(`/${this.props.params.organizationName}/dac/devices/${row.name.split('/devices/')[1]}/`)
-                }} /> : null }
-                { this.props.params.dacPage == "data" ? <h3>Data</h3> : null }
+                }} />
        </Segment>);
     }
 }
