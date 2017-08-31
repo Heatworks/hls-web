@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import TestsTable from '../TestsTable'
-import { load } from '../../../actions/tests'
+import { load, loadPrefixes } from '../../../actions/tests'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {
@@ -12,7 +12,7 @@ const mapStateToProps = (state, props) => {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ load }, dispatch)
+    actions: bindActionCreators({ load, loadPrefixes }, dispatch)
   }
 }
 

@@ -16,11 +16,23 @@ export default class TestsTable extends React.Component<{
             range: Array<number>
         }>
         loading: boolean
-        loaded: boolean
+        loaded: boolean,
+        prefixes: {
+            loading: boolean,
+            loaded: boolean,
+            error: any,
+            data: Array<{
+                prefix: string,
+                suffix: string,
+                count: number,
+                last_updated: string
+            }>
+        }
     },
     accessToken: string,
     actions: {
-        load: (prefix:string, accessToken: string) => any
+        load: (prefix:string, accessToken: string) => any,
+        loadPrefixes: (prefix: string, accessToken: string) => any
     },
     params: {
         organizationName: string
@@ -39,7 +51,7 @@ export default class TestsTable extends React.Component<{
     constructor(props) {
         super(props)
         this.state = {
-            currentPrefix: this.props.prefix,
+            currentPrefix: this.props.prefix ? this.props.prefix : '',
             sortTag: "CREATED_DATE",
             direction: 1,
             tagsInTable: [],
@@ -50,6 +62,7 @@ export default class TestsTable extends React.Component<{
     }
     componentWillMount() {
         this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+        this.props.actions.loadPrefixes(this.state.currentPrefix, this.props.accessToken)        
     }
     previousPrefix = ""
     componentWillReceiveProps(nextProps) {
@@ -66,6 +79,7 @@ export default class TestsTable extends React.Component<{
             if (this.state.search !== this.state.currentPrefix) {
                 this.state.currentPrefix = this.state.search;
                 this.props.actions.load(this.state.search, this.props.accessToken)
+                this.props.actions.loadPrefixes(this.state.currentPrefix, this.props.accessToken)                        
             }
         })
     }
@@ -75,6 +89,22 @@ export default class TestsTable extends React.Component<{
         } else {
             browserHistory.push(`/${this.props.params.organizationName}/tests/${row.name.split('/tests/')[1]}/`)
         }
+    }
+
+    getBackPrefixes() {
+        var prefixes = [];
+        var prefix = '';
+        if (this.props.tests.prefixes.data.length > 0) {
+            prefix = this.props.tests.prefixes.data[0].prefix;
+        } else {
+            prefix = `/organizations/${this.props.params.organizationName}/tests/${this.state.currentPrefix}`
+        }
+        var parts = prefix.split('/');
+        while (parts.length > 4) {
+            parts.pop();
+            prefixes.push(parts.join('/')+'/')
+        }
+        return prefixes.reverse();
     }
     render() {
         const direction = (this.state.direction == 1 ? "ascending" : "descending")
@@ -121,6 +151,41 @@ export default class TestsTable extends React.Component<{
                         </Menu.Item>
                         </Menu.Menu>
                     </Menu>
+                    <Table basic='very' selectable>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Prefix</Table.HeaderCell>
+                                <Table.HeaderCell textAlign="right">Count</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {
+                                this.getBackPrefixes().map((prefix, index) => {
+                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading}>
+                                        <Table.Cell onClick={() => {
+                                            var search = prefix.split('/tests/')[1];
+                                            this.updateSearch(search, search);
+                                        }}>{(prefix.split('/tests/')[1] == this.state.currentPrefix) ? <b>{prefix}</b> : <span>{prefix}</span> }</Table.Cell>
+                                        <Table.Cell textAlign="right"></Table.Cell>
+                                    </Table.Row>)
+                                })
+                            }
+                        </Table.Body>
+                        <Table.Body>
+                            {
+                                this.props.tests.prefixes.data.map((prefix, index) => {
+                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading}>
+                                        <Table.Cell onClick={() => {
+                                            var search = prefix.prefix.split('/tests/')[1] + prefix.suffix;
+                                            this.updateSearch(search, search);
+                                        }}><span style={{ color: 'grey' }}>{prefix.prefix}</span><span>{prefix.suffix}</span></Table.Cell>
+                                        <Table.Cell textAlign="right">{prefix.count}</Table.Cell>
+                                    </Table.Row>)
+                                })
+                            }
+                            
+                        </Table.Body>
+                    </Table>
             <Table selectable fixed sortable singleLine>
                 <Table.Header>
                     <Table.Row disabled={this.props.tests.loading}>
@@ -147,7 +212,6 @@ export default class TestsTable extends React.Component<{
                                 }}>{tag}</Table.HeaderCell>
                         )
                     })}
-                    {}
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>

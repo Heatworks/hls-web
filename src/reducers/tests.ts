@@ -13,7 +13,11 @@ const TEST_DELETE = 'hls/tests/test/DELETE';
 const TEST_DELETE_SUCCESS = 'hls/tests/test/DELETE_SUCCESS';
 const TEST_DELETE_FAIL = 'hls/tests/test/DELETE_FAIL';
 
-export { LOAD, LOAD_SUCCESS, LOAD_FAIL, TEST_LOAD, TEST_LOAD_SUCCESS, TEST_LOAD_FAIL, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_SUCCESS, TEST_DELETE_FAIL }
+const LOAD_PREFIXES = 'hls/tests/prefixes/LOAD';
+const LOAD_PREFIXES_SUCCESS = 'hls/tests/prefixes/LOAD_SUCCESS';
+const LOAD_PREFIXES_FAIL = 'hls/tests/prefixes/LOAD_FAIL';
+
+export { LOAD, LOAD_SUCCESS, LOAD_FAIL, TEST_LOAD, TEST_LOAD_SUCCESS, TEST_LOAD_FAIL, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_SUCCESS, TEST_DELETE_FAIL, LOAD_PREFIXES, LOAD_PREFIXES_SUCCESS, LOAD_PREFIXES_FAIL }
 
 const initialState = {
 	loaded: false,
@@ -27,6 +31,12 @@ const initialState = {
 		deleting: false,
 		deleted: false,
 		data: null
+	},
+	prefixes: {
+		loading: false,
+		loaded: false,
+		data: [],
+		error: null
 	}
 };
 
@@ -116,6 +126,39 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 					deleting: false,
 					deleted: true,
 				}
+			}
+
+		case LOAD_PREFIXES:
+			return {
+				...state,
+				prefixes: {
+					...state.prefixes,
+					loading: true,
+					loaded: false,
+					error: null
+				}
+			}
+		case LOAD_PREFIXES_SUCCESS:
+			return {
+				...state,
+				prefixes: {
+					...state.prefixes,
+					loading: false,
+					loaded: true,
+					data: action.payload,
+					error: null
+				}
+			}
+		case LOAD_PREFIXES_FAIL:
+			return {
+				...state,
+				prefixes: {
+					...state.prefixes,
+					loading: false,
+					loaded: false,
+					error: action.error
+				},
+				error: action.error
 			}
 		default:
 			return state;
