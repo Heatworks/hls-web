@@ -153,9 +153,13 @@ export default class MonitorChart extends React.Component<{
                 return []
             }
         })
-        this.state.dataRanges = dataRanges
-        this.state.data = data
-        this.loadData()
+        this.setState({
+            ...this.state,
+            dataRanges: dataRanges,
+            data: data
+        }, () => {
+            this.loadData()
+        })
     }
 
     loadDataTimer:any

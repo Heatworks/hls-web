@@ -39,10 +39,13 @@ export default class TestsTable extends React.Component<{
         this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
     }
     componentWillReceiveProps(nextProps) {
-        
         if (nextProps.prefix !== this.state.currentPrefix) {
-            this.state.currentPrefix = nextProps.prefix;
-            this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+            this.setState({
+                ...this.state,
+                currentPrefix: nextProps.prefix
+            }, () => {
+                this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+            })
         }
     }
     render() {

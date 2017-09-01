@@ -1352,6 +1352,114 @@ class ProductionTestStandUnit extends React.Component<{
     }
 }
 
+class Model3TestStandUnit extends React.Component<{
+    title: string
+    channels: {
+        waterInControl: string,
+        waterInValue: string,
+        waterOutControl: string,
+        waterOutValue: string,
+        powerControl: string,
+        powerValue: string
+    }
+    values: {
+        waterInControl: boolean,
+        waterInValue: boolean,
+        waterOutControl: boolean,
+        waterOutValue: boolean,
+        powerControl: boolean,
+        powerValue: boolean
+    }
+    publish: (topic, value) => any
+},{
+    publishing: boolean
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.value != nextProps.values.control) {
+            this.setState({
+                publishing: true
+            })
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+    startFlow() {
+        this.props.publish(this.props.channels.waterOutControl, 1)
+        this.props.publish(this.props.channels.waterInControl, 1)
+    }
+    endFlow() {
+        this.props.publish(this.props.channels.waterOutControl, 0)
+        this.props.publish(this.props.channels.waterInControl, 1)
+    }
+
+    releavePressure() {
+        this.props.publish(this.props.channels.waterOutControl, 1)
+        this.props.publish(this.props.channels.waterInControl, 0)
+    }
+
+    powerOn() {
+        if (valueWithUnit(this.props.values.waterInValue, "Boolean") == false) {
+            alert('Can not turn on power when water is not on.');
+            return;
+        }
+        this.props.publish(this.props.channels.powerControl, 1)
+    }
+    powerOff() {
+        this.props.publish(this.props.channels.powerControl, 0)
+    }
+    
+    render() {
+        var values = {
+            waterInValue: valueWithUnit(this.props.values.waterInValue, "Boolean"),
+            waterOutValue: valueWithUnit(this.props.values.waterOutValue, "Boolean"),
+            powerValue: valueWithUnit(this.props.values.powerValue, "Boolean"),
+        }
+        var image = unit_visuals.full_off;
+        image = unit_visuals.flow_off;
+        if (values.waterInValue == true && values.waterOutValue == true) {
+            image = unit_visuals.full_on;
+        } else {
+            if (values.waterInValue == false && values.waterOutValue == true) {
+                image = unit_visuals.flow_in_off;
+            }
+            if (values.waterOutValue == false && values.waterInValue == true) {
+                image = unit_visuals.flow_out_off;
+            }
+        }
+        
+        // TODO: Require power off before releaving pressure.
+        return (
+            <Segment style={{height: 200, overflow:'hidden'}}>
+                <div style={{ width: '40%', height: 200, float:'left', marginTop: -15}}>
+                <Image src={require('../../resources/unit_visual/test_unit_model-3_sketch.png')} style={{ height: '100%'}} />
+                </div>
+                <div style={{ width: '60%', float:'left', textAlign: 'right'}}>
+                <p>
+                <span><b>Flow:</b>&nbsp;&nbsp;</span>
+                <Button.Group basic>
+                    <Button content="Start" onClick={this.startFlow.bind(this)} /><Button content="Stop" onClick={this.endFlow.bind(this)} />
+                </Button.Group>
+                <br/>
+                <br/>
+                {values.powerValue == false ? <Button content="Releave Pressure" compact color={"orange"} onClick={this.releavePressure.bind(this)} /> : null}<br/><br/>
+                <Button content="Power Off" compact color={"red"} onClick={this.powerOff.bind(this)} /> {values.powerValue == true ? null : (values.waterInValue == true ? <Button content="Power On" compact color={"red"} onClick={this.powerOn.bind(this)} /> : null)}
+            </p>
+                </div>
+            </Segment>
+        )
+    }
+}
+
 class MomephaStrategyVisual extends React.Component<{
     title: string
     channels: {

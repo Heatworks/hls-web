@@ -56,9 +56,12 @@ export default class DevicesTable extends React.Component<{
             searchInput
         }, () => {
             if (this.state.search !== this.state.currentPrefix) {
-                console.log(`prefix: ${this.state.currentPrefix}`);
-                this.state.currentPrefix = this.state.search;
-                this.props.actions.load(this.state.search, this.props.accessToken)
+                this.setState({
+                    ...this.state,
+                    currentPrefix: this.state.search
+                }, () => {
+                    this.props.actions.load(this.state.search, this.props.accessToken)
+                })
             }
         })
     }
