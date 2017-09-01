@@ -576,6 +576,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/units/model-3") {
+            return (
+                <Model3TestStandUnit {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/model-2/production/FunctionalTestScriptController") {
             return (
                 <FunctionalTestScriptController {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
@@ -1440,8 +1446,8 @@ class Model3TestStandUnit extends React.Component<{
         // TODO: Require power off before releaving pressure.
         return (
             <Segment style={{height: 200, overflow:'hidden'}}>
-                <div style={{ width: '40%', height: 200, float:'left', marginTop: -15}}>
-                <Image src={require('../../resources/unit_visual/test_unit_model-3_sketch.png')} style={{ height: '100%'}} />
+                <div style={{ width: '40%', height: 180, float:'left'}}>
+                <Image src={require('../../resources/unit_visual/test_unit_model-3_sketch.png')} style={{ height: '100%' }} />
                 </div>
                 <div style={{ width: '60%', float:'left', textAlign: 'right'}}>
                 <p>
