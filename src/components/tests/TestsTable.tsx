@@ -108,7 +108,7 @@ export default class TestsTable extends React.Component<{
             parts.pop();
             prefixes.push(parts.join('/')+'/')
         }
-        return prefixes.reverse();
+        return prefixes.reverse()
     }
     render() {
         const direction = (this.state.direction == 1 ? "ascending" : "descending")
@@ -177,7 +177,9 @@ export default class TestsTable extends React.Component<{
                         </Table.Body>
                         <Table.Body>
                             {
-                                this.props.tests.prefixes.data.map((prefix, index) => {
+                                this.props.tests.prefixes.data.sort((a, b) => {
+                                    return a.suffix > b.suffix ? 1 : -1;
+                                }).map((prefix, index) => {
                                     return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading}>
                                         <Table.Cell onClick={() => {
                                             var search = prefix.prefix.split('/tests/')[1] + prefix.suffix;
