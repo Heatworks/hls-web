@@ -12,7 +12,7 @@ export function load(prefix,  accessToken) {
             LOAD_FAIL,
         ],
         payload: {
-            promise: client_tests.testsGet({ prefix },{
+            promise: client_tests.testsGet({ prefix, exclusiveStartKey:'' },{
                 headers: {
                     "Authorization": accessToken
                 }
