@@ -9,7 +9,8 @@ var moment = require('moment')
 
 export default class Tests extends React.Component<{
     params: {
-        organizationName: string
+        organizationName: string,
+        splat: string
     }
 },{
     duplicating?: boolean
@@ -66,7 +67,7 @@ export default class Tests extends React.Component<{
                                         <Divider />
 
                 
-                <TestsTable params={this.props.params} showDuration={true} onClick={(row) => {
+                <TestsTable params={this.props.params} showDuration={true} prefix={this.props.params.splat ? this.props.params.splat + '/' : null} onClick={(row) => {
                     if (this.state.duplicating) {
                         browserHistory.push({
                             pathname: `/${this.props.params.organizationName}/tests/create`,

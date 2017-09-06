@@ -39,6 +39,7 @@ export default (
                 <IndexRoute component={Tests} />
                 <Route path="create" component={TestCreate} />
                 <Route path="**/" component={Test} />
+                <Route path="**" component={Tests} />
             </Route>
              <Route path="iam/">
                 <IndexRoute component={IAMIndex} />

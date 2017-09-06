@@ -282,8 +282,10 @@ export default class Test extends React.Component<{
             </Segment>)
         }
         var now = new Date()
+        var prefix = this.props.params.splat.substr(0, this.props.params.splat.lastIndexOf('/'));
+        var suffix = this.props.params.splat.substr(this.props.params.splat.lastIndexOf('/') + 1);
         return (<Segment basic vertical disabled={this.props.test.deleted}>
-        <Header><Link to={`/${this.props.params.organizationName}/tests/`}>Tests</Link> / {this.props.params.splat}</Header>
+        <Header><Link to={`/${this.props.params.organizationName}/tests/`}>Tests</Link> / <Link to={`/${this.props.params.organizationName}/tests/${prefix}`}>{prefix}</Link> / {suffix}</Header>
         <Menu attached='top'>
         <Dropdown text='Menu' {...{item:true}} icon={null}>
           <Dropdown.Menu>
