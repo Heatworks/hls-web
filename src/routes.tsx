@@ -21,6 +21,7 @@ import Device from './components/dac/connected/Device'
 import DeviceCreate from './components/dac/connected/DeviceCreate'
 import View from './components/views/connected/View'
 import ScriptsIndex from './components/scripts/ScriptsIndex'
+import Script from './components/scripts/connected/Script'
 import Index from './components/static/Index'
 import Settings from './components/settings/Index'
 
@@ -55,7 +56,7 @@ export default (
             </Route>
             <Route path="scripts/">
                 <IndexRoute component={ScriptsIndex} />
-                <Route path=":scriptPage(/:scriptName)" component={ScriptsIndex} />
+                <Route path="**/" component={Script} />
             </Route>
         </Route> 
     </Route>

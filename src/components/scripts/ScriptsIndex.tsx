@@ -2,16 +2,27 @@ import * as React from 'react'
 import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import Helmet from 'react-helmet'
+import ScriptsTable from './connected/ScriptsTable'
 
 export default class ScriptsIndex extends React.Component<{
     params: {
         organizationName: string,
         monitorPage: string
     }
-},{}> {
+},{
+    search: string,
+    duplicating: boolean
+}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            search: "",
+            duplicating: false
+        }
+    }
     render() {
         return (<Segment basic vertical>
-                 <Helmet title={`HLS - ${this.props.params.organizationName} - Monitor`} />
+                 <Helmet title={`HLS - ${this.props.params.organizationName} - Scripts`} />
                 <Header>Scripts</Header>
                     <Grid columns={3} stackable>
                         <Grid.Row {...{ style: { paddingBottom: 0 } }}>
@@ -30,46 +41,23 @@ export default class ScriptsIndex extends React.Component<{
                         </Grid.Row>
                      <Grid.Row>
                      <Grid.Column>
-                        <Button fluid>Create a New Monitor Script</Button>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Button fluid onClick={() => {
-                            let header = new Headers({
-                                'Access-Control-Allow-Origin':'*'
-                            });
-                            
-                                fetch('http://hls-local-server.local/scripts/Run/Start?name=/organizations/heatworks/scripts/model-2/CycleFlowFluctuatingInterval/test-station-a-reworked', {
-                                    method: 'GET',
-                                    mode: "cors",
-                                    headers: header
-                                }).then((response) => {
-                                    return response.json();
-                                }).then((data) => {
-                                    alert(data['message']);
-                                })
-                            }}>Start Script</Button>
-                    </Grid.Column>
-                     <Grid.Column>
-                        <Button fluid>Create a New Protection</Button>
+                        <Button fluid>Create a New Script</Button>
                     </Grid.Column>
                      </Grid.Row>
                     </Grid>
                     <Divider />
-                    <Menu secondary>
-                    <Menu.Item name='monitors' active={(this.props.params.monitorPage == 'monitors' || this.props.params.monitorPage == undefined)} as={Link} {...{to: `/${this.props.params.organizationName}/monitor/monitors`}} />
-                    <Menu.Item name='scripts' active={(this.props.params.monitorPage == 'scripts')} as={Link} {...{to: `/${this.props.params.organizationName}/monitor/scripts`}}/>
-                    <Menu.Item name='alarms' active={(this.props.params.monitorPage == 'alarms')} as={Link} {...{to: `/${this.props.params.organizationName}/monitor/alarms`}}/>
-                    <Menu.Item name='protections' active={(this.props.params.monitorPage == 'protections')} as={Link} {...{to: `/${this.props.params.organizationName}/monitor/protections`}}/>
-                    <Menu.Menu position='right'>
-                    <Menu.Item>
-                        <Input icon='search' placeholder='Search scripts...' />
-                    </Menu.Item>
-                    </Menu.Menu>
-                </Menu>
-                <Table>
-                    <Table.Row>
-                    </Table.Row>
-                </Table>
+                <ScriptsTable params={this.props.params} prefix={this.state.search} onClick={(row) => {
+                    if (this.state.duplicating) {
+                        browserHistory.push({
+                            pathname: `/${this.props.params.organizationName}/scripts/create`,
+                            query: {
+                                'template': row.name
+                            }
+                        });
+                    } else {
+                        browserHistory.push(`/${this.props.params.organizationName}/scripts/${row.name.split('/scripts/')[1]}/`)
+                    }
+                }}/>
        </Segment>);
     }
 }

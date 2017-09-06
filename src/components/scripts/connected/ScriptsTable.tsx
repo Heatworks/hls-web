@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
-import ViewsTable from '../../GenericTable'
-import { load } from '../../../actions/views'
+import ScriptsTable from '../../GenericTable'
+import { load } from '../../../actions/scripts'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {
   return {
     ...props,
-    elements: state.views,
+    elements: state.scripts,
     accessToken: state.iam.data.accessToken,
-    servicePrefix: 'views'
+    servicePrefix: 'scripts'
   }
 }
 function mapDispatchToProps(dispatch) {
@@ -17,9 +17,9 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedViewsTable = connect(
+const ConnectedScriptsTable = connect(
   mapStateToProps,
   mapDispatchToProps
-)(ViewsTable)
+)(ScriptsTable)
 
-export default ConnectedViewsTable
+export default ConnectedScriptsTable

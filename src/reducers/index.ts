@@ -4,6 +4,7 @@ import { routerReducer } from 'react-router-redux';
 import data from './data'
 import tests from './tests'
 import views from './views'
+import scripts from './scripts'
 import iam from './iam'
 import dac from './dac'
 import monitor from './monitor'
@@ -17,6 +18,7 @@ const app = combineReducers({
     dac,
     monitor,
     views,
+    scripts,
     standalone
 })
 
