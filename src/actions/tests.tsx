@@ -4,7 +4,7 @@ import * as hls_tests from '../apis/hls_tests'
 
 var client_tests = new hls_tests.DefaultApi()
 
-export function load(prefix,  accessToken) {
+export function load(prefix, accessToken) {
     return {
         types: [
             LOAD,

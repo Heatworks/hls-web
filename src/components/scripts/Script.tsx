@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, List, Header, Rail, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Form, Select, Checkbox, Card } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, List, Header, Rail, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Form, Select, Checkbox, Card, Grid } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
 var moment = require('moment')
@@ -251,8 +251,9 @@ export default class Script extends React.Component<{
                 <b>Runtime</b> <i>{this.state.script.runtime}</i><br/>
             </p>
         </Segment>
+        
         <Header size='small' dividing>Environments</Header>
-        <Card.Group itemsPerRow={4}>
+        <Card.Group itemsPerRow={4} doubling={true} >
             { Object.keys(this.props.script.data.environments).map((environmentName) => {
                 return (<Card fluid>
                     <Card.Content header={environmentName} />
@@ -297,6 +298,36 @@ export default class Script extends React.Component<{
             }) }
                 
             </Card.Group>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column tablet={4} computer={4} mobile={16}>
+            <Table basic='very' selectable>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Files</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {
+                                this.state.script.files.sort().map((fileName, index) => {
+                                    return (<Table.Row key={index}>
+                                        <Table.Cell onClick={() => {
+                                            console.log('open file: '+ fileName)
+                                        }}>{fileName}</Table.Cell>
+                                    </Table.Row>)
+                                })
+                            }
+                            
+                        </Table.Body>
+                    </Table>
+                    </Grid.Column>
+                    <Grid.Column tablet={12} computer={12} mobile={16}>
+                        <Segment>
+
+                            </Segment>
+                        </Grid.Column>
+                    </Grid.Row>
+                    </Grid>
         </Segment>);
     }
 }
