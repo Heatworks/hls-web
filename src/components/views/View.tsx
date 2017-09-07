@@ -301,11 +301,14 @@ export default class View extends React.Component<{
 
     receiveMessage(topic, message, packet) {
         if (this.state.live) {
-            console.log("REC: "+topic+": "+message)
-            var parts = message.toString().split(",")
-            var rawValue = parts[1]
-            var timestamp = parts[0]
-            this.setTopicValue(topic, rawValue, timestamp)
+            try {
+                var parts = message.toString().split(",")
+                var rawValue = parts[1]
+                var timestamp = parts[0]
+                this.setTopicValue(topic, rawValue, timestamp)
+            } catch(e) {
+                console.error(e);
+            }
         }
     }
     setTopicValue(channel, value, timestamp) {
