@@ -6,6 +6,10 @@ var moment = require('moment')
 import { Script as ScriptModel } from '../../apis/hls_scripts'
 import { DefaultApi as ScriptsAPILocal} from '../../apis/hls_scripts_local'
 
+import ScriptFileEditor from './ScriptFileEditor'
+import Measure from 'react-measure'
+
+
 var scripts_api_local = new ScriptsAPILocal();
 
 export default class Script extends React.Component<{
@@ -16,10 +20,21 @@ export default class Script extends React.Component<{
         saved: boolean,
         data: ScriptModel
     },
+    file: {
+        loading: boolean,
+        loaded: boolean,
+        saving: boolean,
+        saved: boolean,
+        data?: {
+            contents: string,
+            filename: string
+        }
+    },
     accessToken: string,
     actions: {
         load: (name: any, accessToken:string) => any,
-        save: (script: ScriptModel, accessToken: string) => any
+        save: (script: ScriptModel, accessToken: string) => any,
+        loadFile: (script: string, file: string, accessToken: string) => any
     },
     params: {
         organizationName: string,
@@ -28,6 +43,7 @@ export default class Script extends React.Component<{
 },{
     editing?: boolean,
     script?: ScriptModel,
+    file?: any,
     newTag? : {
         key: string,
         value: string
@@ -43,13 +59,18 @@ export default class Script extends React.Component<{
         control: boolean
     },
     loadingStatus: boolean,
-    environmentStatus?: Map<string, boolean>
+    environmentStatus?: Map<string, boolean>,
+    fileEditorDimensions: {
+        width: number,
+        height: number
+    }
 }> {
     constructor(props) {
         super(props)
         this.state = {
             editing: false,
             script: this.props.script.data == null ? null : Object.assign({}, this.props.script.data),
+            file: this.props.file.data == null ? null : Object.assign({}, this.props.file.data),
             newTag: {
                 key: '',
                 value: ''
@@ -65,7 +86,11 @@ export default class Script extends React.Component<{
                 control: false
             },
             loadingStatus: false,
-            environmentStatus: {} as Map<string, boolean>
+            environmentStatus: {} as Map<string, boolean>,
+            fileEditorDimensions: {
+                width: 500,
+                height: 500
+            }
         }
     }
 
@@ -267,7 +292,38 @@ export default class Script extends React.Component<{
                         Loading</div>}
                     </Card.Content>
                     <Card.Content>
-                    
+                        
+                        <Table basic='very' compact='very'>
+                        <Table.Header>
+                            <Table.HeaderCell header>Key</Table.HeaderCell>
+                            <Table.HeaderCell header>Channel</Table.HeaderCell>
+                        </Table.Header>
+                        {
+                            Object.keys(this.props.script.data.environments[environmentName].channels).map((channel) => {
+                                return (
+                                    <Table.Row>
+                                        <Table.Cell collapsing>{channel}</Table.Cell>
+                                        <Table.Cell>{this.props.script.data.environments[environmentName].channels[channel].split('/devices/')[1]}</Table.Cell>
+                                    </Table.Row>
+                                )
+                            })
+                        }
+                        <Table.Header>
+                            <Table.HeaderCell header>Key</Table.HeaderCell>
+                            <Table.HeaderCell header>Value</Table.HeaderCell>
+                        </Table.Header>
+                        {
+                            Object.keys(this.props.script.data.environments[environmentName].env).map((key) => {
+                                return (
+                                    <Table.Row>
+                                        <Table.Cell>{key}</Table.Cell>
+                                        <Table.Cell collapsing>{this.props.script.data.environments[environmentName].env[key]}</Table.Cell>
+                                    </Table.Row>
+                                )
+                            })
+                        }
+                        </Table>
+                    </Card.Content>
                     <Card.Content extra>
                     <div className='ui two buttons'>
                     <Button size='small' fluid {...{ disabled:this.state.loadingStatus || (environmentName in this.state.environmentStatus && this.state.environmentStatus[environmentName] == true) }} onClick={() => {
@@ -293,7 +349,6 @@ export default class Script extends React.Component<{
                     }}><Icon name='stop circle' /><span className='text'>Stop</span></Button>
                     </div>
                         </Card.Content>
-                    </Card.Content>
                 </Card>)
             }) }
                 
@@ -312,8 +367,8 @@ export default class Script extends React.Component<{
                                 this.state.script.files.sort().map((fileName, index) => {
                                     return (<Table.Row key={index}>
                                         <Table.Cell onClick={() => {
-                                            console.log('open file: '+ fileName)
-                                        }}>{fileName}</Table.Cell>
+                                            this.props.actions.loadFile(this.props.script.data.name, fileName, this.props.accessToken);
+                                        }} >{fileName}</Table.Cell>
                                     </Table.Row>)
                                 })
                             }
@@ -322,9 +377,19 @@ export default class Script extends React.Component<{
                     </Table>
                     </Grid.Column>
                     <Grid.Column tablet={12} computer={12} mobile={16}>
-                        <Segment>
-
+                    <Measure
+        bounds
+        onResize={(contentRect) => {
+          this.setState({ fileEditorDimensions: contentRect.bounds })
+        }}
+      >{({ measureRef }) =>
+                        <Segment onResize={() => {
+                            }}>
+                            {this.props.file.data !== null ? <ScriptFileEditor ref={measureRef} value={this.props.file.data.contents} onChange={() => {
+                                }} filename={this.props.file.data.filename} dimensions={this.state.fileEditorDimensions} /> : null}
                             </Segment>
+      }
+                            </Measure>
                         </Grid.Column>
                     </Grid.Row>
                     </Grid>

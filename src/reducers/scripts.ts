@@ -13,7 +13,11 @@ const SCRIPT_DELETE = 'hls/scripts/script/DELETE';
 const SCRIPT_DELETE_SUCCESS = 'hls/scripts/script/DELETE_SUCCESS';
 const SCRIPT_DELETE_FAIL = 'hls/scripts/script/DELETE_FAIL';
 
-export { LOAD, LOAD_SUCCESS, LOAD_FAIL, SCRIPT_LOAD, SCRIPT_LOAD_SUCCESS, SCRIPT_LOAD_FAIL, SCRIPT_SAVE, SCRIPT_SAVE_FAIL, SCRIPT_SAVE_SUCCESS, SCRIPT_DELETE, SCRIPT_DELETE_SUCCESS, SCRIPT_DELETE_FAIL }
+const SCRIPT_FILE_LOAD= 'hls/scripts/file/LOAD';
+const SCRIPT_FILE_LOAD_SUCCESS = 'hls/scripts/file/LOAD_SUCCESS';
+const SCRIPT_FILE_LOAD_FAIL = 'hls/scripts/file/LOAD_FAIL';
+
+export { LOAD, LOAD_SUCCESS, LOAD_FAIL, SCRIPT_LOAD, SCRIPT_LOAD_SUCCESS, SCRIPT_LOAD_FAIL, SCRIPT_SAVE, SCRIPT_SAVE_FAIL, SCRIPT_SAVE_SUCCESS, SCRIPT_DELETE, SCRIPT_DELETE_SUCCESS, SCRIPT_DELETE_FAIL, SCRIPT_FILE_LOAD, SCRIPT_FILE_LOAD_FAIL, SCRIPT_FILE_LOAD_SUCCESS }
 
 const initialState = {
 	loaded: false,
@@ -26,6 +30,14 @@ const initialState = {
 		saved: false,
 		deleting: false,
 		deleted: false,
+		data: null
+	},
+	file: {
+		loaded: false,
+		loading: false,
+		saving: false,
+		deleted: false,
+		deleting: false,
 		data: null
 	}
 };
@@ -115,6 +127,26 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 					...state.script,
 					deleting: false,
 					deleted: true,
+				}
+			}
+		case SCRIPT_FILE_LOAD:
+			state.file.loading = true
+			return state
+		case SCRIPT_FILE_LOAD_SUCCESS:
+			return {
+                ...state,
+				file: {
+					loading: false,
+					loaded: true,
+					data: action.payload
+				}
+			};
+		case SCRIPT_FILE_LOAD_FAIL:
+			return {...state,
+				file: {
+					loading: false,
+					loaded: false,
+					error: action.error
 				}
 			}
 		default:

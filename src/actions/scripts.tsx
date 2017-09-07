@@ -1,4 +1,4 @@
-import { LOAD, LOAD_FAIL, LOAD_SUCCESS, SCRIPT_LOAD, SCRIPT_LOAD_FAIL, SCRIPT_LOAD_SUCCESS, SCRIPT_SAVE, SCRIPT_SAVE_FAIL, SCRIPT_SAVE_SUCCESS, SCRIPT_DELETE, SCRIPT_DELETE_FAIL, SCRIPT_DELETE_SUCCESS } from "../reducers/scripts"
+import { LOAD, LOAD_FAIL, LOAD_SUCCESS, SCRIPT_LOAD, SCRIPT_LOAD_FAIL, SCRIPT_LOAD_SUCCESS, SCRIPT_SAVE, SCRIPT_SAVE_FAIL, SCRIPT_SAVE_SUCCESS, SCRIPT_DELETE, SCRIPT_DELETE_FAIL, SCRIPT_DELETE_SUCCESS, SCRIPT_FILE_LOAD, SCRIPT_FILE_LOAD_FAIL, SCRIPT_FILE_LOAD_SUCCESS } from "../reducers/scripts"
 import 'whatwg-fetch'
 import * as hls_scripts from '../apis/hls_scripts'
 
@@ -85,3 +85,30 @@ export function deleteScript(name, accessToken) {
         },
     }
 }*/
+
+export function loadFile(script, file,  accessToken) {
+    return {
+        types: [
+            SCRIPT_FILE_LOAD,
+            SCRIPT_FILE_LOAD_SUCCESS,
+            SCRIPT_FILE_LOAD_FAIL,
+        ],
+        payload: {
+            promise: client_tests.fileGet({ script, file },{
+                headers: {
+                    "Authorization": accessToken
+                }
+            }).then((res) => {
+                return fetch(res.url)
+            }).then((res) => {
+                return res.text()
+            }).then((contents) => {
+                return {
+                    contents,
+                    script,
+                    file
+                }
+            }),
+        },
+    }
+}
