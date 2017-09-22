@@ -67,11 +67,11 @@ export function signIn() {
 		dispatch(signInLoading())
 		let name = "_blank";
 		let popup = openPopup("hls", `https://hls-oauth.heatworks.tech/login?redirect_uri=${window.location.origin}/signIn_redirect`, "hls_oauth");
-		listenForCredentials("token", popup, "hls").then((params) => {
+		listenForCredentials("code", popup, "hls").then((params) => {
 			console.log(params);
 			dispatch(signInSuccess(params))
-			dispatch(loadOrganization(params['code']))
-			dispatch(loadClient(params['code']))
+			dispatch(loadOrganization(params['accessToken']))
+			dispatch(loadClient(params['accessToken']))
 		}).catch((error) => {
 			dispatch(signInFail(error))
 		})
