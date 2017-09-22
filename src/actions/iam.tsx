@@ -202,7 +202,7 @@ function listenForCredentials (endpointKey, popup, provider, resolve?, reject?) 
 			console.log('Got some sort of creds');
 			console.log(creds);
 		}
-		if (creds && creds.token) {
+		if (creds && endpointKey in creds) {
 			popup.close();
 			console.log('Found credentials!');
 			console.log(creds);

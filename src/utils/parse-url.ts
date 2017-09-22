@@ -3,9 +3,9 @@ import extend from "extend";
 
 export function normalizeTokenKeys (params) {
   // normalize keys
-  if (params.token) {
-    params["accessToken"] = params.token;
-    delete params.token;
+  if (params.code) {
+    params["accessToken"] = params.code;
+    delete params.code;
   }
   if (params.auth_token) {
     params["accessToken"] = params.auth_token;
