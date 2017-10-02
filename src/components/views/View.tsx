@@ -525,6 +525,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/model-3/pcb/thermocouples") {
+            return (
+                <OverlayPCBM3 {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/conductivity/recorder") {
             return (
                 <ConductivityRecorder {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
@@ -1416,6 +1422,11 @@ class Model3TestStandUnit extends React.Component<{
         this.props.publish(this.props.channels.waterInControl, 0)
     }
 
+    killSolenoids() {
+        this.props.publish(this.props.channels.waterOutControl, 0)
+        this.props.publish(this.props.channels.waterInControl, 0)
+    }
+
     powerOn() {
         if (valueWithUnit(this.props.values.waterInValue, "Boolean") == false) {
             alert('Can not turn on power when water is not on.');
@@ -1460,7 +1471,7 @@ class Model3TestStandUnit extends React.Component<{
                 </Button.Group>
                 <br/>
                 <br/>
-                {values.powerValue == false ? <Button content="Releave Pressure" compact color={"orange"} onClick={this.releavePressure.bind(this)} /> : null}<br/><br/>
+                {values.powerValue == false ? <div><Button content="Releave Pressure" compact color={"orange"} onClick={this.releavePressure.bind(this)} /><Button content="Kill Solenoids" compact color={"red"} onClick={this.killSolenoids.bind(this)} /></div> : null}<br/><br/>
                 <Button content="Power Off" compact color={"red"} onClick={this.powerOff.bind(this)} /> {values.powerValue == true ? null : (values.waterInValue == true ? <Button content="Power On" compact color={"red"} onClick={this.powerOn.bind(this)} /> : null)}
             </p>
                 </div>
@@ -2286,6 +2297,98 @@ class OverlayPCB extends React.Component<{
                 <div style={{position: 'absolute', right: '40%', top: '70%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q16, getUnitForTopic(this.props.channels.q16))} floating size={this.props.size} color={this.colorForValue(this.props.values.q16)} detail={"Q16"}/></div>
                 <div style={{position: 'absolute', right: '26%', top: '80%', textAlign: 'center' }}><Label content={valueWithUnit(this.props.values.q17, getUnitForTopic(this.props.channels.q17))} floating size={this.props.size} color={this.colorForValue(this.props.values.q17)} detail={"Q17"}/></div>
 
+            </Segment>
+        )
+    }
+}
+
+class OverlayPCBM3 extends React.Component<{
+    title: string
+    channels: {
+        q1: string,
+        q2: string,
+        q3: string,
+        q4: string,
+        q5: string,
+        q6: string,
+        q7: string,
+        q8: string,
+        q10: string,
+        q11: string,
+        q12: string,
+        q13: string,
+        q14: string,
+        q15: string,
+        q16: string,
+        q17: string,
+        q18: string,
+        q19: string,
+        q20: string,
+        q21: string,
+        q22: string,
+        q23: string,
+        q24: string,
+        q25: string,
+        q26: string,
+        q27: string,
+        q28: string,
+        q29: string
+    }
+    values: {
+        q1: any,
+        q2: any,
+        q3: any,
+        q4: any,
+        q5: any,
+        q6: any,
+        q7: any,
+        q8: any,
+        q10: any,
+        q11: any,
+        q12: any,
+        q13: any,
+        q14: any,
+        q15: any,
+        q16: any,
+        q17: any
+        q18: any,
+        q19: any,
+        q20: any,
+        q21: any,
+        q22: any,
+        q23: any,
+        q24: any,
+        q25: any,
+        q26: any,
+        q27: any,
+        q28: any,
+        q29: any
+    }
+    size: SemanticSIZES
+    publish: (topic, value) => any
+},{}> {
+    colorForValue(value) {
+        if (value > 80) {
+            return "red"
+        } else if (value > 55) {
+            return "orange"
+        } else { 
+            return "green"
+        }
+    }
+    render() {
+        var leftSide = [16,17,18,19,20,21,22,23,24,25,26,27,28,29];
+        var rightSide = [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1];
+        return (
+            <Segment>
+                <Image src={require('../../resources/views_m3_board_layout.png')} fluid />
+                {leftSide.map((element, index) => {
+                    return (<div key={element} style={{position: 'absolute', right: '95%', top: `${5+6*index}%`, textAlign: 'center' }}><Label content={valueWithUnit(this.props.values[`q${element}`], getUnitForTopic(this.props.channels[`q${element}`]))} floating size={this.props.size} color={this.colorForValue(this.props.values[`q${element}`])} detail={`Q${element}`}/></div>)
+                })}
+                {rightSide.map((element, index) => {
+                    return (<div key={element} style={{position: 'absolute', left: '88%', top: `${5+6*index}%`, textAlign: 'center' }}><Label content={valueWithUnit(this.props.values[`q${element}`], getUnitForTopic(this.props.channels[`q${element}`]))} floating size={this.props.size} color={this.colorForValue(this.props.values[`q${element}`])} detail={`Q${element}`}/></div>)
+                })}
+                
             </Segment>
         )
     }
