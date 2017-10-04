@@ -7,8 +7,6 @@ import { Script as ScriptModel } from '../../apis/hls_scripts'
 import { DefaultApi as ScriptsAPILocal} from '../../apis/hls_scripts_local'
 
 import ScriptFileEditor from './ScriptFileEditor'
-import Measure from 'react-measure'
-
 
 var scripts_api_local = new ScriptsAPILocal();
 
@@ -27,7 +25,7 @@ export default class Script extends React.Component<{
         saved: boolean,
         data?: {
             contents: string,
-            filename: string
+            file: string
         }
     },
     accessToken: string,
@@ -174,6 +172,7 @@ export default class Script extends React.Component<{
             </Segment>)
         }
         var now = new Date()
+
         return (<Segment basic vertical>
         <Header><Link to={`/${this.props.params.organizationName}/scripts/`}>Scripts</Link> / {this.props.params.splat}</Header>
         <Menu attached='top'>
@@ -368,7 +367,7 @@ export default class Script extends React.Component<{
                                     return (<Table.Row key={index}>
                                         <Table.Cell onClick={() => {
                                             this.props.actions.loadFile(this.props.script.data.name, fileName, this.props.accessToken);
-                                        }} >{fileName}</Table.Cell>
+                                        }} >{(this.props.file.data == null ? fileName : (this.props.file.data.file == fileName) ? <b>{fileName}</b> : fileName )}</Table.Cell>
                                     </Table.Row>)
                                 })
                             }
@@ -377,19 +376,12 @@ export default class Script extends React.Component<{
                     </Table>
                     </Grid.Column>
                     <Grid.Column tablet={12} computer={12} mobile={16}>
-                    <Measure
-        bounds
-        onResize={(contentRect) => {
-          this.setState({ fileEditorDimensions: contentRect.bounds })
-        }}
-      >{({ measureRef }) =>
-                        <Segment onResize={() => {
-                            }}>
-                            {this.props.file.data !== null ? <ScriptFileEditor ref={measureRef} value={this.props.file.data.contents} onChange={() => {
-                                }} filename={this.props.file.data.filename} dimensions={this.state.fileEditorDimensions} /> : null}
+                        <Segment>
+                            
+                            {this.props.file.data !== null ? <div><Header>{this.props.file.data.file}</Header><ScriptFileEditor value={this.props.file.data.contents} onChange={() => {
+                                }} filename={this.props.file.data.file} dimensions={this.state.fileEditorDimensions} /> </div> : <p>Select a file on the left.</p>}
                             </Segment>
-      }
-                            </Measure>
+                           
                         </Grid.Column>
                     </Grid.Row>
                     </Grid>
