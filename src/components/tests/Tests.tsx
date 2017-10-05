@@ -29,15 +29,15 @@ export default class Tests extends React.Component<{
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>
-                        <Header subheader><Icon name="flask" circular /><Header.Content>Create a Test <Header sub>What happens when...</Header></Header.Content></Header>
+                        <Header sub><Icon name="flask" circular /><Header.Content>Create a Test <Header sub>What happens when...</Header></Header.Content></Header>
                         <p>A test is a collection of related data within a time range. During a test you can monitor current values and after the test you can export the data for further analysis.</p>
                     </Grid.Column>
                     <Grid.Column>
-                        <Header subheader><Icon name="copy" circular /><Header.Content>Duplicate a Test <Header sub>Try, try, again...</Header></Header.Content></Header>
+                        <Header sub><Icon name="copy" circular /><Header.Content>Duplicate a Test <Header sub>Try, try, again...</Header></Header.Content></Header>
                         <p>Often when you get a test setup properly you'll want to rerun it multiple times. Duplicating a test makes setting up a similar test quick and easy.</p>
                     </Grid.Column>
                     <Grid.Column>
-                        <Header subheader><Icon name="bookmark" circular /><Header.Content>Create Templates <Header sub>/tests/templates/...</Header></Header.Content></Header>
+                        <Header sub><Icon name="bookmark" circular /><Header.Content>Create Templates <Header sub>/tests/templates/...</Header></Header.Content></Header>
                         <p>Another strategy for reusing tests is to create template tests with your channels and tags ready to go.</p>
                     </Grid.Column>
                      </Grid.Row>

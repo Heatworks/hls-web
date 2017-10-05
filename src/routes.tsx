@@ -6,7 +6,6 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import App from './components/connected/App'
 import DevTools from './components/DevTools'
 
-import A from './components/connected/A'
 import SignInSuccess from './components/SignInSuccess'
 import Tests from './components/tests/Tests'
 import SignIn from './components/connected/SignIn'

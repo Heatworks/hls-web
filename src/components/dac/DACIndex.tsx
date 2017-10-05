@@ -18,7 +18,7 @@ export default class DACIndex extends React.Component<{
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>
-                        <Header subheader><Icon.Group size="large" className="icon" {...{style:{paddingTop: 0}}} ><Icon name="cube" circular style={{ marginRight: 0 }} /><Icon name="wifi" corner {...{ style:{marginBottom: 10, marginRight: 10} }}/></Icon.Group><Header.Content>Add a Device </Header.Content></Header>
+                        <Header sub><Icon.Group size="large" className="icon" {...{style:{paddingTop: 0}}} ><Icon name="cube" circular style={{ marginRight: 0 }} /><Icon name="wifi" corner {...{ style:{marginBottom: 10, marginRight: 10} }}/></Icon.Group><Header.Content>Add a Device </Header.Content></Header>
                         <p>A device is a collection of data and control channels. Each channel contains timestamped data, a unit, and if it's a control channel data can be pushed to it.</p>
                     </Grid.Column>
                      </Grid.Row>
