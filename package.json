@@ -1,6 +1,6 @@
 {
   "name": "hls-web",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Heatworks Lab Service Website.",
   "main": "build/server.js",
   "scripts": {
