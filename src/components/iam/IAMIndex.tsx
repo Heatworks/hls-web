@@ -19,7 +19,7 @@ export default class IAMIndex extends React.Component<{
                     <Grid columns={3} stackable>
                     <Grid.Row {...{ style: { paddingBottom: 0 } }}>
                     <Grid.Column>
-                        <Header subheader><Icon name="user" circular /><Header.Content>Add a User </Header.Content></Header>
+                        <Header sub><Icon name="user" circular /><Header.Content>Add a User </Header.Content></Header>
                         <p>A user can take actions within the system based on their policy. When a user signs in an Access Token is created.</p>
                     </Grid.Column>
                      </Grid.Row>

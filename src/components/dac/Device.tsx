@@ -128,7 +128,7 @@ export default class Device extends React.Component<{
         <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.device.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.device.saving ? 'spinner' : 'edit' } loading={this.props.device.saving} /><span className='text'>Edit</span></Menu.Item>
       </Menu>
         <Segment attached={true} compact>
-            <p>
+            <div style={{lineHeight: 1.7}}>
                 <b>Name</b> {this.state.device.name}<br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.device.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
                     this.setState({
@@ -201,7 +201,7 @@ export default class Device extends React.Component<{
                                 </List.Content>
                             </List.Item>)
                 })}</List>}
-            </p>
+            </div>
         </Segment>
        
         <Table singleLine selectable attached='bottom' fixed>

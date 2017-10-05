@@ -344,7 +344,7 @@ export default class Test extends React.Component<{
       </Menu>
         <Segment attached={true} compact>
             <Header sub textAlign="center">Basic Information</Header>
-            <p>
+            <div style={{lineHeight: 1.7}}>
                 <b>Name</b> <a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}`}>{this.state.test.name}</a><br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.test.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
                     this.setState({
@@ -431,7 +431,7 @@ export default class Test extends React.Component<{
                                 </List.Content>
                             </List.Item>)
                 })}</List>}
-            </p>
+            </div>
             <Button.Group widths='3' basic>
                 <Button disabled={this.state.test.range.length > 0 } onClick={() => {
                     this.startTest()
