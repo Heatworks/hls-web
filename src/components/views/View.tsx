@@ -146,6 +146,19 @@ export default class View extends React.Component<{
         }
     }
 
+    shouldUpdate = true;
+    throttleUpdatesMilliseconds = 100;
+    shouldComponentUpdate() {
+        if (this.shouldUpdate) {
+            this.shouldUpdate = false;
+            setTimeout(() => {
+                this.shouldUpdate = true;
+            }, this.throttleUpdatesMilliseconds);
+            return true;
+        }
+        return false;
+    }
+
     startRemotePlay() { 
         clearTimeout(this.remotePlayTimeout);
         this.setState({
