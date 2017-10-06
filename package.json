@@ -34,6 +34,7 @@
     "babili-webpack-plugin": "^0.0.9",
     "bluebird": "^3.4.7",
     "brace": "^0.10.0",
+    "color": "^2.0.0",
     "core-js": "^2.4.1",
     "css-loader": "^0.26.2",
     "d3": "^4.9.1",
