@@ -105,7 +105,7 @@ export default class DevicesTable extends React.Component<{
                         </Dropdown.Menu>
                     </Menu.Item>
                 <Menu.Item>
-                    <Input icon='search' placeholder='Search devices...' disabled value={this.state.searchInput} onChange={(e) => {
+                    <Input icon='search' placeholder='Search devices...' value={this.state.searchInput} onChange={(e) => {
                         this.updateSearch(e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/') + 1), e.currentTarget.value);
                     }}/>
                 </Menu.Item>

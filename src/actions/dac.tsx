@@ -14,7 +14,7 @@ export function loadDevices(prefix, accessToken) {
             DEVICES_LOAD_FAIL,
         ],
         payload: {
-            promise: api.devicesGet({
+            promise: api.devicesGet({ prefix },{
 				headers: {
 					"Authorization": accessToken
 				}
