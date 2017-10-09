@@ -65,7 +65,7 @@ module.exports = {
                        loader: "style-loader"
                      },
                      {
-                       loader: "css-loader",
+                       loader: "postcss-loader",
                        options: {
                          modules: true
                        }
@@ -76,7 +76,7 @@ module.exports = {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
                     fallback: "style-loader",
-                    use: "postcss-loader",
+                    use: "css-loader",
                     publicPath: "/dist"
                 })
             },
