@@ -69,7 +69,15 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 				script: {
 					loading: false,
 					loaded: true,
-					data: action.payload
+					data: action.payload,
+				},
+				file: {
+					loaded: false,
+					loading: false,
+					saving: false,
+					deleted: false,
+					deleting: false,
+					data: null
 				}
 			};
 		case SCRIPT_LOAD_FAIL:

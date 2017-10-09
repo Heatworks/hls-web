@@ -269,7 +269,7 @@ export default class Script extends React.Component<{
         </Segment>
         
         <Header size='small' dividing>Environments</Header>
-        <Card.Group itemsPerRow={4} doubling={true} >
+        <Card.Group itemsPerRow={2} doubling={true} >
             { Object.keys(this.props.script.data.environments).map((environmentName) => {
                 return (<Card fluid>
                     <Card.Content header={environmentName} />
@@ -344,31 +344,25 @@ export default class Script extends React.Component<{
             }) }
                 
             </Card.Group>
+            <Header size='small' dividing>Files</Header>
+            
+
             <Grid>
                 <Grid.Row>
                     <Grid.Column tablet={4} computer={4} mobile={16}>
-            <Table basic='very' selectable>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>Files</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {
-                                this.state.script.files.sort().map((fileName, index) => {
-                                    return (<Table.Row key={index}>
-                                        <Table.Cell onClick={() => {
-                                            this.props.actions.loadFile(this.props.script.data.name, fileName, this.props.accessToken);
-                                        }} >{(this.props.file.data == null ? fileName : (this.props.file.data.file == fileName) ? <b>{fileName}</b> : fileName )}</Table.Cell>
-                                    </Table.Row>)
-                                })
-                            }
-                            
-                        </Table.Body>
-                    </Table>
+                    <List celled selection relaxed animated>                        
+                        {
+                            this.state.script.files.sort().map((fileName, index) => {
+                                var isActive = (this.props.file.data == null || this.props.file.loading) ? false : (this.props.file.data.file == fileName);
+                                return (<List.Item key={index} onClick={() => {
+                                    this.props.actions.loadFile(this.props.script.data.name, fileName, this.props.accessToken);
+                                }} active={isActive}>{fileName}</List.Item>)
+                            })
+                        }
+                        </List>
                     </Grid.Column>
                     <Grid.Column tablet={12} computer={12} mobile={16}>
-                        <Segment>
+                        <Segment loading={this.props.file.loading}>
                             
                             {this.props.file.data !== null ? <div><Header>{this.props.file.data.file}</Header><ScriptFileEditor value={this.props.file.data.contents} onChange={() => {
                                 }} filename={this.props.file.data.file} height={650} /> </div> : <p>Select a file on the left.</p>}
