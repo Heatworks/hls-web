@@ -15,10 +15,7 @@ export default class ScriptFileEditor extends React.Component<{
     value: string,
     onChange: (value: string, event?: any) => void,
     filename: string,
-    dimensions: {
-        width: number,
-        height: number
-    }
+    height: number
 }, {}> {
     constructor(props) {
         super(props)
@@ -42,8 +39,11 @@ export default class ScriptFileEditor extends React.Component<{
             value={this.props.value}
             editorProps={{$blockScrolling: true}}
             readOnly={true}
-            width={`${this.props.dimensions.width}`}
-            height={`${this.props.dimensions.height}`}
+            fontSize={12}
+            showPrintMargin={true}
+            showGutter={true}
+            width={`100%`}
+            height={`${this.props.height}px`}
         />)
     }
 }

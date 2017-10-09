@@ -57,11 +57,7 @@ export default class Script extends React.Component<{
         control: boolean
     },
     loadingStatus: boolean,
-    environmentStatus?: Map<string, boolean>,
-    fileEditorDimensions: {
-        width: number,
-        height: number
-    }
+    environmentStatus?: Map<string, boolean>
 }> {
     constructor(props) {
         super(props)
@@ -84,11 +80,7 @@ export default class Script extends React.Component<{
                 control: false
             },
             loadingStatus: false,
-            environmentStatus: {} as Map<string, boolean>,
-            fileEditorDimensions: {
-                width: 500,
-                height: 500
-            }
+            environmentStatus: {} as Map<string, boolean>
         }
     }
 
@@ -379,7 +371,7 @@ export default class Script extends React.Component<{
                         <Segment>
                             
                             {this.props.file.data !== null ? <div><Header>{this.props.file.data.file}</Header><ScriptFileEditor value={this.props.file.data.contents} onChange={() => {
-                                }} filename={this.props.file.data.file} dimensions={this.state.fileEditorDimensions} /> </div> : <p>Select a file on the left.</p>}
+                                }} filename={this.props.file.data.file} height={650} /> </div> : <p>Select a file on the left.</p>}
                             </Segment>
                            
                         </Grid.Column>
