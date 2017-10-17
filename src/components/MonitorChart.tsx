@@ -402,7 +402,7 @@ export default class MonitorChart extends React.Component<{
                     </Grid>
                 </Segment>
                 <Segment>
-                    <BarChart data={this.state.data} chartType="Line" height={300} mouseFunction={"Move"} domain={{y: this.state.yRange, x: this.state.range }} changeYDomain={this.setYRange.bind(this)} formatXValue={(x) => { return moment(x).format("l LTS") }} formatYValue={(y) => { return valueWithUnit(y, "Celcius");}} changeXDomain={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>
+                    {true ? null : <BarChart data={this.state.data} chartType="Line" height={300} mouseFunction={"Move"} domain={{y: this.state.yRange, x: this.state.range }} changeYDomain={this.setYRange.bind(this)} formatXValue={(x) => { return moment(x).format("l LTS") }} formatYValue={(y) => { return valueWithUnit(y, "Celcius");}} changeXDomain={this.changeRange.bind(this)} interval={1} styles={this.props.styles}/>}
                 </Segment>
                 <Segment>
                     <Button.Group size="mini" labeled>
