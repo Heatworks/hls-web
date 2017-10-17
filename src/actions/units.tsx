@@ -1,3 +1,4 @@
+import * as React from 'react'
 const UNIT_KEY = "TEMPERATURE_UNIT"
 
 export function useCelcius(){
@@ -42,6 +43,12 @@ export function getUnitForTopic(topic) {
     return window.localStorage.getItem(itemForTopic(topic))
 }
 
+const unitStyle:React.CSSProperties = {
+    fontWeight:'bold',
+    fontSize: 12,
+    verticalAlign: 'text-top'
+}
+
 export function valueWithUnit(value, unit) {
     if (unit == "Celcius") {
         return valueForTemperature(value);
@@ -50,22 +57,35 @@ export function valueWithUnit(value, unit) {
     } if (unit == "Boolean") {
         return (parseInt(value) == 1)
     } if (unit == "GPM") {
-        return value + "gpm"
+        return (<span>{value}<span style={unitStyle}>gpm</span></span>)
     } if (unit == "Amps") {
-        if (value < 1.0) {
-            return (Math.round(value * 10000) / 10) + "mA";
+        if (Math.abs(value) < 1.0) {
+            value = (Math.round(value * 10000) / 10);
+            return (<span>{value}<span style={unitStyle}>mA</span></span>);
         }
-        return value + "A";
+        return (<span>{value}<span style={unitStyle}>A</span></span>);
     } else {
+        if (value == null) {
+            value = '-'
+        }
+        if (unit == null) {
+            return value;
+        }
         return value + " (" + unit + ")";
     }
 }
 
-function valueForTemperature(value) {
+function valueForTemperature(value) {    
     if (getTemperatureUnit() == "F") {
-        return (Math.round(((value * 9/5) + 32) * 100)/100) + UnitLabels.Fahrenheit
+        if (value == null) {
+            value = '-'
+        } else {
+            value = (Math.round(((value * 9/5) + 32) * 100)/100);
+        }
+        return (<span>{value}<span style={unitStyle}>{UnitLabels.Fahrenheit}</span></span>)
     } else {
-        return (Math.round(value * 100)/100) + UnitLabels.Celcius
+        value = (Math.round(value * 100)/100);
+        return (<span>{value}<span style={unitStyle}>{UnitLabels.Celcius}</span></span>)
     }
 }
 
