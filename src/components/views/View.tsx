@@ -1974,7 +1974,7 @@ class Oscilloscope extends React.Component<{
     }
 }
 
-import { Sparklines, SparklinesLine } from 'react-sparklines';
+import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
 
 class AnalogSensorValue extends React.Component<{
     title: string
@@ -2019,15 +2019,15 @@ class AnalogSensorValue extends React.Component<{
         var maxValue = Math.max(...this.state.values)
         var minValue = Math.min(...this.state.values)
         return (
-            <Segment>
-                <div style={{width: '70%', float:'right', height: 30}}>
-                    <Sparklines data={this.state.values} height={30}  min={this.props.min} max={this.props.max}>
+            <Segment style={{ padding: 0, paddingLeft: '20%', minHeight: 48}}>
+                <div style={{ width: '20%', height:'100%', position:'absolute', left: 10}}><div style={{ height:18, top: 0, bottom: 0, margin:'auto', position:'absolute' }}>{valueWithUnit(this.props.values.value.value,this.props.values.value.unit)}</div></div>
+                <div style={{ position:'relative' }}>
+                    <Sparklines data={this.state.values} min={this.props.min} height={30} max={this.props.max}>
                         <SparklinesLine color={this.props.color} />
                     </Sparklines>
                 </div>
                 {this.props.showMax ? (<div style={{width: '30%', fontSize:9, position:'absolute',top:3 }}>{valueWithUnit(maxValue,this.props.values.value.unit)}</div>) : null}
                 {this.props.showMin ? (<div style={{width: '30%', fontSize:9, position:'absolute',bottom:3 }}>{valueWithUnit(minValue,this.props.values.value.unit)}</div>) : null}
-                <div style={{width: '30%', position:'relative', left: -5}}>{valueWithUnit(this.props.values.value.value,this.props.values.value.unit)}</div>
             </Segment>
         )
     }
