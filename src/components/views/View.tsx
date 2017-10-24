@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message, Statistic } from 'semantic-ui-react'
 import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
 import { Client, connect } from "mqtt"
@@ -614,6 +614,12 @@ export default class View extends React.Component<{
         } else if (column.component == "/organizations/heatworks/views/components/model-2/production/FunctionalTestNotes") {
             return (
                 <FunctionalTestNotes {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
+        } else if (column.component == "/organizations/heatworks/views/components/flow/control") {
+            return (
+                <FlowControl {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
@@ -2086,6 +2092,67 @@ class PowerSwitch extends React.Component<{
         )
     }
 }
+
+
+class FlowControl extends React.Component<{
+    title: string
+    channels: {
+        flowControl: string,
+        flowValue: string
+    }
+    values: {
+        flowControl: string,
+        flowValue: string
+    }
+    publish: (topic, value) => any
+},{
+    flowRate: number
+}> {
+    constructor(props) {
+        super(props)
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+    }
+
+    shiftFlow(flow) {
+        if (this.props.values.flowControl) {
+            flow += parseFloat(this.props.values.flowControl);
+        } else {
+            flow += Math.round(parseFloat(this.props.values.flowValue) * 10) / 10;
+        }
+        this.publishFlow(flow);
+    }
+
+    publishFlow(flow) {
+        this.props.publish(this.props.channels.flowControl, flow)
+    }
+    
+    render() {
+        return (
+            <Segment>
+                <Button content='Up' fluid size='large' onClick={() => {
+                    this.shiftFlow(0.1)
+                }} />
+                <Statistic.Group widths='two'>
+                    <Statistic>
+                        <Statistic.Value>{parseFloat(this.props.values.flowValue).toFixed(2)}</Statistic.Value>
+                        <Statistic.Label>GPM</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value>{parseFloat(this.props.values.flowControl).toFixed(2)}</Statistic.Value>
+                        <Statistic.Label>GPM</Statistic.Label>
+                    </Statistic>
+                </Statistic.Group>
+                <Button content='Down' fluid size='large' onClick={() => {
+                    this.shiftFlow(-0.1)
+                }} />
+            </Segment>
+        )
+    }
+}
+
 
 class ConductivityRecorder extends React.Component<{
     title: string,
