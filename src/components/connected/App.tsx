@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import App from '../App'
-import { load } from '../../actions/data'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {

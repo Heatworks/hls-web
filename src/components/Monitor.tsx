@@ -87,6 +87,7 @@ export default class Monitor extends React.Component<{
         organization: string,
         device: string,
         channel: string,
+        client: any | null,
         clientError: any | null
     },
    monitorActions: {
@@ -133,8 +134,8 @@ export default class Monitor extends React.Component<{
                     <Menu fixed="bottom">
                         <Menu.Item><Icon.Group>
                             <Icon name="wifi" />
-                            <Icon corner name={this.props.monitor.clientError ? 'warning sign' : 'check'} />
-                        </Icon.Group> &nbsp;{this.props.monitor.clientError ? this.props.monitor.clientError : 'Connected' }</Menu.Item>
+                            <Icon corner name={(this.props.monitor.clientError || this.props.monitor.client == null) ? 'warning sign' : 'check'} />
+                        </Icon.Group> &nbsp;{this.props.monitor.clientError ? this.props.monitor.clientError : (this.props.monitor.client ? 'Connected' : 'Not Connected') }</Menu.Item>
                         <Menu.Menu position="right">
                             <Menu.Item as={Button} { ...{onClick: () => {
                                 launchIntoFullscreen(document.documentElement); 

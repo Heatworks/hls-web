@@ -142,7 +142,7 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "DELETE" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -166,7 +166,7 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -182,7 +182,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "OPTIONS" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -203,8 +203,8 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "POST" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
-        contentTypeHeader = { "Content-Type": "application/json" };
+        let contentTypeHeader: Headers;
+        contentTypeHeader.append("Content-Type", "application/json");
         if (params["policy"]) {
             fetchOptions.body = JSON.stringify(params["policy"] || {});
         }
@@ -223,7 +223,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -239,7 +239,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "OPTIONS" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -255,7 +255,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "DELETE" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -275,7 +275,7 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -291,7 +291,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "OPTIONS" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -317,7 +317,7 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -346,8 +346,8 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "PUT" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
-        contentTypeHeader = { "Content-Type": "application/json" };
+        let contentTypeHeader: Headers;
+        contentTypeHeader.append("Content-Type", "application/json");
         if (params["policy"]) {
             fetchOptions.body = JSON.stringify(params["policy"] || {});
         }
@@ -371,8 +371,8 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "POST" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
-        contentTypeHeader = { "Content-Type": "application/json" };
+        let contentTypeHeader: Headers;
+        contentTypeHeader.append("Content-Type", "application/json");
         if (params["modifiableUserCredentials"]) {
             fetchOptions.body = JSON.stringify(params["modifiableUserCredentials"] || {});
         }
@@ -404,8 +404,8 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "PUT" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
-        contentTypeHeader = { "Content-Type": "application/json" };
+        let contentTypeHeader: Headers;
+        contentTypeHeader.append("Content-Type", "application/json");
         if (params["modifiableUserCredentials"]) {
             fetchOptions.body = JSON.stringify(params["modifiableUserCredentials"] || {});
         }
@@ -430,7 +430,7 @@ export const DefaultApiFetchParamCreator = {
         });
         let fetchOptions: RequestInit = assign({}, { method: "GET" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }
@@ -446,7 +446,7 @@ export const DefaultApiFetchParamCreator = {
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = assign({}, { method: "OPTIONS" }, options);
 
-        let contentTypeHeader: Dictionary<string>;
+        let contentTypeHeader: Headers;
         if (contentTypeHeader) {
             fetchOptions.headers = contentTypeHeader;
         }

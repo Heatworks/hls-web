@@ -326,7 +326,7 @@ export default class Script extends React.Component<{
                             })
                         })
                         
-                        }}><Icon name='play video' /><span className='text'>Start</span></Button>
+                        }}><Icon name='video play' /><span className='text'>Start</span></Button>
 
                     <Button size='small' fluid {...{ disabled:this.state.loadingStatus || (environmentName in this.state.environmentStatus && this.state.environmentStatus[environmentName] == false) }} onClick={() => {
                     this.setState({
