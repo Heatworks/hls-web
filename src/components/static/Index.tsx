@@ -215,13 +215,12 @@ export default class Index extends React.Component<{
                 
                 <Grid.Row>
               <Grid.Column width={16}>
+              <h2>Corporations</h2>
                 <p style={{ fontSize: '1.33em' }}>
-                <h3>Corporations</h3>
                     Starting at $25,000 a year, depending on the scale of your lab, you'll get access to our great stable features, early access to cool beta features, and support as we grow and expand the HLS platform. We're initially offering this to select organizations, if you're interested <a href="mailto:weston@heatworks.tech">contact us</a> today to see if you're a fit. <br/><br/><span style={{color:'gray'}}>Available Now.</span>
                 </p>
+                <h2>Makers</h2>
                 <p style={{ fontSize: '1.33em' }}>
-                <h3>Makers</h3>
-
                     We're giving Makers <i>one year free</i> for the core HLS features, we're excited to see what the open source community can build on top of HLS. You'll still have to get the hardware, but we bet with some detailed documentation you could make your own. <br/><br/><span style={{color:'gray'}}>Coming 2018.</span>
                 </p>
               </Grid.Column>
