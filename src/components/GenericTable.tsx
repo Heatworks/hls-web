@@ -97,7 +97,7 @@ export default class GenericTable extends React.Component<{
                         } else {
                             browserHistory.push(`/${this.props.params.organizationName}/${this.props.servicePrefix}/${row.name.split(`/${this.props.servicePrefix}/`)[1]}/`)
                         }
-                        }}}>
+                        }}} style={{ cursor: 'pointer' }}>
                         <Table.Cell singleLine={true} width={4}>{row.name.substr(`/organizations/${this.props.params.organizationName}/${this.props.servicePrefix}/`.length)}</Table.Cell>
                         <Table.Cell singleLine={false} width={10}>{row.description}</Table.Cell>
                         <Table.Cell>{moment(row.tags['CREATED_DATE']).format("M/D HH:mm - YYYY")}</Table.Cell>
