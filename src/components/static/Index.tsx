@@ -112,18 +112,24 @@ export default class Index extends React.Component<{
                 <Grid.Column>
                         <Header><Header.Content>Mosfet8<Header sub>8 Channel 24V Mosfet Driver</Header></Header.Content></Header>
                         <p style={{ textAlign:'justify' }}>These 24V mosfets an control solenoids, contactors, actuators, motors, etc. These devices are your main form of control/input for your testing setup.</p>
-                        <p><b>$500</b> or <b>$50 monthly</b></p>
+                        {
+                            //<p><b>$500</b> or <b>$50 monthly</b></p>
+                        }
                     </Grid.Column>
                     <Grid.Column>
                         <Header><Header.Content>Analog8<Header sub>8 Channel 4-20mA ADC Converter</Header></Header.Content></Header>
                         <p style={{ textAlign:'justify' }}>With a 12 bit ADC onboard, this device is compatible with any 4-20mA sensor. In our labs we use them to measure flow, current, and pressure.</p>
-                        <p><b>$500</b> or <b>$50 monthly</b></p>
+                        {
+                            //<p><b>$500</b> or <b>$50 monthly</b></p>
+                        }
                     </Grid.Column>
                     
                     <Grid.Column>
                         <Header><Header.Content>Thermocouple12 <Header sub>12 Channel Thermocouple Reader</Header></Header.Content></Header>
                         <p style={{ textAlign:'justify' }}>Measure up to 12 different K-type thermocouples at once. K-type is adaptable for a variety of environments, if you need a different thermocouple type just let us know.</p>
-                        <p><b>$600</b> or <b>$60 monthly</b></p>
+                        { 
+                            //<p><b>$600</b> or <b>$60 monthly</b></p>
+                        }
                     </Grid.Column>
                     
                 </Grid.Row>
@@ -217,13 +223,13 @@ export default class Index extends React.Component<{
               <Grid.Column width={16}>
               <h2>Corporations</h2>
                 <p style={{ fontSize: '1.33em' }}>
-                    Become an early partner and you'll get hands on setup, hardware, data storage, and on-going support. You'll get access to our great stable features, early access to cool beta features, and influence as we grow and expand the HLS platform. We're initially offering this to select organizations, if you're interested <a href="mailto:weston@heatworks.tech">contact us</a> today to see if you're a fit. <br/><br/><span style={{color:'gray'}}>Available Now.</span>
+                    Become an early partner and you'll get hands on setup, hardware, data storage, and on-going support. You'll get access to our great stable features, early access to cool beta features, and influence as we grow and expand the HLS platform. We're initially offering this to select organizations, if you're interested <a href="mailto:weston@heatworks.tech">contact us</a> today to see if you're a fit. <br/><br/><span style={{color:'gray'}}>Available Now</span>
                 </p>
                 <h2>Makers &amp; Students</h2>
                 <p style={{ fontSize: '1.33em' }}>
                     We're giving Makers <i>one year free</i> for the core HLS features, we're excited to see what the open source community can build on top of HLS. You'll still have to get the hardware, but we bet with some detailed documentation and a Raspberry Pi you could make your own. </p>
                 <p style={{ fontSize: '1.33em' }}>
-                    Students can get HLS for <i>free while enrolled</i> in school. Plus we'll offer discounts on hardware if you ask nicely and tell us about your project via Twitter, Facebook, or Email.<br/><br/><span style={{color:'gray'}}>Coming 2018.</span>
+                    Students can get HLS for <i>free while enrolled</i> in school. Plus we'll offer discounts on hardware if you ask nicely and tell us about your project via Twitter, Facebook, or Email.<br/><br/><span style={{color:'gray'}}>Coming 2018</span>
                 </p>
               </Grid.Column>
             </Grid.Row>
@@ -237,6 +243,8 @@ export default class Index extends React.Component<{
                     >
                     <a href='#'>Case Studies</a>
                 </Divider>
+                <p style={{textAlign: 'center'}}>Coming Soon</p>
+
             </Segment>
             </div>
         )
