@@ -6,7 +6,7 @@ import 'whatwg-fetch'
 
 var api = new DAC.DefaultApi()
 
-export function loadDevices(prefix, accessToken) {
+export function loadDevices(prefix, accessToken, exclusiveStartKey) {
     return {
         types: [
             DEVICES_LOAD,
@@ -14,7 +14,7 @@ export function loadDevices(prefix, accessToken) {
             DEVICES_LOAD_FAIL,
         ],
         payload: {
-            promise: api.devicesGet({ prefix },{
+            promise: api.devicesGet({ prefix, exclusiveStartKey },{
 				headers: {
 					"Authorization": accessToken
 				}

@@ -19,7 +19,7 @@ export default class DevicesTable extends React.Component<{
     },
     accessToken: string,
     actions: {
-        load: (prefix: string, accessToken: string) => any
+        load: (prefix: string, accessToken: string, exclusiveStartKey: string) => any
     },
     params: {
         organizationName: string
@@ -48,7 +48,7 @@ export default class DevicesTable extends React.Component<{
         this.previousPrefix = this.props.prefix
     }
     componentWillMount() {
-        this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
+        this.props.actions.load(this.state.currentPrefix, this.props.accessToken, '')
     }
     updateSearch(search, searchInput) {
         this.setState({
@@ -60,7 +60,7 @@ export default class DevicesTable extends React.Component<{
                     ...this.state,
                     currentPrefix: this.state.search
                 }, () => {
-                    this.props.actions.load(this.state.search, this.props.accessToken)
+                    this.props.actions.load(this.state.search, this.props.accessToken, '')
                 })
             }
         })

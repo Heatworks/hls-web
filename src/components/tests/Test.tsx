@@ -138,7 +138,7 @@ export default class Test extends React.Component<{
         })
     }
     loadDevices() {
-        return api_dac.devicesGet({},{
+        return api_dac.devicesGet({exclusiveStartKey: ''},{
             headers: {
                 'Authorization': this.props.accessToken
             }
