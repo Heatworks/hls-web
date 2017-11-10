@@ -39,7 +39,7 @@ export default class DevicesTable extends React.Component<{
         super(props)
         this.state = {
             currentPrefix: this.props.prefix,
-            sortTag: "CREATED_DATE",
+            sortTag: "NAME",
             direction: 1,
             tagsInTable: [],
             search: this.props.prefix,
@@ -114,7 +114,12 @@ export default class DevicesTable extends React.Component<{
             <Table singleLine selectable >
                 <Table.Header>
                     <Table.Row disabled={this.props.devices.loading}>
-                    <Table.HeaderCell sorted={"descending"}>Name</Table.HeaderCell>
+                    <Table.HeaderCell sorted={(this.state.sortTag == 'name') ? direction : null } onClick={() => {
+                        this.setState({
+                            sortTag: 'name',
+                            direction: (this.state.sortTag == 'name' ? (this.state.direction*-1) : this.state.direction)
+                        })
+                    }}>Name</Table.HeaderCell>
                     <Table.HeaderCell>Description</Table.HeaderCell>
                     <Table.HeaderCell>Channels</Table.HeaderCell>
                     {this.state.tagsInTable.map((tag) => {
@@ -135,7 +140,16 @@ export default class DevicesTable extends React.Component<{
                         if (this.state.sortTag == "name") {
                             return a.name > b.name ? -this.state.direction : this.state.direction
                         }
-                        var tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction
+                        var tagSort = 0;
+                        if (this.state.sortTag in a.tags) {
+                            if (this.state.sortTag in b.tags) {
+                                tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction                                
+                            } else {
+                                return this.state.direction;
+                            }
+                        } else {
+                            return -this.state.direction;
+                        }
                         return tagSort
                         //return (a.range.length == b.range.length) ? dateSort : ((a.range.length > b.range.length) ? 1 : 0)
                     }).map((row, index) => {
