@@ -165,7 +165,7 @@ export default class TestsTable extends React.Component<{
                         <Table.Body>
                             {
                                 this.getBackPrefixes().map((prefix, index) => {
-                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading}>
+                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading} style={{ cursor: 'pointer' }}>
                                         <Table.Cell onClick={() => {
                                             var search = prefix.split('/tests/')[1];
                                             this.updateSearch(search, search);
@@ -180,7 +180,7 @@ export default class TestsTable extends React.Component<{
                                 this.props.tests.prefixes.data.sort((a, b) => {
                                     return a.suffix > b.suffix ? 1 : -1;
                                 }).map((prefix, index) => {
-                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading}>
+                                    return (<Table.Row key={index} disabled={this.props.tests.prefixes.loading} style={{ cursor: 'pointer' }}>
                                         <Table.Cell onClick={() => {
                                             var search = prefix.prefix.split('/tests/')[1] + prefix.suffix;
                                             this.updateSearch(search, search);
