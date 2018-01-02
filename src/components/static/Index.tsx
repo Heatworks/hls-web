@@ -159,7 +159,7 @@ export default class Index extends React.Component<{
                     <li>5V Input via Micro-USB</li>
                     <li>USART via Micro-USB</li>
                     <li>5V Wired Input</li>
-                    <li>24V Wired Input <i>(Mosfet8 only)</i></li>
+                    <li>24V Wired Input <i>(Mosfet8/Analog8 only)</i></li>
                     <li>Raspberry Pi Zero</li>
                     <li>Ethernet</li>
                     <li>WiFi <i>(optional with Pi Zero W)</i></li>
