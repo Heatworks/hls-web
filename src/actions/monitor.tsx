@@ -1,6 +1,7 @@
-import { OPEN, START, CLOSE, STOP, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE } from "../reducers/monitor"
+import { OPEN, START, CLOSE, STOP, CLIENT_LOADING, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE } from "../reducers/monitor"
 import 'whatwg-fetch'
 import { Client, connect } from "mqtt"
+import { disconnect } from "cluster";
 
 export function open() {
     return {
@@ -61,12 +62,22 @@ export function loadingClientError(error) {
     }
 }
 
+export function reloadClient(accessToken) {
+    return (dispatch) => {
+        dispatch(loadClient(accessToken));
+    }
+}
+
 export function getMQTTBrokerHostname () {
     return window.localStorage.getItem("hls.mqtt_broker") || "hls-local-server.local"
 }
 
 export function loadClient(accessToken) {
     return (dispatch) => {
+        dispatch({
+            type: CLIENT_LOADING
+        })
+        console.log('actions:monitor:loadClient');
         try {
             var client = connect(`ws://${getMQTTBrokerHostname()}:1884`, {
                 username: 'HLS:AccessToken',
@@ -74,13 +85,20 @@ export function loadClient(accessToken) {
                 reconnectPeriod: 1000 * 5
             })
             client.on("error", (error) => {
-                console.log(error);
-                dispatch(loadingClientError(error.message))
+                console.log('actions:monitor:loadClient:onError');
+                console.error(error);
+                dispatch(loadingClientError(error))
             })
             client.on("connect", () => {
                 dispatch(loadedClient(client))
             })
+            client.on("offline", () => {
+                console.log('actions:monitor:loadClient:offline');
+                dispatch(loadingClientError("MQTT Broker is offline."))
+            })
         } catch (error) {
+            console.log('actions:monitor:loadClient:Error!');
+            console.error(error);
             dispatch(loadingClientError(error))
         }
         

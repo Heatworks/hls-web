@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Monitor from '../Monitor'
-import { open, close, stop, newMonitoredValue } from '../../actions/monitor'
+import { open, close, stop, newMonitoredValue, reloadClient } from '../../actions/monitor'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {
@@ -13,7 +13,7 @@ const mapStateToProps = (state, props) => {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    monitorActions: bindActionCreators({ open, close, stop, newMonitoredValue }, dispatch)
+    monitorActions: bindActionCreators({ open, close, stop, newMonitoredValue, reloadClient }, dispatch)
   }
 }
 

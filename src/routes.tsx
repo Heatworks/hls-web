@@ -22,7 +22,7 @@ import View from './components/views/connected/View'
 import ScriptsIndex from './components/scripts/ScriptsIndex'
 import Script from './components/scripts/connected/Script'
 import Index from './components/static/Index'
-import Settings from './components/settings/Index'
+import Settings from './components/settings/connected/Index'
 
 export default (
     <Route path="/" component={App}>

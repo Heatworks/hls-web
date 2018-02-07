@@ -4,8 +4,11 @@ import { Segment, Header, Image, Grid, Icon, Button, Input } from 'semantic-ui-r
 import { useCelcius, useFarenheit, UnitLabels } from '../../actions/units'
 
 export default class Index extends React.Component<{
-    params: {
-        organizationName: string
+    organizationName: string,
+    accessToken: string,
+    clientLoading: boolean,
+    actions: {
+        reloadClient: (accessToken) => void
     }
 }, {
     broker: string
@@ -35,48 +38,52 @@ export default class Index extends React.Component<{
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column computer={4} width={4} mobile={16}>
+                    <Grid.Column computer={3} width={4} mobile={16}>
                     </Grid.Column>
                     <Grid.Column computer={6} width={6} mobile={16}>
                         <Header subheader><Icon name="setting" circular /><Header.Content>Password <Header sub>Reset your password</Header></Header.Content></Header>
                     </Grid.Column>
-                    <Grid.Column computer={2} width={2} mobile={16} {...{style: {marginTop: 10} }}>
+                    <Grid.Column computer={4} width={2} mobile={16} {...{style: {marginTop: 10} }}>
                         <Button content="Change Password" fluid onClick={() => {
                             alert('This feature is not yet implemented.')
                         }} />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column computer={4} width={4} mobile={16}>
+                    <Grid.Column computer={3} width={4} mobile={16}>
                     </Grid.Column>
                     <Grid.Column computer={6} width={6} mobile={16}>
                         <Header subheader><Icon name="toggle on" circular /><Header.Content>Temperature Unit <Header sub>What unit would you like to see all temperatures?</Header></Header.Content></Header>
                     </Grid.Column>
-                    <Grid.Column computer={1} width={1} mobile={16} {...{style: {marginTop: 10} }}>
+                    <Grid.Column computer={2} width={1} mobile={16} {...{style: {marginTop: 10} }}>
                         <Button content={UnitLabels.Celcius} fluid onClick={() => {
                             useCelcius()
                         }} />
                     </Grid.Column>
-                    <Grid.Column computer={1} width={1} mobile={16} {...{style: {marginTop: 10} }}>
+                    <Grid.Column computer={2} width={1} mobile={16} {...{style: {marginTop: 10} }}>
                         <Button content={UnitLabels.Fahrenheit} fluid onClick={() => {
                             useFarenheit()
                         }} />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column computer={4} width={4} mobile={16}>
+                    <Grid.Column computer={3} width={4} mobile={16}>
                     </Grid.Column>
                     <Grid.Column computer={6} width={6} mobile={16}>
                         <Header subheader><Icon name="setting" circular /><Header.Content>MQTT Borker <Header sub>Set the IP/Hostname for the MQTT Broker</Header></Header.Content></Header>
                     </Grid.Column>
-                    <Grid.Column computer={2} width={2} mobile={16} {...{style: {marginTop: 10} }}>
-                        <Input type="text" value={this.state.broker} style={{textAlign:'center'}} onChange={(e) => {
+                    <Grid.Column computer={4} width={2} mobile={16} {...{style: {marginTop: 10} }}>
+                        <Input type="text" fluid loading={this.props.clientLoading} value={this.state.broker} action={{ 
+                            icon: 'refresh',
+                            onClick: () => {
+                                this.props.actions.reloadClient(this.props.accessToken);
+                            }
+                        }} actionPosition="left" style={{textAlign:'center'}} onChange={(e) => {
                             this.setState({
                                 broker: e.currentTarget.value
                             }, () => {
                                 window.localStorage.setItem("hls.mqtt_broker", this.state.broker);
                             })
-                            
                         }} />
                     </Grid.Column>
                 </Grid.Row>

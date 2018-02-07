@@ -88,13 +88,15 @@ export default class Monitor extends React.Component<{
         device: string,
         channel: string,
         client: any | null,
-        clientError: any | null
+        clientError: any | null,
+        loading: boolean
     },
    monitorActions: {
        close: () => any,
        open: (organization?, device?, channel?) => any,
        stop: (organization, device, channel) => any,
-       newMonitoredValue: (topic, value) => any
+       newMonitoredValue: (topic, value) => any,
+       reloadClient: (accessToken) => any
    }
    client: ClientFixed,
    organizationName: String,
@@ -102,6 +104,17 @@ export default class Monitor extends React.Component<{
 },{}> {
     changeRange() {
         
+    }
+    iconForClient() {
+        if (this.props.client == null) {
+            if (this.props.monitor.clientError) {
+                return 'warning'
+            } else {
+                return 'spinner'
+            }
+        } else {
+            return 'check';
+        }
     }
     render() {
         console.log('Render Monitor');
@@ -134,8 +147,11 @@ export default class Monitor extends React.Component<{
                     <Menu fixed="bottom">
                         <Menu.Item><Icon.Group>
                             <Icon name="wifi" />
-                            <Icon corner name={(this.props.monitor.clientError || this.props.monitor.client == null) ? 'warning sign' : 'check'} />
+                            <Icon corner  loading={this.props.monitor.loading} name={this.iconForClient()} />
                         </Icon.Group> &nbsp;{this.props.monitor.clientError ? this.props.monitor.clientError : (this.props.monitor.client ? 'Connected' : 'Not Connected') }</Menu.Item>
+                        {this.props.monitor.clientError ? <Menu.Item as={Button} {...{onClick: () => {
+                            this.props.monitorActions.reloadClient(this.props.accessToken);
+                        }}}> <Icon name="refresh" /> Reload </Menu.Item> : null }
                         <Menu.Menu position="right">
                             <Menu.Item as={Button} { ...{onClick: () => {
                                 launchIntoFullscreen(document.documentElement); 

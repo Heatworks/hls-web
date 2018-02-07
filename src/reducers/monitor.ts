@@ -1,18 +1,23 @@
+import { stat } from "fs";
+import { load } from "../../build-server/actions/tests";
+
 const OPEN = 'hls/monitor/OPEN';
 const START = 'hls/monitor/START';
 const CLOSE = 'hls/monitor/CLOSE';
 const STOP = 'hls/monitor/STOP';
+const CLIENT_LOADING = 'hls/monitor/CLIENT_LOADING'
 const CLIENT_LOADED = 'hls/monitor/CLIENT_LOADED'
 const CLIENT_FAILED = 'hls/monitor/CLIENT_FAILED'
 const NEW_MONITORED_VALUE = 'hls/monitor/NEW_MONITORED_VALUE';
 
-export { OPEN, START, CLOSE, STOP, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE }
+export { OPEN, START, CLOSE, STOP, CLIENT_LOADING, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE }
 
 const initialState = {
 	open: false,
 	channels: [],
     client: null,
-    clientError: null
+	clientError: null,
+	loading: false
 };
 
 export default function reducer(state:{
@@ -68,18 +73,28 @@ export default function reducer(state:{
 			}
             return {
                 ...state
-            }
+			}
+		case CLIENT_LOADING: 
+			return {
+				...state,
+				client: null,
+				clientError: null,
+				loading: true
+			}
         case CLIENT_LOADED:
             return {
                 ...state,
                 client: action.client,
-                clientError: null
+				clientError: null,
+				loading: false
             }
-        case CLIENT_FAILED:
-            return {
+        case CLIENT_FAILED: {
+			return {
                 ...state,
-                clientError: action.error
+				clientError: action.error,
+				loading: false
             }
+		}
 		default:
 			return state;
 	}
