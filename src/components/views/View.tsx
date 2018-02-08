@@ -440,7 +440,7 @@ export default class View extends React.Component<{
                             </Header>
                         </Grid.Column>
                         <Grid.Column>
-                            <Menu floated="right">
+                            <Menu floated="right" secondary>
                                 {!this.state.live ? <Menu.Item as={Button} content={''} active={this.state.remotePlay} icon={this.state.remotePlay ? 'pause' : 'play'} {...{onClick: () => {
                                     if (this.state.remotePlay) {
                                         this.stopRemotePlay();
