@@ -4,6 +4,7 @@ import { getAllParams, normalizeTokenKeys } from "../utils/parse-url";
 import { loadClient } from "./monitor"
 
 import * as IAM from '../apis/hls_iam'
+import { loadDevices } from "./dac";
 
 function signInLoading() {
 	return {
@@ -71,6 +72,7 @@ export function signIn() {
 			console.log(params);
 			dispatch(signInSuccess(params))
 			dispatch(loadOrganization(params['accessToken']))
+			dispatch(loadDevices('', params['accessToken'], ''))
 			dispatch(loadClient(params['accessToken']))
 		}).catch((error) => {
 			dispatch(signInFail(error))
