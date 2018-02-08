@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message, Statistic } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message, Statistic, Form } from 'semantic-ui-react'
 import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
 import { Client, connect } from "mqtt"
@@ -686,7 +686,7 @@ class Column extends React.Component<{
         return (
             <Grid.Column width={this.props.column.width as SemanticWIDTHS} {...this.props.column.widths} >
                     {
-                    this.props.editing ? <Input value={this.state.column.props.title} type="text" fluid onChange={(e) => {
+                    this.props.editing ? <Form.Input value={this.state.column.props.title} type="text" label='Title' fluid onChange={(e) => {
                         this.setState({ 
                             column: {
                                 ...this.state.column,
@@ -700,24 +700,14 @@ class Column extends React.Component<{
                     }} />  : (this.props.column.props.title ? <Header subheader>{this.props.column.props.icon ? <Icon name={this.props.column.props.icon} circular style={{ marginRight: 0, marginTop: 15 }} /> : null }<Header.Content>{this.props.column.props.title} </Header.Content></Header> : null)
                     }
                 {
-                    this.props.editing ? <Segment vertical>
-                        {'channels' in this.props.column ? (<Table>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell sorted="ascending">Key</Table.HeaderCell>
-                                <Table.HeaderCell>Channel</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {Object.keys(this.props.column.channels).map((key, index) => {
-                            return (<Table.Row key={index}>
-                                <Table.Cell>{key}</Table.Cell>
-                                <Table.Cell>.../{this.props.column.channels[key].split('/devices/')[1]}</Table.Cell>
-                            </Table.Row>)
+                    this.props.editing ? <Segment vertical><Form>
+                    {this.props.column.component ? <Form.Input value={this.props.column.component } label='Component' fluid icon={'cube'} /> : null}
+                     
+                        {'channels' in this.props.column ? (<div>{
+                                Object.keys(this.props.column.channels).map((key, index) => {
+                            return (<Form.Group><Form.Input width={16} key={index} icon='edit' label={key} value={'../'+this.props.column.channels[key].split('/devices/')[1]} /></Form.Group>)
                         })}
-                            
-                        </Table.Body>
-                    </Table>) : null }
+                    </div>) : null } 
                     
                     {'rows'in this.props.column ? <Segment>{this.props.children}</Segment> : null}
 
@@ -727,7 +717,9 @@ class Column extends React.Component<{
                             column.width -= 1
                             this.props.onChange(column)
                         }} />
-                        <Button />
+                        <Button content={this.props.column.width} onClick={() => {
+                            // TODO: Maybe toggle fluid or specified.
+                        }} />
                         <Button labelPosition='right' icon='right chevron' content='' onClick={(e) => {
                             var column = Object.assign({}, this.props.column)
                             column.width += 1
@@ -740,7 +732,7 @@ class Column extends React.Component<{
                             this.setState({ view: this.state.view })*/
                         }} />
                     </Button.Group>
-                    
+                    </Form>
                     </Segment> : this.props.children
                 }
             </Grid.Column>
