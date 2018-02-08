@@ -52,29 +52,35 @@ function signedOut() {
 
 export function loadPersistantData() {
 	return (dispatch) => {
+		console.log('actions:iam:loadingPersistantData...');
 		var data = retrieveData();
-		console.log('loadingPersistantData: '+JSON.stringify(data));
 		if (data) {
+			console.log('actions:iam:isSignedIn');
 			dispatch(signInLoading());
 			dispatch(signInSuccess(data));
 			dispatch(loadOrganization(data['accessToken']));
 			dispatch(loadClient(data['accessToken']))
+		} else {
+			console.log('actions:iam:isNotSignedIn');
 		}
 	}
 }
 
 export function signIn() {
 	return (dispatch) => {
+		console.log('actions:iam:signIn');
 		dispatch(signInLoading())
 		let name = "_blank";
 		let popup = openPopup("hls", `https://hls-oauth.heatworks.tech/login?redirect_uri=${window.location.origin}/signIn_redirect`, "hls_oauth");
-		listenForCredentials("code", popup, "hls").then((params) => {
-			console.log(params);
+		return listenForCredentials("code", popup, "hls").then((params) => {
+			console.log('actions:iam:signIn:Received Credentials.');
 			dispatch(signInSuccess(params))
 			dispatch(loadOrganization(params['accessToken']))
-			dispatch(loadDevices('', params['accessToken'], ''))
 			dispatch(loadClient(params['accessToken']))
+			dispatch(loadDevices('', params['accessToken'], ''))
 		}).catch((error) => {
+			console.log('actions:iam:signIn:Error!');
+			console.error(error);
 			dispatch(signInFail(error))
 		})
 	}
@@ -89,6 +95,7 @@ export function signOut() {
 
 export function loadOrganization(accessToken) {
 	return (dispatch) => {
+		console.log('actions:iam:loadOrganization');
 		dispatch(loadingOrganization())
 		var api = new IAM.DefaultApi()
 		api.accessTokenGet({

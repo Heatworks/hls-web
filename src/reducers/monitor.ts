@@ -7,6 +7,7 @@ const CLIENT_LOADED = 'hls/monitor/CLIENT_LOADED'
 const CLIENT_FAILED = 'hls/monitor/CLIENT_FAILED'
 const NEW_MONITORED_VALUE = 'hls/monitor/NEW_MONITORED_VALUE';
 
+import { SIGN_OUT } from './iam'
 export { OPEN, START, CLOSE, STOP, CLIENT_LOADING, CLIENT_LOADED, CLIENT_FAILED, NEW_MONITORED_VALUE }
 
 const initialState = {
@@ -91,6 +92,13 @@ export default function reducer(state:{
 				clientError: action.error,
 				loading: false
             }
+		}
+		case SIGN_OUT: {
+			return {
+				...state,
+				client: null,
+				clientError: null
+			}
 		}
 		default:
 			return state;

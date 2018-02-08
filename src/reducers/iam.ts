@@ -139,7 +139,23 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 				...state,
 				loaded: false,
 				loading: false,
-				data: null
+				data: null,
+				organization: null,
+				users: {
+					loaded: false,
+					loading: false,
+					data: []
+				},
+				accessTokens: {
+					loaded: false,
+					loading: false,
+					data: []
+				},
+				accessToken: {
+					deleting: false,
+					deleted: false,
+					error: null
+				}
 			}
 		default:
 			return state;

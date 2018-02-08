@@ -38,7 +38,7 @@ export default class SignIn extends React.Component<{
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (
             <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}}>
-                <Menu.Item link as={Link} {...{to: `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
+                <Menu.Item link as={Link} {...{to: organizationNameOrNull == null ? '/' : `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
                 {
                     this.props.iam.organization ? 
                     <div style={{display:'flex'}} className="computer tablet only">

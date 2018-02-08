@@ -17,10 +17,10 @@ const environment: any = typeof window !== 'undefined' ? window : this;
 
 const enhancer = compose(
     applyMiddleware(
-      promiseMiddleware
+      ReduxThunk,
     ),
     applyMiddleware(
-      ReduxThunk,
+      promiseMiddleware
     ),
     DevTools.instrument()
 )
