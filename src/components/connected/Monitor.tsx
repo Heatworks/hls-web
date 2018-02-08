@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 const mapStateToProps = (state, props) => {
   return {
     monitor: state.monitor,
+    iam: state.iam,
     organizationName: props.params.organizationName,
     client: state.monitor.client,
     accessToken: (state.iam.data) ? state.iam.data.accessToken : null

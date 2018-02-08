@@ -100,7 +100,19 @@ export default class Monitor extends React.Component<{
    }
    client: ClientFixed,
    organizationName: String,
-   accessToken: string
+   accessToken: string,
+    iam: {
+        loading: boolean,
+        loaded: boolean,
+        data: {
+            accessToken: string
+        },
+        organization?: {
+            organizationName: string,
+            organizationId: string,
+            policy: any
+        }
+    }
 },{}> {
     changeRange() {
         
@@ -109,14 +121,19 @@ export default class Monitor extends React.Component<{
         if (this.props.client == null) {
             if (this.props.monitor.clientError) {
                 return 'warning'
-            } else {
+            } else if (this.props.monitor.loading) {
                 return 'spinner'
+            } else {
+                return null;
             }
         } else {
             return 'check';
         }
     }
     render() {
+        if (this.props.iam.loaded == false) {
+            return null;
+        }
         console.log('Render Monitor');
         return (
             <div>
