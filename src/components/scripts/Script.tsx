@@ -408,4 +408,5 @@ const unitOptions = [
   { key: 'Microsiemens', text: 'Microsiemens', value: 'Microsiemens' },
   { key: 'Amps', text: 'Amps', value: 'Amps' },
   { key: 'GPM', text: 'GPM', value: 'GPM' },
+  { key: 'PSI', text: 'PSI', value: 'PSI' },
 ]
