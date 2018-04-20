@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message, Statistic, Form } from 'semantic-ui-react'
+import { Table, Label, Button, Segment, Divider, Header, Grid, Icon, Input, Menu, Image, Radio, Loader, Message, Statistic, Form, Checkbox } from 'semantic-ui-react'
 import { SemanticWIDTHS, SemanticSIZES } from 'semantic-ui-react/dist/commonjs'
 import { Link , browserHistory} from 'react-router'
 import { Client, connect } from "mqtt"
@@ -149,15 +149,31 @@ export default class View extends React.Component<{
 
     shouldUpdate = true;
     throttleUpdatesMilliseconds = 100;
+    allowUpdatesAfterTimeout = null;
+    waitingMinimumTime = null;
     shouldComponentUpdate() {
-        if (this.shouldUpdate) {
-            this.shouldUpdate = false;
-            setTimeout(() => {
-                this.shouldUpdate = true;
+        if (this.shouldUpdate == false) {
+            // Throttling code.
+            if (this.waitingMinimumTime != null) {
+                return false;
+            }
+            this.waitingMinimumTime = setTimeout(() => {
+                this.waitingMinimumTime = null;
+                this.forceUpdate();
+                clearTimeout(this.allowUpdatesAfterTimeout);
+                this.allowUpdatesAfterTimeout = setTimeout(() => {
+                    this.shouldUpdate = true;
+                }, this.throttleUpdatesMilliseconds);
             }, this.throttleUpdatesMilliseconds);
-            return true;
+            return false;
         }
-        return false;
+        // Non-throttling code.
+        this.shouldUpdate = false;
+        clearTimeout(this.allowUpdatesAfterTimeout);
+        this.allowUpdatesAfterTimeout = setTimeout(() => {
+            this.shouldUpdate = true;
+        }, this.throttleUpdatesMilliseconds);
+        return true;
     }
 
     startRemotePlay() { 
@@ -648,7 +664,7 @@ export default class View extends React.Component<{
         } else if (column.component == "/organizations/hls/views/components/spacer") {
             return (<Segment vertical {...column.props} />)
         } else {
-            return (<Image src='http://semantic-ui.com/images/wireframe/paragraph.png' />)
+            return (<Image src='https://semantic-ui.com/images/wireframe/paragraph.png' />)
         }
     }
 }
@@ -1072,15 +1088,17 @@ class Solenoid extends React.Component<{
         }
         return (
             <Segment color={values.value ? 'green' : 'red'}>
-                <Button basic compact onClick={() => {
-                    this.props.publish(this.props.channels.control, values.value ? 0 : 1)
+            <Checkbox toggle checked={values.value} onClick={() => {
                     this.setState({
                         publishing: true
+                    }, () => {
+                        this.props.publish(this.props.channels.control, values.value ? 0 : 1)
                     })
-                }} label loading={this.state.publishing}><Icon name={values.value ? 'toggle on' : 'toggle off'} size="big" /></Button> <span style={{
+                }} disabled={this.state.publishing} />
+                 <span style={{
                     float:'right',
                     fontSize: 20
-                }} >{this.state.publishing ? <Button.Group basic size={"small"}><Button content={"On"} onClick={() => {
+                }} >{this.state.publishing ? <Button.Group basic size={"tiny"}><Button content={"On"} onClick={() => {
                         this.props.publish(this.props.channels.control, 1)
                     }} /><Button content={"Off"} onClick={() => {
                         this.props.publish(this.props.channels.control, 0)
