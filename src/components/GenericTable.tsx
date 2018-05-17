@@ -22,6 +22,8 @@ export default class GenericTable extends React.Component<{
     },
     onClick?: (test: any) => any,
     prefix: string,
+    defaultSortTag?: string,
+    defaultSortDirection?: number,
     servicePrefix: string // tests, scripts, views
 },{
     currentPrefix?: string,
@@ -33,8 +35,8 @@ export default class GenericTable extends React.Component<{
         super(props)
         this.state = {
             currentPrefix: this.props.prefix,
-            sortTag: "CREATED_DATE",
-            direction: 1,
+            sortTag: this.props.defaultSortTag ? this.props.defaultSortTag : "CREATED_DATE",
+            direction: this.props.defaultSortDirection ? this.props.defaultSortDirection : -1,
             tagsInTable: []
         }
         this.props.actions.load(this.state.currentPrefix, this.props.accessToken)
@@ -55,11 +57,19 @@ export default class GenericTable extends React.Component<{
         <Table selectable fixed sortable singleLine>
             <Table.Header>
                 <Table.Row disabled={this.props.elements.loading}>
-                <Table.HeaderCell sorted={(this.state.sortTag == "STATUS") ? direction : null } onClick={() => {
-                    this.setState({
-                        sortTag: 'STATUS',
-                        direction: (this.state.sortTag == "STATUS" ? (this.state.direction*-1) : this.state.direction)
-                    })
+                <Table.HeaderCell sorted={(this.state.sortTag == "STATUS" || this.state.sortTag == "name") ? direction : null } onClick={() => {
+                    if (this.state.tagsInTable.indexOf('STATUS') >= 0) {
+                        this.setState({
+                            sortTag: 'STATUS',
+                            direction: (this.state.sortTag == "STATUS" ? (this.state.direction*-1) : this.state.direction)
+                        })
+                    } else {
+                        this.setState({
+                            sortTag: 'name',
+                            direction: (this.state.sortTag == "name" ? (this.state.direction*-1) : this.state.direction)
+                        })
+                    }
+                   
                     }}>Name</Table.HeaderCell>
                 <Table.HeaderCell>Description</Table.HeaderCell>
                 <Table.HeaderCell sorted={(this.state.sortTag == "CREATED_DATE") ? direction : null } onClick={() => {
@@ -85,12 +95,17 @@ export default class GenericTable extends React.Component<{
             {
                 this.props.elements.data.sort((a, b) => {
                     if (this.state.sortTag == "name") {
-                        return a.name > b.name ? -this.state.direction : this.state.direction
+                        return a.name.toLowerCase() > b.name.toLowerCase() ? -this.state.direction : this.state.direction
                     }
                     var tagSort = (a.tags[this.state.sortTag] > b.tags[this.state.sortTag]) ? -this.state.direction : this.state.direction
                     return tagSort
                     //return (a.range.length == b.range.length) ? dateSort : ((a.range.length > b.range.length) ? 1 : 0)
                 }).map((row, index) => {
+                    if ("ARCHIVED" in row.tags) {
+                        if (row.tags["ARCHIVED"]) {
+                            return;
+                        }
+                    }
                     return (<Table.Row key={index} disabled={this.props.elements.loading} {...{onClick:() => {
                         if (this.props.onClick) {
                             this.props.onClick(row);

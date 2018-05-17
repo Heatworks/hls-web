@@ -46,7 +46,7 @@ export default class ScriptsIndex extends React.Component<{
                      </Grid.Row>
                     </Grid>
                     <Divider />
-                <ScriptsTable params={this.props.params} prefix={this.state.search} onClick={(row) => {
+                <ScriptsTable params={this.props.params} prefix={this.state.search} defaultSortTag="name" defaultSortDirection={-1} onClick={(row) => {
                     if (this.state.duplicating) {
                         browserHistory.push({
                             pathname: `/${this.props.params.organizationName}/scripts/create`,

@@ -48,7 +48,7 @@ export default class ViewsIndex extends React.Component<{
                      </Grid.Row>
                     </Grid>
                     <Divider />
-                <ViewsTable params={this.props.params} prefix={this.state.search} onClick={(row) => {
+                <ViewsTable params={this.props.params} prefix={this.state.search} defaultSortTag="name" defaultSortDirection={-1} onClick={(row) => {
                     if (this.state.duplicating) {
                         browserHistory.push({
                             pathname: `/${this.props.params.organizationName}/views/create`,
