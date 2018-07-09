@@ -80,7 +80,7 @@ export default class Index extends React.Component<{
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column computer={8} width={4} mobile={16}>
-                        <Header><Icon name="bar chart" circular /><Header.Content>Visualize Results <Header sub>Views</Header></Header.Content></Header>
+                        <Header><Icon name="chart bar" circular /><Header.Content>Visualize Results <Header sub>Views</Header></Header.Content></Header>
                         <p style={{ textAlign:'justify' }}>Views handle simple live visualizations. Views can be created for specific tests, devices, or stations. A view is made up of various components organized into rows and columns on the page. Components are responsible for displaying data from channels or pushing data to a channel. Example components are spark lines, switches, log table, etc. </p>
                     </Grid.Column>
                     <Grid.Column computer={8} width={4} mobile={16}>

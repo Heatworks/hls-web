@@ -26,7 +26,7 @@ export default class App extends React.Component<{
                  />
                  { this.props.standalone ? <Segment basic>{this.props.children}</Segment> : <Segment basic>
                     <HeaderMenu location={this.props.location} />
-                    <div style={{ marginTop: 44, paddingBottom: 26 }}>
+                    <div style={{ marginTop: 44, paddingBottom: 16 }}>
                         {this.props.children}
                     </div>
                 </Segment>

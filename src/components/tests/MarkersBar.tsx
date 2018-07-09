@@ -40,7 +40,7 @@ export default class MarkersBar extends React.Component<{
         el.addEventListener("DOMMouseScroll", this.mouseScroll);
     }
     getTimestampForMouse(e) {
-        var el = ReactDOM.findDOMNode(this);
+        var el = ReactDOM.findDOMNode(this) as Element;
         var rect = el.getBoundingClientRect();
         var mousePosition = {
             left: e.pageX - rect.left,

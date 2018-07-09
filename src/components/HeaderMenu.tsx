@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Menu, Segment, Header, Dropdown, Image, Icon} from 'semantic-ui-react'
+import {Menu, Segment, Header, Dropdown, Image, Icon, Search} from 'semantic-ui-react'
 import {Link} from 'react-router'
 import { canPerformAction } from '../apis/hls_iam_policy'
 
@@ -37,7 +37,7 @@ export default class SignIn extends React.Component<{
     render() {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (
-            <Menu fixed="top" style={{width: '100%', overflowX: 'scroll'}}>
+            <Menu fixed="top" style={{width: '100%', overflowX: 'auto'}}>
                 <Menu.Item link as={Link} {...{to: organizationNameOrNull == null ? '/' : `/${organizationNameOrNull}/`}}><Image src={require("../resources/icon.png")} fluid avatar /></Menu.Item>
                 {
                     this.props.iam.organization ? 

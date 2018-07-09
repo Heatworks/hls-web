@@ -31,7 +31,7 @@ export default class ScriptsIndex extends React.Component<{
                                 <p>Monitor scripts when active run locally and trigger alarms, protective actions, or interact with other systems. They can be writen in a variety of languages, initially javascript or python.</p>
                             </Grid.Column>
                             <Grid.Column>
-                                <Header sub><Icon name="alarm outline" circular style={{ marginRight: 0 }} /><Header.Content>Create an Alarm </Header.Content></Header>
+                                <Header sub><Icon name="alarm" circular style={{ marginRight: 0 }} /><Header.Content>Create an Alarm </Header.Content></Header>
                                 <p>Alarms are triggered by scripts and handle various notifications. They can send notifications to SMS, Slack, email, or other integrations.</p>
                             </Grid.Column>
                             <Grid.Column>

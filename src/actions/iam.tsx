@@ -5,6 +5,7 @@ import { loadClient } from "./monitor"
 
 import * as IAM from '../apis/hls_iam'
 import { loadDevices } from "./dac";
+import { Dispatch } from "../../node_modules/@types/react-redux";
 
 function signInLoading() {
 	return {

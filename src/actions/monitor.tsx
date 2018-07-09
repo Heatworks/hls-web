@@ -79,10 +79,19 @@ export function loadClient(accessToken) {
         })
         console.log('actions:monitor:loadClient');
         try {
-            var client = connect(`ws://${getMQTTBrokerHostname()}:1884`, {
+            var client = connect(null, {
                 username: 'HLS:AccessToken',
                 password: accessToken,
-                reconnectPeriod: 1000 * 5
+                reconnectPeriod: 1000 * 5,
+                servers:[{
+                    host: getMQTTBrokerHostname(),
+                    port: 8883,
+                    protocol: 'wss'
+                },{
+                    host: getMQTTBrokerHostname(),
+                    port: 1884,
+                    protocol: 'ws'
+                }]
             })
             client.on("error", (error) => {
                 console.log('actions:monitor:loadClient:onError');
@@ -92,8 +101,9 @@ export function loadClient(accessToken) {
             client.on("connect", () => {
                 dispatch(loadedClient(client))
             })
-            client.on("offline", () => {
+            client.on("offline", (error) => {
                 console.log('actions:monitor:loadClient:offline');
+                console.error(error);
                 dispatch(loadingClientError("MQTT Broker is offline."))
             })
         } catch (error) {

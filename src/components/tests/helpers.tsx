@@ -12,7 +12,7 @@ export function iconForStatus(status) {
         case 'failing':
             return <Icon name='spinner' loading color="red" />
         case 'failed':
-            return <Icon name='remove circle outline' color="red" />
+            return <Icon name='remove circle' color="red" />
         default:
             return <Icon name='radio' color="grey" />
     }
