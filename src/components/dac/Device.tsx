@@ -8,6 +8,7 @@ export class DeviceChannelObject {
     unit: string
     rate: number
     control: boolean
+    label?: string
 }
 
 export class DeviceDocument {
@@ -208,6 +209,7 @@ export default class Device extends React.Component<{
             <Table.Header>
                 <Table.Row disabled={this.props.device.loading}>
                     <Table.HeaderCell>Channel</Table.HeaderCell>
+                    <Table.HeaderCell>Label <i>(Optional)</i></Table.HeaderCell>
                     <Table.HeaderCell>Unit</Table.HeaderCell>
                     <Table.HeaderCell>Rate</Table.HeaderCell>
                     <Table.HeaderCell>Control</Table.HeaderCell>
@@ -221,6 +223,21 @@ export default class Device extends React.Component<{
                     // browserHistory.push(`/${this.props.params.organizationName}/dac/data/${this.props.params.splat}/${name}/`)
                 }}}>
                 <Table.Cell>{name}</Table.Cell>
+                <Table.Cell>{this.state.editing ? <Input value={channelProps.label} onChange={(e) => {
+                    var newLabel = e.currentTarget.value;
+                    var channels = Object.assign({}, this.state.device.channels)
+                    channels[name] = {
+                        ...channels[name],
+                        label: newLabel
+                    }
+                    this.setState({
+                        ...this.state,
+                        device: {
+                            ...this.state.device,
+                            channels
+                        }
+                    })
+                }} /> : channelProps.label}</Table.Cell>
                 <Table.Cell>{channelProps.unit}</Table.Cell>
                 <Table.Cell>{channelProps.rate}</Table.Cell>
                 <Table.Cell>{channelProps.control ? 'Yes' : 'No'}</Table.Cell>
