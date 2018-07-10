@@ -50,13 +50,13 @@ export default class SignIn extends React.Component<{
                     </div> : null
                 }
                 <Menu.Menu position='right'>
-                    <div className='ui right aligned category search item'>
+                    <div className='ui right aligned category item'>
                         <div className='ui transparent icon input'>
                         <form onSubmit={(e) => {
                             alert('Jump to resource: '+this.state.resourceURN + " (not implemented)")
                             e.preventDefault()
                         }}>
-                            <input className='prompt' type='text' placeholder='Jump to resource...' onChange={(e) => {
+                            <input className='prompt' style={{border: 'none', outline: 'none'}} type='text' placeholder='Jump to resource...' onChange={(e) => {
                                 this.setState({
                                     resourceURN: e.currentTarget.value
                                 })
