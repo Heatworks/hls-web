@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Table, Label, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Card, Divider } from 'semantic-ui-react'
+import { Table, Label, Search, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Card, Divider } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
+import ChannelSelector from '../connected/ChannelSelector'
 var DateTime = require('react-datetime')
 var moment = require('moment')
-import * as Promsie from 'bluebird'
 import MarkersBar from './MarkersBar'
 require("../../resources/react-datetime.css")
 
@@ -697,48 +697,11 @@ export default class Test extends React.Component<{
                 </Table.Row> : null}
             </Table.Body>
         </Table>
-        <Modal open={this.state.devicesModal} closeIcon="close" onClose={() => {
+        <ChannelSelector close={() =>{
             this.setState({
                 devicesModal: false
             })
-        }}>
-            <Modal.Header><Icon name="cubes" /> Channel Selector</Modal.Header>
-            <Modal.Content image>
-            <Table celled  compact="very">
-                    <Table.Header>
-                        <Table.Row>
-                        <Table.HeaderCell>Selected</Table.HeaderCell>
-                        <Table.HeaderCell>Device</Table.HeaderCell>
-                        <Table.HeaderCell>Channel</Table.HeaderCell>
-                        <Table.HeaderCell>Unit</Table.HeaderCell>
-                        <Table.HeaderCell>Rate</Table.HeaderCell>
-                        <Table.HeaderCell>Control</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {this.state.devices.map((device) => {
-                            return Object.keys(device.channels).sort().map((channelName, index) => {
-                                var channelInfo = device.channels[channelName];
-                                return (<Table.Row>
-                                            <Table.Cell textAlign="center">{(Object.keys(this.state.test.channels).indexOf(`${device.name}/${channelName}`) >= 0) ? <Icon color='black' name='checkmark' size='small' /> : null}</Table.Cell>
-                                            {(index == 0) ? <Table.Cell textAlign="center" rowSpan={Object.keys(device.channels).length} selectable onClick={() => {
-                                                Promsie.each(Object.keys(device.channels).sort(), (channel) => {
-                                                    return this.addChannel(`${device.name}/${channel}`)
-                                                })
-                                            }}>{device.name.split('/devices/')[1]}</Table.Cell> : null }
-                                            <Table.Cell textAlign="center" selectable onClick={() => {
-                                                this.addChannel(`${device.name}/${channelName}`)
-                                            }}>{channelName}</Table.Cell>
-                                            <Table.Cell textAlign="center">{channelInfo.unit}</Table.Cell>
-                                            <Table.Cell textAlign="center">{channelInfo.rate}</Table.Cell>
-                                            <Table.Cell textAlign="center">{channelInfo.control ? <Icon color='black' name='checkmark' size='large' /> : null}</Table.Cell>
-                                        </Table.Row>);
-                            })
-                        })}
-                    </Table.Body>
-                </Table>
-            </Modal.Content>
-        </Modal>
+        }} open={this.state.devicesModal} selectChannel={this.addChannel.bind(this)} selectedChannels={Object.keys(this.state.test.channels)} />
         </Segment>);
     }
     renderTag(tag) {
