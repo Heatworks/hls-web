@@ -343,7 +343,7 @@ export default class Test extends React.Component<{
         <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving || this.state.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving || this.state.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>{this.state.editing ? "Editing" : ( this.state.saving ? "Saving..." : "Edit")}</span></Menu.Item>
       </Menu>
         <Segment attached={true} compact>
-            <Header sub textAlign="center">Basic Information</Header>
+            <Header sub textAlign="center">Documentation</Header>
             <div style={{lineHeight: 1.7}}>
                 <b>Name</b> <a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}`}>{this.state.test.name}</a><br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.test.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
@@ -367,7 +367,13 @@ export default class Test extends React.Component<{
                                 }
                             })
                         }} /></span> : <span>{index == 1 ? <Icon name="caret right" size="small" /> : null} {moment(time * 1000).format('MM/DD HH:mm:ss (YYYY)')} </span> )
-                })}<br/>
+                })} {this.state.editing ? <a href="#" onClick={() => {
+                    this.setState({
+                        reset: {
+                            open: true
+                        }
+                    })
+                }}>(clear)</a> : null}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>
                     <Table singleLine size="small" compact  striped>
@@ -449,21 +455,16 @@ export default class Test extends React.Component<{
                             </List.Item>)
                 })}</List>}
             </div>
-            <Button.Group widths='3' basic>
-                <Button disabled={this.state.test.range.length > 0 } onClick={() => {
+            <Button.Group widths='2'  size="large" >
+                <Button disabled={this.state.test.range.length > 0 }onClick={() => {
                     this.startTest()
-                }}>Start</Button>
+                }}><Icon name="play" /> Start</Button>
                 <Button disabled={(this.state.test.range.length !== 1)} onClick={() => {
                     this.stopTest()
-                }}>Stop</Button>
-                <Button disabled={this.state.test.range.length == 0 } onClick={() => {
-                    this.setState({
-                        reset: {
-                            open: true
-                        }
-                    })
-                }}>Reset</Button>
+                }}><Icon name="stop" />Stop</Button>
                 <Confirm
+                    header='Reset Test Range'
+                    content='Are you sure you want to clear the start and end points for this test? Warning: This action can not be undone.'
                     open={this.state.reset.open}
                     onCancel={() => {
                         this.setState({
