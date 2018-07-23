@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Label, Search, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Card, Divider } from 'semantic-ui-react'
+import { Table, Label, Search, Button, Segment, List, Header, Rail, Message, Input, Menu, Dropdown, Icon, Image, Loader, Confirm, Modal, Card, Divider, Tab } from 'semantic-ui-react'
 import { Link , browserHistory} from 'react-router'
 import MonitorButton from '../connected/MonitorButton'
 import ChannelSelector from '../connected/ChannelSelector'
@@ -340,7 +340,7 @@ export default class Test extends React.Component<{
                 }}>Passed</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
-        <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving || this.state.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving || this.state.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>Edit</span></Menu.Item>
+        <Menu.Item position="right" active={this.state.editing} as={Button} {...{ disabled:this.props.test.saving || this.state.saving }} onClick={this.toggleEditing.bind(this)}><Icon name={this.props.test.saving || this.state.saving ? 'spinner' : 'edit' } loading={this.props.test.saving} /><span className='text'>{this.state.editing ? "Editing" : ( this.state.saving ? "Saving..." : "Edit")}</span></Menu.Item>
       </Menu>
         <Segment attached={true} compact>
             <Header sub textAlign="center">Basic Information</Header>
@@ -370,18 +370,18 @@ export default class Test extends React.Component<{
                 })}<br/>
                 <b>Duration</b> {moment.duration(this.state.test.range.length > 0 ? (this.state.test.range.length > 1 ? this.state.test.range[1] - this.state.test.range[0] : now.getTime() / 1000 - this.state.test.range[0] ) : 0, 'seconds').humanize()}<br/>
                 <b>Tags</b><br/> {this.state.editing ? <Segment basic vertical>
-                { Object.keys(this.state.test.tags).map((key, index) => {
-                    return (<div key={index}><Input type='text' value={key} placeholder='Key' size="small" disabled /> = <Input type='text' value={this.state.test.tags[key]} placeholder='Value' size="small" onChange={(e) => {
-                    var tags = Object.assign({}, this.state.test.tags)
-                    tags[key] = normalizeValue(e.currentTarget.value)
-                    this.setState({
-                        ...this.state,
-                        test: {
-                            ...this.state.test,
-                            tags
-                        }
-                    })
-                }} /> <Button basic icon="delete" size="mini" onClick={() => {
+                    <Table singleLine size="small" compact  striped>
+            <Table.Header>
+                <Table.Row disabled={this.props.test.loading}>
+                    <Table.HeaderCell collapsing></Table.HeaderCell>
+                    <Table.HeaderCell collapsing textAlign="right">Key</Table.HeaderCell>
+                    <Table.HeaderCell>Value</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+            { Object.keys(this.state.test.tags).map((key, index) => {
+                return (<Table.Row>
+                    <Table.Cell collapsing><Button basic icon="delete" size="mini" onClick={() => {
                     var tags = Object.assign({}, this.state.test.tags)
                     delete tags[key]
                     this.setState({
@@ -391,36 +391,53 @@ export default class Test extends React.Component<{
                             tags
                         }
                     })
-                }} /></div>)
-                }) }
-                <Input type='text' placeholder='Key' value={this.state.newTag.key} size="small" onChange={(e) => {
+                }} /></Table.Cell>
+                    <Table.Cell collapsing textAlign="right"><b>{key}</b></Table.Cell>
+                    <Table.Cell><Input type='text' value={this.state.test.tags[key]} style={{width: '100%'}} placeholder='Value' size="small" onChange={(e) => {
+                    var tags = Object.assign({}, this.state.test.tags)
+                    tags[key] = normalizeValue(e.currentTarget.value)
+                    this.setState({
+                        ...this.state,
+                        test: {
+                            ...this.state.test,
+                            tags
+                        }
+                    })
+                }} /></Table.Cell>
+                  </Table.Row>)
+            })}
+
+            <Table.Row active>
+            <Table.Cell collapsing></Table.Cell>
+            <Table.Cell collapsing textAlign="right"><Input type='text'  placeholder='Key' value={this.state.newTag.key} size="small" style={{textAlign: 'right'}} textAlign="right" onChange={(e) => {
                     this.setState({
                         newTag: {
                             key: e.currentTarget.value,
                             value: this.state.newTag.value
                         }
                     })
-                }} /> = <Input type='text' placeholder='Value' value={this.state.newTag.value} size="small" onChange={(e) => {
-                    this.setState({
-                        newTag: {
-                            key: this.state.newTag.key,
-                            value: normalizeValue(e.currentTarget.value)
-                        }
-                    })
-                }}/> <Button icon="plus" basic size="mini" onClick={() => {
-                    var tags = Object.assign({}, this.state.test.tags)
-                    tags[this.state.newTag.key] = this.state.newTag.value
-                    this.setState({
-                        test: {
-                            ...this.state.test,
-                            tags
-                        },
-                        newTag: {
-                            key: '',
-                            value: ''
-                        }
-                    })
-                }} />
+                }} onBlur={() => {
+                    if (this.state.newTag.key != "") {
+                        var tags = Object.assign({}, this.state.test.tags)
+                        tags[this.state.newTag.key] = this.state.newTag.value
+                        this.setState({
+                            test: {
+                                ...this.state.test,
+                                tags
+                            },
+                            newTag: {
+                                key: '',
+                                value: ''
+                            }
+                        })
+                    }
+                    
+                }} /></Table.Cell>
+                <Table.Cell></Table.Cell>
+                </Table.Row>
+                </Table.Body>
+                    </Table>
+                
                 </Segment> 
                 : <List horizontal>{Object.keys(this.props.test.data.tags).map((key) => {
                     return (<List.Item>
@@ -741,6 +758,9 @@ function normalizeValue(value) {
     }
     if (value + "" != number + "") {
         return value;
+    }
+    if (value == "") {
+        return false;
     }
     return number;
 }
