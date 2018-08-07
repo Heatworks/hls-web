@@ -633,6 +633,12 @@ export default class View extends React.Component<{
                     return this.state.channels[column.channels[key]].value
                 }))} publish={this.publish.bind(this)} />
             )
+        } else if (column.component == "/organizations/heatworks/views/components/model-3/production/FunctionalTestNotes") {
+            return (
+                <Model3ErrorNotes {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
+                    return this.state.channels[column.channels[key]].value
+                }))} publish={this.publish.bind(this)} />
+            )
         } else if (column.component == "/organizations/heatworks/views/components/flow/control") {
             return (
                 <FlowControl {...column.props} channels={column.channels} values={zipObject(Object.keys(column.channels),Object.keys(column.channels).map((key) => {
@@ -982,6 +988,147 @@ class FunctionalTestNotes extends React.Component<{
                         publishing: this.state.publishing,
                         previousNotes: []
                     })}} style={{}} content={'Clear Notes'} size="tiny" /> : null}
+            </Segment>
+        )
+    }
+}
+
+class Model3ErrorNotes extends React.Component<{
+    title: string
+    channels: {
+        notes: string
+    }
+    values: {
+        notes: string
+    }
+    showTextbox: boolean
+    publish: (topic, value) => any
+},{
+    publishing: boolean,
+    previousNotes?: Array<string>,
+    value?: string
+}> {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            publishing: false,
+            previousNotes: new Array(),
+            value: ""
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values.notes != this.state.value) {
+            
+        } else {
+            this.setState({
+                publishing: false
+            })
+        }
+    }
+
+    publishNote(text) {
+        this.props.publish(this.props.channels.notes, text)
+        this.setState({
+            publishing: true
+        })
+        setTimeout(() => {
+            var nextNotes = this.state.previousNotes.slice();
+            nextNotes.push(text);
+            this.setState({
+                publishing: false,
+                value: "",
+                previousNotes: nextNotes
+            })
+        }, 1000)
+    }
+    
+    render() {
+        var displayNotes = this.state.previousNotes.slice()
+        return (
+            <Segment>
+                <Grid>
+                <Grid.Row>
+                <Grid.Column width={8}>
+                <h4>Error Codes (Códigos de error)</h4>
+                <Input fluid type="text" content={this.state.value} onChange={(e) => {
+                    this.setState({
+                        value: e.currentTarget.value,
+                        publishing: false
+                    })
+                }} action >
+                <input placeholder={'Error Code (E###)'} value={this.state.value} />
+                <Button onClick={() =>{
+                    this.props.publish(this.props.channels.notes, this.state.value)
+                    this.setState({
+                        publishing: true
+                    })
+                    setTimeout(() => {
+                        var nextNotes = this.state.previousNotes.slice();
+                        nextNotes.push(this.state.value);
+                        this.setState({
+                            publishing: false,
+                            value: "",
+                            previousNotes: nextNotes
+                        })
+                    }, 1000)
+                }} loading={this.state.publishing}>Send (Envia)</Button>
+                </Input>
+                {[null,"1","2","3","4","5","6","7","8","9","E","0"].map((key, index) => {
+                    if (key == null) {
+                        return;
+                    }
+                    return ( <span><Button size="large" content={key} onClick={() => {
+                        this.setState({
+                            value: this.state.value + key
+                        })
+                     }} />{index % 3 ? null : <br/> }</span>)
+                })}
+               <Button content={"X"} size="large" onClick={() => {
+                        this.setState({
+                            value: ""
+                        })
+                     }} />
+                      
+                </Grid.Column>
+                <Grid.Column width={8}>
+                <p>
+                    <h4>Other Failures (Otra Fallas)</h4>
+                      <Button content="No Flow" onClick={() => {
+                         this.publishNote('flow')
+                      }} loading={this.state.publishing} />
+                     <Button content="No Power" onClick={() => {
+                         this.publishNote('power')
+                      }} loading={this.state.publishing} />
+                      <Button content="Script" onClick={() => {
+                         this.publishNote('script')
+                      }} loading={this.state.publishing} />
+                      <Button content="Operator" onClick={() => {
+                         this.publishNote('operator')
+                      }} loading={this.state.publishing} />
+                       <Button content="Major" onClick={() => {
+                         this.publishNote('major')
+                      }} loading={this.state.publishing} />
+                     </p>
+                <br/>
+                </Grid.Column>
+                </Grid.Row>
+                </Grid>
+                <h4>Previous Failures (Fallas Anteriores)</h4>
+                <p>
+                    {displayNotes.reverse().map((note) => {
+                        return (
+                            <Label>{note}</Label>
+                        )
+                    })}
+                </p>
+                
+                {displayNotes.length > 0 ? <Button onClick={() => {
+                    this.setState({
+                        publishing: this.state.publishing,
+                        previousNotes: []
+                    })}} style={{}} content={'Clear'} size="tiny" /> : null}
             </Segment>
         )
     }
