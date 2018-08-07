@@ -1051,7 +1051,7 @@ class Model3ErrorNotes extends React.Component<{
                 <Grid>
                 <Grid.Row>
                 <Grid.Column width={8}>
-                <h4>Error Codes (Códigos de error)</h4>
+                <h4>Error Codes (Códigos de Error)</h4>
                 <Input fluid type="text" content={this.state.value} onChange={(e) => {
                     this.setState({
                         value: e.currentTarget.value,
