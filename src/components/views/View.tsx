@@ -1095,21 +1095,24 @@ class Model3ErrorNotes extends React.Component<{
                 <Grid.Column width={8}>
                 <p>
                     <h4>Other Failures (Otra Fallas)</h4>
-                      <Button content="No Flow" onClick={() => {
+                      <div style={{marginBottom: 5}}><Button content="Leakage" onClick={() => {
+                         this.publishNote('leak')
+                      }} loading={this.state.publishing} /> Unit is leaking. (Fuga de agua)</div>
+                      <div style={{marginBottom: 5}}><Button content="No Flow" onClick={() => {
                          this.publishNote('flow')
-                      }} loading={this.state.publishing} />
-                     <Button content="No Power" onClick={() => {
+                      }} loading={this.state.publishing} /> Stand has no water. (Sin flujo de agua)</div>
+                     <div style={{marginBottom: 5}}><Button content="No Power" onClick={() => {
                          this.publishNote('power')
-                      }} loading={this.state.publishing} />
-                      <Button content="Script" onClick={() => {
+                      }} loading={this.state.publishing} /> Stand has no power. (Sin voltaje)</div>
+                      <div style={{marginBottom: 5}}><Button content="Script" onClick={() => {
                          this.publishNote('script')
-                      }} loading={this.state.publishing} />
-                      <Button content="Operator" onClick={() => {
+                      }} loading={this.state.publishing} /> The automatic script failed. (Falla prueba automatica)</div>
+                      <div style={{marginBottom: 5}}><Button content="Operator" onClick={() => {
                          this.publishNote('operator')
-                      }} loading={this.state.publishing} />
-                       <Button content="Major" onClick={() => {
+                      }} loading={this.state.publishing} /> Operator needed to stop the test. (Operador detuvo la prueba)</div>
+                       <div style={{marginBottom: 5}}><Button content="Major" onClick={() => {
                          this.publishNote('major')
-                      }} loading={this.state.publishing} />
+                      }} loading={this.state.publishing} /> Unknown major failure that requires further inspection. (Falla desconocida, require mas análisis)</div>
                      </p>
                 <br/>
                 </Grid.Column>
