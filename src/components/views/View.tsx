@@ -1300,7 +1300,7 @@ class FunctionalTestScriptController extends React.Component<{
             alert(`Please add an operator ID.`);
             return;
         }
-        if (/^MJZ[0-9]\d{12}$/.test(this.state.unit)) {
+        if (/^MJZ\d{12}$/.test(this.state.unit)) {
             this.setState({
                 starting: true,
                 running: false
