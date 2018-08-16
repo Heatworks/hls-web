@@ -1300,7 +1300,7 @@ class FunctionalTestScriptController extends React.Component<{
             alert(`Please add an operator ID.`);
             return;
         }
-//        if (/^MX[0-9]\d{11}$/.test(this.state.unit)) {
+        if (/^MJZ[0-9]\d{12}$/.test(this.state.unit)) {
             this.setState({
                 starting: true,
                 running: false
@@ -1321,12 +1321,12 @@ class FunctionalTestScriptController extends React.Component<{
                     console.error(error);
                 })
             })
-       /* } else {
+        } else {
             alert(`Invalid serial number: ${this.state.unit}`);
             this.setState({
                 unit: ''
             })
-        }*/
+        }
     }
 
     stopScript() {
