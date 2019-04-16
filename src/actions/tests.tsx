@@ -1,4 +1,4 @@
-import { LOAD, LOAD_FAIL, LOAD_SUCCESS, TEST_LOAD, TEST_LOAD_FAIL, TEST_LOAD_SUCCESS, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_FAIL, TEST_DELETE_SUCCESS, LOAD_PREFIXES, LOAD_PREFIXES_FAIL, LOAD_PREFIXES_SUCCESS,  } from "../reducers/tests"
+import { LOAD, LOAD_FAIL, LOAD_SUCCESS, TEST_LOAD, TEST_LOAD_FAIL, TEST_LOAD_SUCCESS, TEST_CHECK_EXISTS, TEST_CHECK_EXISTS_SUCCESS, TEST_CHECK_EXISTS_FAIL, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_FAIL, TEST_DELETE_SUCCESS, LOAD_PREFIXES, LOAD_PREFIXES_FAIL, LOAD_PREFIXES_SUCCESS,  } from "../reducers/tests"
 import 'whatwg-fetch'
 import * as hls_tests from '../apis/hls_tests'
 
@@ -39,6 +39,36 @@ export function loadTest(name, accessToken) {
                 }
             }).then((res) => {
                 return res
+            }),
+        },
+    }
+}
+
+export function checkTestExists(name, accessToken) {
+    return {
+        types: [
+            TEST_CHECK_EXISTS,
+            TEST_CHECK_EXISTS_SUCCESS,
+            TEST_CHECK_EXISTS_FAIL,
+        ],
+        payload: {
+            promise: client_tests.testGet({
+                name
+            },{
+                headers: {
+                    "Authorization": accessToken
+                }
+            }).then((res) => {
+                return {
+                    name: name,
+                    exists: (res) ? true : false
+                }
+            }).catch((error) => {
+                console.warn(error)
+                return {
+                    name: name,
+                    exists: false
+                }
             }),
         },
     }

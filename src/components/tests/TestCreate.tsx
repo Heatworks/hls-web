@@ -20,7 +20,8 @@ export default class TestCreate extends React.Component<{
     accessToken: string,
     actions: {
         save: (test: any, accessToken:string) => any,
-        load: (name: string, accessToken: string) => any
+        load: (name: string, accessToken: string) => any,
+        checkExists: (name: string, accessToken: string) => any
     },
     test: {
         saving: boolean,
@@ -29,6 +30,12 @@ export default class TestCreate extends React.Component<{
         loaded: boolean,
         data: any
     },
+    exists: {
+        name: string,
+        exists: boolean,
+        loading: boolean,
+        loaded: boolean
+    }
     location: any
 },{
     name?: string,
@@ -84,6 +91,13 @@ export default class TestCreate extends React.Component<{
                     <Grid.Column width={10}>
                     <Form loading={this.props.test.saving} onSubmit={(e) => {
                         e.preventDefault();
+
+                        if (this.state.name.substr(-1,1) == "/") {
+                            if (confirm('Are you sure you want to create this test? It appears you may be missing a number at the end of the name.') == false) {
+                                return;
+                            }
+                        }
+
                         var now = new Date();
                         var newTest = Object.assign({}, BlankTest, this.state.testBase, {
                             name: this.state.name,
@@ -102,12 +116,14 @@ export default class TestCreate extends React.Component<{
                     }}>
                     <Form.Field>
                     <label>Name</label>
-                    <Input type="string" fluid value={this.state.name} label={`/organizations/${this.props.params.organizationName}/tests/`} onChange={(e) => {
+                    <Input type="string" error={this.props.exists.exists} loading={this.props.exists.loading} icon={(this.props.exists.loaded && !this.props.exists.exists) ? 'check' : null} fluid value={this.state.name} label={`/organizations/${this.props.params.organizationName}/tests/`} onChange={(e) => {
                            this.setState({
                                name: e.currentTarget.value,
                                prefixSearch: e.currentTarget.value.substr(0, e.currentTarget.value.lastIndexOf('/')+1)
+                           }, () => {
+                               this.props.actions.checkExists(this.state.name, this.props.accessToken)
                            })
-                       }}/><small>For best practice don't include date, or location information for the test. Metadata for a test can be added as tags.</small></Form.Field><Form.Field><label>Description</label>
+                        }}/>{this.props.exists.exists ? <small>Test <b>{this.props.exists.name}</b> already exists. </small> : <small>For best practice don't include date, or location information for the test. Metadata for a test can be added as tags</small>}</Form.Field><Form.Field><label>Description</label>
                         <Input type="string" fluid value={this.state.description} onChange={(e) => {
                            this.setState({
                                ...this.state,

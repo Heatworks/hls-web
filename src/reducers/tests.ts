@@ -5,6 +5,10 @@ const TEST_LOAD = 'hls/tests/test/LOAD';
 const TEST_LOAD_SUCCESS = 'hls/tests/test/LOAD_SUCCESS';
 const TEST_LOAD_FAIL = 'hls/tests/test/LOAD_FAIL';
 
+const TEST_CHECK_EXISTS = 'hls/tests/test/CHECK_EXISTS';
+const TEST_CHECK_EXISTS_SUCCESS = 'hls/tests/test/CHECK_EXISTS_SUCCESS';
+const TEST_CHECK_EXISTS_FAIL = 'hls/tests/test/CHECK_EXISTS_FAIL';
+
 const TEST_SAVE = 'hls/tests/test/SAVE';
 const TEST_SAVE_SUCCESS = 'hls/tests/test/SAVE_SUCCESS';
 const TEST_SAVE_FAIL = 'hls/tests/test/SAVE_FAIL';
@@ -17,7 +21,7 @@ const LOAD_PREFIXES = 'hls/tests/prefixes/LOAD';
 const LOAD_PREFIXES_SUCCESS = 'hls/tests/prefixes/LOAD_SUCCESS';
 const LOAD_PREFIXES_FAIL = 'hls/tests/prefixes/LOAD_FAIL';
 
-export { LOAD, LOAD_SUCCESS, LOAD_FAIL, TEST_LOAD, TEST_LOAD_SUCCESS, TEST_LOAD_FAIL, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_SUCCESS, TEST_DELETE_FAIL, LOAD_PREFIXES, LOAD_PREFIXES_SUCCESS, LOAD_PREFIXES_FAIL }
+export { LOAD, LOAD_SUCCESS, LOAD_FAIL, TEST_LOAD, TEST_LOAD_SUCCESS, TEST_LOAD_FAIL, TEST_CHECK_EXISTS, TEST_CHECK_EXISTS_SUCCESS, TEST_CHECK_EXISTS_FAIL, TEST_SAVE, TEST_SAVE_FAIL, TEST_SAVE_SUCCESS, TEST_DELETE, TEST_DELETE_SUCCESS, TEST_DELETE_FAIL, LOAD_PREFIXES, LOAD_PREFIXES_SUCCESS, LOAD_PREFIXES_FAIL }
 
 const initialState = {
 	loaded: false,
@@ -31,6 +35,13 @@ const initialState = {
 		deleting: false,
 		deleted: false,
 		data: null
+	},
+	exists: {
+		name: undefined,
+		exists: false,
+		loading: false,
+		loaded: false,
+		error: null
 	},
 	prefixes: {
 		loading: false,
@@ -78,6 +89,37 @@ export default function reducer(state:any = initialState, action:{type?:string, 
 					error: action.error
 				}
 			}
+		case TEST_CHECK_EXISTS:
+			return {
+				...state,
+				exists: {
+					name: undefined,
+					loading: true,
+					loaded: false,
+					exists: false
+				}
+			};
+		case TEST_CHECK_EXISTS_SUCCESS:
+			return {
+				...state,
+				exists: {
+					name: action.payload.name,
+					loading: false,
+					loaded: true,
+					error: null,
+					exists: action.payload.exists
+				}
+			};
+		case TEST_CHECK_EXISTS_FAIL:
+			return {
+				...state,
+				exists: {
+					name: undefined,
+					loading: false,
+					loaded: false,
+					error: action.error
+				}
+			};
 		case TEST_SAVE:
 			state.test.saving = true
 			return state

@@ -1,18 +1,19 @@
 import { connect } from 'react-redux'
 import TestCreate from '../TestCreate'
-import { loadTest as load, saveTest as save } from '../../../actions/tests'
+import { loadTest as load, saveTest as save, checkTestExists as checkExists } from '../../../actions/tests'
 import { bindActionCreators } from 'redux'
 
 const mapStateToProps = (state, props) => {
   return {
     test: state.tests.test,
+    exists: state.tests.exists,
     accessToken: state.iam.data.accessToken,
     params: props.params
   }
 }
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ save, load }, dispatch)
+    actions: bindActionCreators({ save, load, checkExists }, dispatch)
   }
 }
 
