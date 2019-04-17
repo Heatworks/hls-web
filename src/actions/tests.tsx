@@ -12,7 +12,7 @@ export function load(prefix, accessToken) {
             LOAD_FAIL,
         ],
         payload: {
-            promise: client_tests.testsGet({ prefix, exclusiveStartKey:'', limit: "500" },{
+            promise: client_tests.testsGet({ prefix, exclusiveStartKey:'', limit: "200" },{
                 headers: {
                     "Authorization": accessToken
                 }
