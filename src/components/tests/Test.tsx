@@ -296,7 +296,7 @@ export default class Test extends React.Component<{
                 browserHistory.push({
                     pathname: `/${this.props.params.organizationName}/tests/create`,
                     query: {
-                        'template': `/organizations/${this.props.params.organizationName}/tests/${this.props.test.data.name}`
+                        'template': this.props.test.data.name
                     }
                 });
             }}>Duplicate</Dropdown.Item>
@@ -345,7 +345,9 @@ export default class Test extends React.Component<{
         <Segment attached={true} compact>
             <Header sub textAlign="center">Documentation</Header>
             <div style={{lineHeight: 1.7}}>
-                <b>Name</b> <a href={`urn:x-hls:/organizations/${this.props.params.organizationName}/tests/${this.state.test.name}`}>{this.state.test.name}</a><br/>
+                <b>Name</b> <a href={`urn:x-hls:${this.state.test.name}`}>{this.state.test.name.split('tests/')[1]}</a> <Button compact basic size="tiny" icon="clipboard" onClick={() => {
+                    alert(this.state.test.name)
+                }}></Button><br/>
                 <b>Description</b> {this.state.editing ? <Input type='text' value={this.state.test.description} defaultValue='Test description...' fluid size="small" onChange={(e) => {
                     this.setState({
                         ...this.state,

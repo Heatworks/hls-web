@@ -19,7 +19,7 @@ var assign = require("core-js/library/fn/object/assign");
 interface Dictionary<T> { [index: string]: T; }
 export interface FetchAPI { (url: string, init?: any): Promise<any>; }
 
-const BASE_PATH = "https://d3kndyx4n9.execute-api.us-east-1.amazonaws.com/pre_alpha".replace(/\/+$/, "");
+const BASE_PATH = "https://d3kndyx4n9.execute-api.us-east-1.amazonaws.com/beta".replace(/\/+$/, "");
 
 export interface FetchArgs {
     url: string;
