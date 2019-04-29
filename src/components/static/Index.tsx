@@ -229,7 +229,7 @@ export default class Index extends React.Component<{
                 <p style={{ fontSize: '1.33em' }}>
                     We're giving Makers <i>one year free</i> for the core HLS features, we're excited to see what the open source community can build on top of HLS. You'll still have to get the hardware, but we bet with some detailed documentation and a Raspberry Pi you could make your own. </p>
                 <p style={{ fontSize: '1.33em' }}>
-                    Students can get HLS for <i>free while enrolled</i> in school. Plus we'll offer discounts on hardware if you ask nicely and tell us about your project via Twitter, Facebook, SnapChat, or Email.<br/><br/><span style={{color:'gray'}}>Coming 2018</span>
+                    Students can get HLS for <i>free while enrolled</i> in school. Plus we'll offer discounts on hardware if you ask nicely and tell us about your project via Twitter, Facebook, SnapChat, or Email.<br/><br/><span style={{color:'gray'}}>Coming 2020</span>
                 </p>
                 <Button size='large' as="a" {...{href:"http://eepurl.com/c-Eodv"}}>Join our Mailing List</Button>
               </Grid.Column>
