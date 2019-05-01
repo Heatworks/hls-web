@@ -3,7 +3,7 @@ import {Menu, Segment, Header, Dropdown, Image, Icon, Search} from 'semantic-ui-
 import {Link} from 'react-router'
 import { canPerformAction } from '../apis/hls_iam_policy'
 
-export default class SignIn extends React.Component<{
+export default class HeaderMenu extends React.Component<{
     iam: {
         loading: boolean,
         loaded: boolean,
@@ -34,6 +34,16 @@ export default class SignIn extends React.Component<{
         return (this.props.location.pathname.startsWith(`/${organizationNameOrNull}/${service}/`))
     }
 
+    jumpToResource(resource:string) {
+        var resourceType = resource.substr(0, resource.indexOf("/")) 
+        if (resourceType == "tests") {
+            var newLocation = `/${this.props.iam.organization.organizationName}/tests/${resource.substr(resource.indexOf("/") + 1)}/`;
+            window.location.href = newLocation;
+        } else {
+            alert('Jump to resource: '+this.state.resourceURN + " (not implemented for type "+resourceType+")")
+        }
+    }
+
     render() {
         var organizationNameOrNull = this.props.iam.organization ? this.props.iam.organization.organizationName : null
         return (
@@ -53,8 +63,8 @@ export default class SignIn extends React.Component<{
                     <div className='ui right aligned category item'>
                         <div className='ui transparent icon input'>
                         <form onSubmit={(e) => {
-                            alert('Jump to resource: '+this.state.resourceURN + " (not implemented)")
                             e.preventDefault()
+                            this.jumpToResource(this.state.resourceURN)
                         }}>
                             <input className='prompt' style={{border: 'none', outline: 'none'}} type='text' placeholder='Jump to resource...' onChange={(e) => {
                                 this.setState({
