@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 var isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
@@ -51,7 +50,7 @@ module.exports = {
           {
             test: /\.css$/,
             use: [
-              isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+              'style-loader',
               {
                 loader: 'css-loader',
                 query: {
