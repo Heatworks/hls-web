@@ -16,13 +16,9 @@ module.exports = {
         extensions: ['.js', '.ts', '.tsx']
     },
     output: {
-      filename: '[name].bundle.js',
-      path: outPath
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'all'
-      }
+      filename: './[name].bundle.js',
+      path: outPath,
+      publicPath: '/'
     },
     module: {
         rules: [
