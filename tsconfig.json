@@ -1,15 +1,16 @@
 {
 	"compilerOptions": {
-		"module": "es6",
-		"target": "es6",
+		"module": "esNext",
+		"target": "es5",
 		"moduleResolution": "node",
 		"baseUrl": "src",
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"outDir": "build-client",
-		"jsx": "preserve",
-		"allowJs": true
+		"jsx": "react",
+		"allowJs": true,
+		"lib": ["es6", "es7", "dom"],
 	},
 	"exclude": [
 		"node_modules",
