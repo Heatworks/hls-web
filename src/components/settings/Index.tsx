@@ -70,7 +70,7 @@ export default class Index extends React.Component<{
                     <Grid.Column computer={3} width={4} mobile={16}>
                     </Grid.Column>
                     <Grid.Column computer={6} width={6} mobile={16}>
-                        <Header subheader><Icon name="setting" circular /><Header.Content>MQTT Borker <Header sub>Set the IP/Hostname for the MQTT Broker</Header></Header.Content></Header>
+                        <Header subheader><Icon name="setting" circular /><Header.Content>MQTT Broker <Header sub>Set the IP/Hostname for the MQTT Broker</Header></Header.Content></Header>
                     </Grid.Column>
                     <Grid.Column computer={4} width={2} mobile={16} {...{style: {marginTop: 10} }}>
                         <Input type="text" fluid loading={this.props.clientLoading} value={this.state.broker} action={{ 
